@@ -2,7 +2,56 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1aa2209e-26a8-478d-864d-b77a7a308c44" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/allChrom_1.txt.gz" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/com_chrom_10.txt.gz" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data_structure_d.docx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data_structure_d.xlsx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/150913_nci_parseChrom_over1G.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/150913_nci_parseChrom_over1hr.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/2R_water.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AQUA374_ms1.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AQUA374_step4.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/R_gzip_nci_all_chrom.mzML.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/add_MS1.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/chrom_peak_format.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_chrom_txt_v02.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_chrom_txt_v1.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_multiple_chrom_gz_files_v3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_multiple_chrom_gz_files_v3_brutusVersion.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/convert_irt_to_rt_empirical.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/expert.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/getOrLink_split_swath.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/goldenSets90.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/goldenSets90_test.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/gzip_nci_chrom_mzML.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/iRT_library.TraML" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/io_swath.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci60_parse_chrom.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci60sw.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci_all_chrom.mzML.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/openswath_rtNorm.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/parse_chrom_mzML_v07.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/parse_chrom_mzML_v6.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/peak_groups.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/peaks.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/r_code.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reference_peak_groups_v3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/refine_transitions_v3.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/refine_transitions_v4.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step1.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step2.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step3.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step1.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step2.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step3.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/select_library.pl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spectrast2tsv.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swathExpert_v17.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swath_windows_32.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/write_sh_chromExtract.pl" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="" />
     <ignored path="swath-expert.iws" />
@@ -262,7 +311,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447246565667</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="upload to github">
+      <created>1447246694670</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1447246694670</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
