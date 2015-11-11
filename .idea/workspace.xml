@@ -1,59 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1aa2209e-26a8-478d-864d-b77a7a308c44" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/allChrom_1.txt.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/com_chrom_10.txt.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data_structure_d.docx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data_structure_d.xlsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/150913_nci_parseChrom_over1G.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/150913_nci_parseChrom_over1hr.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/2R_water.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AQUA374_ms1.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/AQUA374_step4.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/R_gzip_nci_all_chrom.mzML.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/_test.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/add_MS1.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/chrom_peak_format.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_chrom_txt_v02.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_chrom_txt_v1.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_multiple_chrom_gz_files_v3.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/combine_multiple_chrom_gz_files_v3_brutusVersion.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/convert_irt_to_rt_empirical.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/expert.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/getOrLink_split_swath.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/goldenSets90.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/goldenSets90_test.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/gzip_nci_chrom_mzML.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/iRT_library.TraML" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/io_swath.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci60_parse_chrom.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci60sw.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nci_all_chrom.mzML.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/openswath_rtNorm.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/parse_chrom_mzML_v07.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/parse_chrom_mzML_v6.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/peak_groups.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/peaks.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/r_code.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reference_peak_groups_v3.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/refine_transitions_v3.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/refine_transitions_v4.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step1.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step2.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_Norm_step3.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step1.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step2.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rt_norm_step3.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/select_library.pl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spectrast2tsv.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swathExpert_v17.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swath_windows_32.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/write_sh_chromExtract.pl" />
+    <list id="1aa2209e-26a8-478d-864d-b77a7a308c44" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/r_code.py" afterPath="$PROJECT_DIR$/r_code.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
-    <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="" />
+    <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="" />
     <ignored path="swath-expert.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -73,22 +26,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
+      <file leaf-file-name="r_code.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/r_code.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.72">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="chrom.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/chrom.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7039106">
-              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-              <folding />
+            <state vertical-scroll-proportion="0.2853598">
+              <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
+              <folding>
+                <element signature="e#45#56#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -96,7 +41,19 @@
     </leaf>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Tiannan Guo" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/r_code.py" />
+      </list>
+    </option>
   </component>
   <component name="NamedScopeManager">
     <order />
@@ -138,14 +95,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="swath-expert" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="&lt; Python 2.7.10 (C:\Python27\python.exe) &gt;" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -292,12 +241,12 @@
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
+    <task id="Default" summary="Default task">
       <changelist id="1aa2209e-26a8-478d-864d-b77a7a308c44" name="Default" comment="" />
       <changelist id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="" />
       <created>1447246281365</created>
       <option name="number" value="Default" />
-      <updated>1447246281365</updated>
+      <updated>1447247835835</updated>
     </task>
     <task id="LOCAL-00001" summary="upload to github">
       <created>1447246524966</created>
@@ -317,20 +266,40 @@
       <option name="project" value="LOCAL" />
       <updated>1447246694670</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="upload to github">
+      <created>1447246798581</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1447246798581</updated>
+    </task>
+    <task id="LOCAL-00005" summary="[format] small format changes">
+      <created>1447247781221</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1447247781221</updated>
+    </task>
+    <task active="true" id="LOCAL-00006" summary="New changelist">
+      <changelist id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="" />
+      <created>1447247835798</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1447247835880</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="702" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24981412" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15092936" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32984293" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2513089" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -350,10 +319,20 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="upload to github" />
-    <option name="LAST_COMMIT_MESSAGE" value="upload to github" />
+    <MESSAGE value="[format] small format changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="[format] small format changes" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
@@ -373,11 +352,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/io_swath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/peaks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swathExpert_v17.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3573201">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/chrom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7039106">
-          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        <state vertical-scroll-proportion="-4.8076925">
+          <caret line="61" column="63" selection-start-line="61" selection-start-column="35" selection-end-line="61" selection-end-column="63" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/r_code.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2853598">
+          <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
+          <folding>
+            <element signature="e#45#56#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

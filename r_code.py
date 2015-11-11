@@ -159,44 +159,6 @@ def write_sample_ms2(d, sample, tg):
 
     return r_code, transition_color_code_mapping
 
-
-#used for obtaining the max intensity for MS1 and MS2 for all transitions for all samples for a tg_id
-#the max values are used to normalized the intensities for plotting.
-def get_max_intensity_ms1_ms2 (in_file, tg_id, sample_names, peak_boundary_display):
-
-    max_intensity_ms1 = 0.0
-    max_intensity_ms2 = 0.0
-
-    #get max intensity for MS1 and MS2 for the display region
-    with gzip.open(in_file, 'rb') as IN_FILE:
-
-        reader = csv.DictReader(IN_FILE, delimiter="\t")
-
-        for row in reader:
-
-            for sample_id in sample_names:
-
-                peak_left = peak_boundary_display['left'][sample_id]
-                peak_right = peak_boundary_display['right'][sample_id]
-
-                if row['transition_group_id'] == tg_id :
-
-                    rt_list = map(float, peaks.rt_three_values_to_full_list(row[sample_id + "_rt"]).split(','))
-                    int_list = map(float, row[sample_id + "_int"].split(","))
-
-                    for rt, intensity in zip(rt_list, int_list):
-                        if peak_left < rt < peak_right :
-                            if row['transition_name'] == tg_id:  #ms1
-                                if max_intensity_ms1 < intensity:
-                                    max_intensity_ms1 = intensity
-                            else:  #ms2
-                                if max_intensity_ms2 < intensity:
-                                    max_intensity_ms2 = intensity
-
-    return max_intensity_ms1, max_intensity_ms2
-
-
-
 def multiple_line_text(label):
     label2 = []
     for i in range(len(label)):
