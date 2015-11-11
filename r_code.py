@@ -3,6 +3,7 @@ __author__ = 'Tiannan Guo, ETH Zurich 2015'
 import gzip
 import csv
 import chrom
+import peaks
 from collections import defaultdict
 
 PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
@@ -102,7 +103,7 @@ def write_add_legend_function():
 def create_png_file (tg_id, width, height, num_colors):
     code = '''# %s \n''' % tg_id
     code += '''png("%s.png", width = %i, height = %i)\n''' % \
-            (tg_id.replace( '(', '_' ).replace(')', '_' ).replace( ':', "_" ), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
+            (tg_id.replace('(', '_').replace(')', '_').replace(':', "_"), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
 
     code += '''par(mfrow=c(2,60), oma = c(5,5,15,5))\n'''
     code += '''palette(rainbow(%d))\n''' % num_colors
@@ -169,7 +170,7 @@ def get_max_intensity_ms1_ms2 (in_file, tg_id, sample_names, peak_boundary_displ
     #get max intensity for MS1 and MS2 for the display region
     with gzip.open(in_file, 'rb') as IN_FILE:
 
-        reader = csv.DictReader (IN_FILE, delimiter = "\t")
+        reader = csv.DictReader(IN_FILE, delimiter="\t")
 
         for row in reader:
 
@@ -180,7 +181,7 @@ def get_max_intensity_ms1_ms2 (in_file, tg_id, sample_names, peak_boundary_displ
 
                 if row['transition_group_id'] == tg_id :
 
-                    rt_list = map(float, chrom_peak_format.rt_three_values_to_full_list(row[sample_id + "_rt"]).split(','))
+                    rt_list = map(float, peaks.rt_three_values_to_full_list(row[sample_id + "_rt"]).split(','))
                     int_list = map(float, row[sample_id + "_int"].split(","))
 
                     for rt, intensity in zip(rt_list, int_list):
@@ -196,7 +197,7 @@ def get_max_intensity_ms1_ms2 (in_file, tg_id, sample_names, peak_boundary_displ
 
 
 
-def multiple_line_text (label):
+def multiple_line_text(label):
     label2 = []
     for i in range(len(label)):
         if i%5 == 0 and i >0 :
