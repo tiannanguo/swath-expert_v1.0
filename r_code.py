@@ -35,9 +35,6 @@ def write_r_code_for_all_samples(d, sample_id):
 
             r_code_this_sample = r_code_samples_par + r_code_sample_ms1 + r_code_sample_ms2
 
-            ########to do: put legend
-            ##########hrere. to do . 2015.11.8.
-            #almost done. but need to check the legend. transition_color_code_mapping
             # next step: write out quant table.
             # another expert rules to check the quality of the displayed peak group for quantifiation
             # debug the codes in peak_groups.py, chrom.py, peaks.py, io_swath.py, etc.
