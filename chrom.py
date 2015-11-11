@@ -1,0 +1,198 @@
+__author__ = 'guot'
+
+
+import numpy as np
+from collections import defaultdict
+import peaks
+
+
+# def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
+#
+#     reference_sample_peak_width = peak_group_info[reference_sample_id]['peak_group_rt_right'] - \
+#         peak_group_info[reference_sample_id]['peak_group_rt_left']
+#
+#     rt_boundary = defaultdict(dict)
+#
+#     for sample_id in peak_group_info.keys():
+#
+#         if 'peak_group_rt_left' in peak_group_info[sample_id].keys():
+#
+#             rt_boundary['left'][sample_id] = peak_group_info[sample_id]['peak_group_rt_apex'] - \
+#                 0.5 * reference_sample_peak_width
+#
+#             rt_boundary['right'][sample_id] = rt_boundary['left'][sample_id] + \
+#                 reference_sample_peak_width
+#
+#         else:
+#             rt_boundary['left'][sample_id] = peak_group_info[reference_sample_id]['peak_group_rt_left']
+#             rt_boundary['right'][sample_id] = peak_group_info[reference_sample_id]['peak_group_rt_right']
+#
+#     return rt_boundary
+
+
+def compute_reference_sample_peak_boundary(d, MAX_PEAK_WIDTH):
+
+    for tg in d.keys():
+
+        reference_sample = d[tg]['reference_sample']['name']
+        peak_rt = d[tg]['reference_sample']['rt']
+        peak_rt_found = d[tg]['peak_groups'][reference_sample].keys()[0]
+        d[tg]['reference_sample']['peak_rt_found'] = peak_rt_found
+
+        #read data from computed peak_group
+        fragments = d[tg]['peak_groups'][reference_sample][peak_rt_found]['fragments']
+        i = d[tg]['peak_groups'][reference_sample][peak_rt_found]['i']
+        rt_left = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_left']
+        rt_right = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_right']
+
+        d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'] = get_peak_group_boundary(fragments, i, rt_left, rt_right, MAX_PEAK_WIDTH)#
+
+        # store the chrom to be displayed for the reference sample
+        d[tg]['display_pg'][reference_sample]['rt_left'] = d[tg]['reference_sample']['rt_left']
+        d[tg]['display_pg'][reference_sample]['rt_right'] = d[tg]['reference_sample']['rt_right']
+
+        # use the range to narrow MS1 and fragment rt range
+        d = refine_reference_sample_rt_range(d, tg, reference_sample, peak_rt_found)
+
+    return d
+
+def refine_reference_sample_rt_range(d, tg, reference_sample, peak_rt_found):
+
+    # process MS1
+    ms1_rt_list = map(float, peaks.rt_three_values_to_full_list_string(d[tg]['precursor']['rt_list'][reference_sample]).split(','))
+    ms1_i_list = map(float, d[tg]['precursor']['i_list'][reference_sample].split(','))
+    d[tg]['display_pg'][reference_sample]['ms1']['rt_list'], d[tg]['display_pg'][reference_sample]['ms1']['i_list'] = \
+        get_chrom_range(d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'], ms1_rt_list, ms1_i_list)
+
+    #process MS2
+    for fragment in d[tg]['peak_groups'][reference_sample][peak_rt_found]['fragments'].keys():
+        rt_list = map(float, peaks.rt_three_values_to_full_list_string(d[tg]['fragments'][fragment]['rt_list'][reference_sample]).split(','))
+        i_list = map(float, d[tg]['fragments'][fragment]['i_list'][reference_sample].split(','))
+        d[tg]['display_pg'][reference_sample]['rt_list'][fragment], d[tg]['display_pg'][reference_sample]['i_list'][fragment] = \
+            get_chrom_range(d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'], rt_list, i_list)
+        d[tg]['display_pg'][reference_sample]['i'][fragment] = d[tg]['peak_groups'][reference_sample][peak_rt_found]['i'][fragment]
+
+    return d
+
+def get_peak_group_boundary(fragments, i, rt_left, rt_right, MAX_PEAK_WIDTH):
+
+    # sort by decreasing intensity
+    i2 = sorted(i, reverse=1)
+    fragments2 = [x for (y, x) in sorted(zip(i, fragments), reverse=1)]
+    rt_left2 = [x for (y, x) in sorted(zip(rt_left, fragments), reverse=1)]
+    rt_right2 = [x for (y, x) in sorted(zip(rt_right, fragments), reverse=1)]
+
+    rt_left3 = -1
+    rt_right3 = -1
+    # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, decending the fragment untill find a reasonable boundary
+    for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left2, rt_right2):
+        if rt_right0 - rt_left0 > MAX_PEAK_WIDTH:
+            continue
+        else:
+            rt_left3 = rt_left0
+            rt_right3 = rt_right0
+            break
+    # if no peak boundary found, use the one from highest peak
+    if rt_left3 < 0:
+        rt_left3 = rt_left2[0]
+        rt_right3 = rt_right2[0]
+
+    return rt_left3, rt_right3
+
+def get_chrom_range(rt_left, rt_right, rt_list, i_list):
+    rt_list2 = []
+    i_list2 = []
+    for rt, i in zip(rt_list, i_list):
+        if rt_left <= rt <= rt_right:
+            rt_list2.append(rt)
+            i_list2.append(i)
+    return rt_list2, i_list2
+
+def find_closest_rt(rt, rt_list):
+    rt2 = rt_list[0]
+    dif = abs(rt2 - rt)
+    for rt0 in rt_list:
+        if abs(rt0 - rt) < dif:
+            dif = abs(rt0 - rt)
+            rt2 = rt0
+    return rt2
+
+def compute_peak_area_for_all(d):
+    for tg in d.keys():
+        for sample in d[tg]['display_pg'].keys():
+            # ms1
+            # the displayed rt_list is already cut at the peak boudnary used for display
+            area_ms1 = compute_peak_area2(d[tg]['display_pg'][sample]['ms1']['rt_list'], d[tg]['display_pg'][sample]['ms1']['i_list'])
+            d[tg]['display_pg'][sample]['area']['ms1'] = area_ms1
+
+            # ms2
+            for fragment in d[tg]['display_pg'][sample]['rt_list'].keys():
+                area_ms2 = compute_peak_area2(d[tg]['display_pg'][sample]['rt_list'][fragment], d[tg]['display_pg'][sample]['i_list'][fragment])
+                d[tg]['display_pg'][sample]['area']['ms2'][fragment] = area_ms2
+    return d
+
+
+def compute_peak_area(rt_list, i_list, rt_left, rt_right):
+    rt_list2 = []
+    i_list2 = []
+    area = 0
+    for i in range(1, len(rt_list), 1):
+        if rt_left < rt_list[i] < rt_right :
+            area += 0.5 * (i_list[i] + i_list[i-1]) * (rt_list[i] - rt_list[i-1])
+            rt_list2.append[rt_list[i]]
+            i_list2.append[i_list[i]]
+    return rt_list2, i_list2, area
+
+def compute_peak_area2(rt_list, i_list):
+    rt_list2 = []
+    i_list2 = []
+    area = 0
+    for i in range(1, len(rt_list), 1):
+        area += 0.5 * (i_list[i] + i_list[i-1]) * (rt_list[i] - rt_list[i-1])
+        rt_list2.append[rt_list[i]]
+        i_list2.append[i_list[i]]
+    return area
+
+
+
+def get_peak_boundary(rt_list, i_list, peak_rt):
+
+    peak_rt_left = rt_list[0]
+    peak_rt_right = rt_list[-1]
+
+    max_int = -1.0
+    peak_index = -1
+    for i in range(len(rt_list)):
+        if abs (rt_list[i] - peak_rt ) < 3:
+            max_int = i_list[i]
+            peak_index = i
+            break
+
+    for j in range(peak_index, len(rt_list)):
+        #find the boundary, intensity < 10% of max intensity
+        if i_list[j] < max_int * 0.1:
+            peak_rt_right = rt_list[j]
+            break
+
+    for j in range(peak_index, -1, -1):
+        #find the boundary, intensity < 10% of max intensity
+        if i_list[j] < max_int * 0.1:
+            peak_rt_left = rt_list[j]
+            break
+
+    #extent 5 seconds
+    if peak_rt_left - rt_list[0] > 5:
+        peak_rt_left -= 5
+    else:
+        peak_rt_left = rt_list[0]
+    if rt_list[-1] - peak_rt_right > 5:
+        peak_rt_right += 5
+    else:
+        peak_rt_right = rt_list[-1]
+
+    return peak_rt_left, peak_rt_right
+
+
+
+
+
