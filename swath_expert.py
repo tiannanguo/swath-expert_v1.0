@@ -51,7 +51,7 @@ def main():
         display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id)
 
     # compute peak area for display_pg
-    d = chrom.compute_peak_area_for_all(d)
+    display_data = chrom.compute_peak_area_for_all(display_data)
 
     # write r code
     all_r_codes = r_code.write_r_code_for_all_samples(d, sample_id, out_R_file)

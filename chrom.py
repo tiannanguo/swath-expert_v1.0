@@ -115,19 +115,23 @@ def find_closest_rt(rt, rt_list):
             rt2 = rt0
     return rt2
 
-def compute_peak_area_for_all(d):
-    for tg in d.keys():
-        for sample in d[tg]['display_pg'].keys():
+def compute_peak_area_for_all(display_data):
+
+    for tg in display_data.keys():
+
+        for sample in display_data[tg].keys():
             # ms1
-            # the displayed rt_list is already cut at the peak boudnary used for display
-            area_ms1 = compute_peak_area2(d[tg]['display_pg'][sample]['ms1']['rt_list'], d[tg]['display_pg'][sample]['ms1']['i_list'])
-            d[tg]['display_pg'][sample]['area']['ms1'] = area_ms1
+            # the displayed rt_list is already cut at the peak boundary used for display
+            area_ms1 = compute_peak_area2(display_data[tg][sample]['ms1']['rt_list'], display_data[tg][sample]['ms1']['i_list'])
+            display_data[tg][sample]['ms1']['area'] = area_ms1
 
             # ms2
-            for fragment in d[tg]['display_pg'][sample]['rt_list'].keys():
-                area_ms2 = compute_peak_area2(d[tg]['display_pg'][sample]['rt_list'][fragment], d[tg]['display_pg'][sample]['i_list'][fragment])
-                d[tg]['display_pg'][sample]['area']['ms2'][fragment] = area_ms2
-    return d
+            for fragment in display_data[tg][sample]['ms2']['rt_list'].keys():
+
+                area_ms2 = compute_peak_area2(display_data[tg][sample]['ms2']['rt_list'][fragment], display_data[tg][sample]['ms2']['i_list'][fragment])
+                display_data[tg][sample]['ms2']['area'][fragment] = area_ms2
+
+    return display_data
 
 
 def compute_peak_area(rt_list, i_list, rt_left, rt_right):

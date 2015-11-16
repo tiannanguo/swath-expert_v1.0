@@ -78,6 +78,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                 display_data[tg][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
                 display_data[tg][sample]['ms1']['peak_apex_i'] = pg_best['ms1']['peak_apex_i']
                 display_data[tg][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
+
     return display_data
 
 def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt):
