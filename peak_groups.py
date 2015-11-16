@@ -65,19 +65,20 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                 pg_best = find_best_match_pg(pg, ref_pg)
 
                 # write into display_pg
-                d[tg]['display_pg'][sample]['rt_left'] = pg_best['rt_left']
-                d[tg]['display_pg'][sample]['rt_right'] = pg_best['rt_right']
-                for fragment in pg_best['ms2']['rt_list'].keys():
-                    d[tg]['display_pg'][sample]['rt_list'][fragment] = pg_best['ms2']['rt_list'][fragment]
-                    d[tg]['display_pg'][sample]['i_list'][fragment] = pg_best['ms2']['i_list'][fragment]
-                    d[tg]['display_pg'][sample]['i'][fragment] = pg_best['ms2']['i'][fragment]
-                    d[tg]['display_pg'][sample]['if_found_peak'][fragment] = pg_best['ms2']['if_found_peak'][fragment]
+                display_data[tg][sample]['rt_left'] = pg_best['rt_left']
+                display_data[tg][sample]['rt_right'] = pg_best['rt_right']
 
-                d[tg]['display_pg'][sample]['ms1']['rt_list'] = pg_best['ms1']['rt_list']
-                d[tg]['display_pg'][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
-                d[tg]['display_pg'][sample]['ms1']['i'] = pg_best['ms1']['i']
-                d[tg]['display_pg'][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
-    return d
+                for fragment in pg_best['ms2']['rt_list'].keys():
+                    display_data[tg][sample]['ms2']['rt_list'][fragment] = pg_best['ms2']['rt_list'][fragment]
+                    display_data[tg][sample]['ms2']['i_list'][fragment] = pg_best['ms2']['i_list'][fragment]
+                    display_data[tg][sample]['ms2']['peak_apex_i'][fragment] = pg_best['ms2']['peak_apex_i'][fragment]
+                    display_data[tg][sample]['ms2']['if_found_peak'][fragment] = pg_best['ms2']['if_found_peak'][fragment]
+
+                display_data[tg][sample]['ms1']['rt_list'] = pg_best['ms1']['rt_list']
+                display_data[tg][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
+                display_data[tg][sample]['ms1']['peak_apex_i'] = pg_best['ms1']['peak_apex_i']
+                display_data[tg][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
+    return display_data
 
 def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt):
 
