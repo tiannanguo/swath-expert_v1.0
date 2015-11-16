@@ -577,7 +577,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447683749109</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="finish restructure of chrom.compute_reference_sample_peak_boundary">
+      <created>1447683766628</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1447683766628</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
