@@ -45,8 +45,8 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         # get the peak boundary for the reference sample
         fragments = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments
         i = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_i
-        rt_left = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_rt_left
-        rt_right = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_rt_right
+        rt_left = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left
+        rt_right = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right
 
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left, rt_right)
 
@@ -77,8 +77,8 @@ def get_peak_group_boundary(fragments, i, rt_left, rt_right):
     # sort by decreasing intensity
     i2 = sorted(i, reverse=1)
     fragments2 = [x for (y, x) in sorted(zip(i, fragments), reverse=1)]
-    rt_left2 = [x for (y, x) in sorted(zip(rt_left, fragments), reverse=1)]
-    rt_right2 = [x for (y, x) in sorted(zip(rt_right, fragments), reverse=1)]
+    rt_left2 = [y for (y, x) in sorted(zip(rt_left, fragments), reverse=1)]
+    rt_right2 = [y for (y, x) in sorted(zip(rt_right, fragments), reverse=1)]
 
     rt_left3 = -1
     rt_right3 = -1

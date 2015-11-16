@@ -15,9 +15,9 @@ import chrom
 import parameters
 
 # name of files
-chrom_file = 'allChrom_1.txt.gz'    #sys.argv[1]
-id_mapping_file = 'goldenSets90.txt'
-out_R_file = chrom_file.repalce('.txt.gz', '.R')
+chrom_file = 'com_chrom_10.txt.gz'    #sys.argv[1]
+id_mapping_file = 'goldenSets90_test.txt'
+out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
 quant_file = chrom_file.replace('.txt.gz', '.quant.txt')
 
@@ -25,14 +25,14 @@ quant_file = chrom_file.replace('.txt.gz', '.quant.txt')
 def main():
 
     # read input file of sample inforamtion
-    sample_id, id_mapping = io_swath.read_id_file()
+    sample_id, id_mapping = io_swath.read_id_file(id_mapping_file)
 
     # read input chrom file,
     # build chrom_data, find peaks when the class is initialized
     ref_sample_data, chrom_data, peptide_data = io_swath.read_com_chrom_file(chrom_file, sample_id)
 
     # based on peaks of fragments, keep peak groups with at least MIN_FRAGMENT fragment, find out peak boundary of each fragment
-    peak_group_candidates = peak_groups.find_peak_group_candidates(chrom_data, sample_id, peptide_data)
+    peak_group_candidates = peak_groups.find_peak_group_candidates(chrom_data, sample_id)
 
     # based on peak groups found in the reference sample, find out fragments that form good peaks, remove the rest fragments
     ref_sample_data, chrom_data, peptide_data, peak_group_candidates = \
@@ -53,8 +53,8 @@ def main():
     # compute peak area for display_pg
     display_data = chrom.compute_peak_area_for_all(display_data)
 
-    # write r code
-    all_r_codes = r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
+    # write r code into a file
+    r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
 
     # write quantitation table
     d = swath_quant.quant(display_data, quant_file)

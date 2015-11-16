@@ -64,6 +64,10 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
                 pg_best = find_best_match_pg(pg, ref_pg)
 
+                if pg_best == 0:
+                    #TODO no peak found. cannot be!!!
+                    ##  debug debug debug......
+
                 # write into display_pg
                 display_data[tg][sample]['rt_left'] = pg_best['rt_left']
                 display_data[tg][sample]['rt_right'] = pg_best['rt_right']
@@ -455,7 +459,7 @@ def find_all_rt_values(chrom_data, tg, sample):
     return all_rt
 
 
-def find_peak_group_candidates(chrom_data, sample_id, peptide_data):
+def find_peak_group_candidates(chrom_data, sample_id):
 
     peak_group_candidates = data_holder.Nested_dict()
 
@@ -465,12 +469,17 @@ def find_peak_group_candidates(chrom_data, sample_id, peptide_data):
 
             all_rt = find_all_rt_values(chrom_data, tg, sample)
 
-            for rt in all_rt:
+            if len(all_rt) == 0:
+                # no peak found
+                break
+            else:
 
-                #compute the peak boundary for each fragment, not the consensus peak boundary
-                this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
-                if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
-                    peak_group_candidates[tg][sample][rt] = this_peak_group
+                for rt in all_rt:
+
+                    #compute the peak boundary for each fragment, not the consensus peak boundary
+                    this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                    if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
+                        peak_group_candidates[tg][sample][rt] = this_peak_group
 
     return peak_group_candidates
 
@@ -519,7 +528,7 @@ def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chr
             # remove rt for other peak groups for the reference sample, only keep the picked peak group rt
             for rt in peak_group_candidates[tg][ref_sample].keys():
                 if rt != rt_found:
-                    del peak_group_candidates[tg][rt]
+                    del peak_group_candidates[tg][ref_sample][rt]
 
             # for all samples, delete chrom data for non-selected fragments
             for sample in chrom_data[tg].keys():
@@ -527,8 +536,11 @@ def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chr
                     if fragment in good_fragments or fragment == tg:
                         pass
                     else:
-                        del chrom_data[tg][sample][fragment]
-                        del peptide_data[tg]['ms2'][fragment]
+                        if fragment in chrom_data[tg][sample].keys():
+                            del chrom_data[tg][sample][fragment]
+
+                        if fragment in peptide_data[tg]['ms2'].keys():
+                            del peptide_data[tg]['ms2'][fragment]
 
     return ref_sample_data, chrom_data, peptide_data, peak_group_candidates
 

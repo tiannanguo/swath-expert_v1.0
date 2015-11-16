@@ -21,7 +21,7 @@ def read_id_file(id_mapping_file):
             id_mapping[row[0].lower()] = row[1]
     return sample_id, id_mapping
 
-def read_com_chrom_file(chrom_file, sample_id, title):
+def read_com_chrom_file(chrom_file, sample_id):
     ref_sample_data = {}
     chrom_data = data_holder.Nested_dict()
     peptide_data = data_holder.Nested_dict()
