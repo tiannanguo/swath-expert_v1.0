@@ -12,8 +12,15 @@ import data_holder
 class Peak_group(object):
     def __init__(self, all_rt, chrom_data, peptide_data, tg, sample, rt):
         self.rt = rt
-        self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i = find_matched_fragments(chrom_data, peptide_data, tg, sample, rt)
+        self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i,\
+            self.matched_fragment_peak_rt_left, self.matched_fragment_peak_rt_right = \
+                find_matched_fragments(chrom_data, peptide_data, tg, sample, rt)
+
+        self.num_matched_fragments = len(self.matched_fragments)
         self.if_ms1_peak = check_if_ms1_peak(chrom_data, peptide_data, tg, sample, rt)
+
+
+
 
 def check_if_ms1_peak(chrom_data, peptide_data, tg, sample, rt):
 
@@ -35,6 +42,9 @@ def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
     matched_fragments = []
     matched_fragments_rt = []
     matched_fragments_i = []
+    matched_fragment_peak_rt_left = []
+    matched_fragment_peak_rt_right = []
+
     for fragment in chrom_data[tg][sample].keys():
         if fragment != tg:
             peak_apex_rt = chrom_data[tg][sample][fragment].peak_apex_rt
@@ -45,8 +55,14 @@ def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
                         matched_fragments.append(fragment)
                         matched_fragments_rt.append(rt0)
                         matched_fragments_i.append(i)
+                        rt_list = chrom_data[tg][sample][fragment].rt_list
+                        i_list = chrom_data[tg][sample][fragment].i_list
+                        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt0)
+                        matched_fragment_peak_rt_left.append(rt_left)
+                        matched_fragment_peak_rt_right.append(rt_right)
+
                         break
-    return matched_fragments, matched_fragments_rt, matched_fragments_i
+    return matched_fragments, matched_fragments_rt, matched_fragments_i, matched_fragment_peak_rt_left, matched_fragment_peak_rt_right
 
 def find_best_peak_group_based_on_reference_sample(d, id, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION):
     for tg in d.keys():
