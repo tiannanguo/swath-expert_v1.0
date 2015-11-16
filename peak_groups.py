@@ -9,6 +9,30 @@ import parameters
 import data_holder
 
 
+class Peak_group(object):
+    def __init__(self, all_rt, chrom_data, peptide_data, tg, sample, rt):
+        self.rt = rt
+        self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i = find_matched_fragments(chrom_data, peptide_data, tg, sample, rt)
+        self.if_ms1_peak = check_if_ms1_peak()
+
+def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
+
+    matched_fragments = []
+    matched_fragments_rt = []
+    matched_fragments_i = []
+    for fragment in chrom_data[tg][sample].keys():
+        if fragment != tg:
+            peak_apex_rt = chrom_data[tg][sample][fragment].peak_apex_rt
+            peak_apex_i = chrom_data[tg][sample][fragment].peak_apex_i
+            if peak_apex_rt != 'NA':
+                for rt0, i in zip(peak_apex_rt, peak_apex_i):
+                    if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE : # 10 s for 2hr gradient
+                        matched_fragments.append(fragment)
+                        matched_fragments_rt.append(rt0)
+                        matched_fragments_i.append(i)
+                        break
+    return matched_fragments, matched_fragments_rt, matched_fragments_i
+
 def find_best_peak_group_based_on_reference_sample(d, id, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION):
     for tg in d.keys():
         # build a ngram object for the peak group from reference sample
@@ -337,49 +361,36 @@ def build_reference_peak_group(tg, d):
     ref_pg['ms1']['i_list'] = d[tg]['display_pg']['precursor']['i_list']
     return ref_pg
 
-def find_all_rt_values(d, tg, sample):
+def find_all_rt_values(chrom_data, tg, sample):
+
     all_rt = []
-    for fragment in d[tg]['fragments'].keys():
-        peaks_rt = d[tg]['fragments'][fragment]['peaks_rt'][sample]
-        if peaks_rt != 'NA':
-            all_rt.append(peaks_rt)
-    all_rt = sorted(list (set(all_rt)))
+    for fragment in chrom_data[tg][sample].keys():
+        peak_apex_rt = chrom_data[tg][sample][fragment].peak_apex_rt
+        if peak_apex_rt != 'NA':
+            all_rt += peak_apex_rt # incluce every element in the 2nd list
+
+    all_rt = sorted(list(set(all_rt)))
 
     for i in range(10):  #repeat the following 10 times
-        all_rt = binning_rt_values (all_rt)
+        all_rt = binning_rt_values(all_rt)
+
     return all_rt
 
 
-def find_peak_group_fragments_i(all_rt, d, tg, sample, MAX_RT_TOLERANCE):
-
-    peak_groups_fragment = defaultdict(list)
-    peak_groups_i = defaultdict(list)
-
-    for rt in all_rt:
-        for fragment in d[tg]['fragments'].keys():
-            peaks_rt = d[tg]['fragments'][fragment]['peaks_rt'][sample]
-            peaks_i = d[tg]['fragments'][fragment]['peaks_i'][sample]
-            if peaks_rt != 'NA':
-                for rt0, i in zip(peaks_rt, peaks_i):
-                    if abs(rt - rt0) < MAX_RT_TOLERANCE : # 10 s for 2hr gradient
-                        peak_groups_fragment[rt].append(fragment)
-                        peak_groups_i[rt].append(i)
-                        break
-
-    return peak_groups_fragment, peak_groups_i
-
-
 def find_peak_groups(chrom_data, sample_id, peptide_data):
+
+    peak_groups = {}
 
     for tg in chrom_data.keys():
 
         for sample in sample_id:
 
-            all_rt = find_all_rt_values(d, tg, sample)
+            all_rt = find_all_rt_values(chrom_data, tg, sample)
 
-            peak_groups_fragment, peak_groups_i = find_peak_group_fragments_i(all_rt, d, tg, sample, MAX_RT_TOLERANCE)
+            for rt in all_rt:
 
-            for rt in peak_groups_fragment.keys():
+                peak_groups[rt] = Peak_group(all_rt, chrom_data, peptide_data, tg, sample, rt)
+
                 if len(peak_groups_fragment[rt]) >= MIN_FRAGMENTS: # at least 4 transitions
                     d[tg]['peak_groups'][sample][rt]['fragments'] = peak_groups_fragment[rt]
                     for fragment, i in zip(peak_groups_fragment[rt] , peak_groups_i[rt]):
@@ -391,7 +402,7 @@ def find_peak_groups(chrom_data, sample_id, peptide_data):
                         d[tg]['peak_groups'][sample][rt]['rt_left'][fragment] = rt_left
                         d[tg]['peak_groups'][sample][rt]['rt_right'][fragment] = rt_right
 
-    return d
+    return peak_groups
 
 
 def find_rt_for_reference_sample(d, tg, reference_sample, reference_rt, MAX_RT_TOLERANCE):

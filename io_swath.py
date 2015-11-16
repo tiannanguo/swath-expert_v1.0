@@ -24,8 +24,8 @@ class Chromatogram(object):
 
         max_peaks, __ = peaks.peakdetect(i_list, rt_list, 9.0, 0.3)
 
-        self.max_rt_values = [rt for (rt, i) in max_peaks]
-        self.max_i_values = [i for (rt, i) in max_peaks]
+        self.peak_apex_rt = [rt for (rt, i) in max_peaks]
+        self.peak_apex_i = [i for (rt, i) in max_peaks]
 
     def size(self):
         return len(self.rt_list)
@@ -94,7 +94,7 @@ def read_com_chrom_file(chrom_file, sample_id, title):
             for k in sample_id:
                 rt_list_three_values_csv = row[k + '_rt']
                 i_list_csv = row[k + '_i']
-                chrom_data[tg][fragment][k] = Chromatogram(rt_list_three_values_csv, i_list_csv)
+                chrom_data[tg][k][fragment] = Chromatogram(rt_list_three_values_csv, i_list_csv)
 
     return ref_sample_data, chrom_data, peptide_data
 
