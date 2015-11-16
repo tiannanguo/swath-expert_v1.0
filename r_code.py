@@ -12,7 +12,7 @@ class ngram(defaultdict):
     def __init__(self):
         super(ngram, self).__init__(ngram)
 
-def write_r_code_for_all_samples(d, sample_id):
+def write_r_code_for_all_samples(d, sample_id, out_R_file):
 
     all_r_code_samples = []
 
@@ -44,7 +44,11 @@ def write_r_code_for_all_samples(d, sample_id):
 
         all_r_code_samples.append(r_code_close_png_file)
 
-    return all_r_code_samples
+
+    #TODO write R codes into the file out_R_file
+
+
+    return 1
 
 def get_max_ms2_intensity_in_all_samples(d, tg):
     i = []

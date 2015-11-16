@@ -4,9 +4,10 @@ import chrom
 import peaks
 import numpy as np
 from collections import defaultdict
-class ngram(defaultdict):
-    def __init__(self):
-        super(ngram, self).__init__(ngram)
+import parameters
+
+import data_holder
+
 
 def find_best_peak_group_based_on_reference_sample(d, id, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION):
     for tg in d.keys():
@@ -14,7 +15,7 @@ def find_best_peak_group_based_on_reference_sample(d, id, MAX_RT_TOLERANCE, PEAK
         ref_pg = build_reference_peak_group(tg, d)
 
         for sample in id:
-            if sample != d[tg]['reference_sample']['name']:
+            if sample != d[tg].reference_sample.name:
                 # for each peak group, create a data structure containing all the information above
                 pg = build_other_sample_peak_group(tg, sample, d, ref_pg)
 
@@ -50,7 +51,7 @@ def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt, MAX_RT_TOLERANC
     return i, if_found_peak
 
 def get_peak_group_values(pg, rt, ref_pg, MAX_RT_TOLERANCE):
-    pg_best = ngram()
+    pg_best = data_holder.DataHolder()
     pg_best['peak_rt'] = rt
     # use peak width from ref_pg to compute the boundary of this peak group
     pg_best['rt_left'] = rt - 0.5 * (ref_pg['rt_right'] - ref_pg['rt_left'])
@@ -193,23 +194,27 @@ def find_top_fragment_with_peak(pg, MAX_RT_TOLERANCE):
     return top_fragment
 
 
+
 def find_best_match_pg(pg, ref_pg, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION, PEAK_SHAPE_FOLD_VARIATION):
 
     if len(pg) == 0:
         return 0
     elif len(pg) == 1:
-        pg_best = get_peak_group_values(pg, pg.keys()[0], ref_pg, MAX_RT_TOLERANCE)
+        pg_best = only_one_pg( pg, ref_pg )
         return pg_best
     else:
         pg_best = find_best_match_pg_rule_A(pg, ref_pg, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION, PEAK_SHAPE_FOLD_VARIATION)
         return pg_best
+
+def only_one_pg(pg, ref_pg):
+    return get_peak_group_values( pg, pg.keys( )[0], ref_pg, MAX_RT_TOLERANCE)
 
 
 def find_best_match_pg_rule_A(pg, ref_pg, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION, PEAK_SHAPE_FOLD_VARIATION):
     # filter out peak groups without top 1 fragment as a peak
     pg2 = filter_peak_group_top_fragment(1, pg, MAX_RT_TOLERANCE)
     if len(pg2) == 1:
-        pg_best = get_peak_group_values(pg2, pg2.keys()[0], ref_pg, MAX_RT_TOLERANCE)
+        pg_best = only_one_pg(pg2, ref_pg)
     elif len(pg2) == 0:
         pg_best = find_best_match_pg_rule_B(pg, ref_pg, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION, PEAK_SHAPE_FOLD_VARIATION)
     elif len(pg2) > 1:
@@ -300,7 +305,7 @@ def find_best_match_pg_rule_H(pg, ref_pg, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARI
 
 def build_other_sample_peak_group(tg, sample, d, ref_pg):
 
-    pg = ngram()
+    pg = data_holder.DataHolder()
     for peak_rt in d[tg]['peak_groups'][sample].keys():
         pg[peak_rt]['ms1']['rt_list'] = d[tg]['precursor']['rt_list'][sample]
         pg[peak_rt]['ms1']['i_list'] = d[tg]['precursor']['i_list'][sample]
@@ -318,7 +323,7 @@ def build_other_sample_peak_group(tg, sample, d, ref_pg):
     return pg
 
 def build_reference_peak_group(tg, d):
-    ref_pg = ngram()
+    ref_pg = data_holder.DataHolder()
     ref_sample = d[tg]['reference_sample']['name']
     ref_pg['peak_rt'] = d[tg]['reference_sample']['peak_rt_found']
     ref_pg['rt_left'] = d[tg]['reference_sample']['rt_left']
@@ -363,8 +368,11 @@ def find_peak_group_fragments_i(all_rt, d, tg, sample, MAX_RT_TOLERANCE):
 
     return peak_groups_fragment, peak_groups_i
 
-def find_peak_groups(d, sample_id, MIN_FRAGMENTS, MAX_RT_TOLERANCE):
-    for tg in d.keys():
+
+def find_peak_groups(chrom_data, sample_id, peptide_data):
+
+    for tg in chrom_data.keys():
+
         for sample in sample_id:
 
             all_rt = find_all_rt_values(d, tg, sample)
@@ -384,6 +392,7 @@ def find_peak_groups(d, sample_id, MIN_FRAGMENTS, MAX_RT_TOLERANCE):
                         d[tg]['peak_groups'][sample][rt]['rt_right'][fragment] = rt_right
 
     return d
+
 
 def find_rt_for_reference_sample(d, tg, reference_sample, reference_rt, MAX_RT_TOLERANCE):
     # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath

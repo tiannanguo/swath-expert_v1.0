@@ -4,6 +4,7 @@ import pylab
 from scipy import fft, ifft
 from scipy.optimize import curve_fit
 from collections import defaultdict
+import parameters
 
 def rt_three_values_to_full_list_string(rt):
     rt2 = map(float, rt.split(","))
