@@ -79,23 +79,29 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                 d[tg]['display_pg'][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
     return d
 
-def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt, MAX_RT_TOLERANCE):
+def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt):
+
     rt_dif = 100
     i = 0
     if_found_peak = 0
+
     for rt0, i0, in zip(peaks_rt, peaks_i):
         rt_dif0 = abs(rt0 - rt)
         if rt_dif0 < rt_dif:
             i = i0
             rt_dif = rt_dif0
 
-    if rt_dif < MAX_RT_TOLERANCE:
+    if rt_dif < parameters.MAX_RT_TOLERANCE:
         if_found_peak = 1
+
     return i, if_found_peak
 
-def get_peak_group_values(pg, rt, ref_pg, MAX_RT_TOLERANCE):
-    pg_best = data_holder.DataHolder()
+def get_peak_group_values(pg, rt, ref_pg):
+
+    pg_best = data_holder.Nested_dict()
+
     pg_best['peak_rt'] = rt
+
     # use peak width from ref_pg to compute the boundary of this peak group
     pg_best['rt_left'] = rt - 0.5 * (ref_pg['rt_right'] - ref_pg['rt_left'])
     pg_best['rt_right'] = rt + 0.5 * (ref_pg['rt_right'] - ref_pg['rt_left'])
@@ -107,15 +113,15 @@ def get_peak_group_values(pg, rt, ref_pg, MAX_RT_TOLERANCE):
             chrom.get_chrom_range(pg_best['rt_left'], pg_best['rt_right'],
                                   pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
 
-        pg_best['ms2']['i'][fragment], pg_best['ms2']['if_found_peak'][fragment] = get_fragment_intensity_for_peak_group(\
-            pg[rt]['ms2']['peaks_rt'][fragment], pg[rt]['ms2']['peaks_i'][fragment], rt, MAX_RT_TOLERANCE)
+        pg_best['ms2']['peak_apex_i'][fragment], pg_best['ms2']['if_found_peak'][fragment] = get_fragment_intensity_for_peak_group(\
+            pg[rt]['ms2']['peak_apex_rt'][fragment], pg[rt]['ms2']['peak_apex_i'][fragment], rt)
 
     # get the rt and i list only for the peak group
     pg_best['ms1']['rt_list'], pg_best['ms1']['i_list'] = \
         chrom.get_chrom_range(pg_best['rt_left'], pg_best['rt_right'], pg[rt]['ms1']['rt_list'], pg[rt]['ms1']['i_list'])
 
     pg_best['ms1']['i'], pg_best['ms1']['if_found_peak'] = get_fragment_intensity_for_peak_group(\
-            pg[rt]['ms1']['peaks_rt'], pg[rt]['ms1']['peaks_i'], rt, MAX_RT_TOLERANCE)
+            pg[rt]['ms1']['peak_apex_rt'], pg[rt]['ms1']['peak_apex_i'], rt)
 
     return pg_best
 
@@ -180,12 +186,15 @@ def filter_peak_group_peak_shape(n, pg):
     return pg
 
 def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg):
+
     pg_corr = {}
+
     for rt in pg.keys():
-        x = [ref_pg['ms2']['i'][fragment] for fragment in pg[rt]['ms2']['peaks_i'].keys()]
+
+        x = [ref_pg['ms2']['peak_apex_i'][fragment] for fragment in pg[rt]['ms2']['peak_apex_i'].keys()]
         y = []
-        for fragment in pg[rt]['ms2']['peaks_i'].keys():
-            y0 = get_intensity_for_closest_rt(pg[rt]['ms2']['peaks_i'][fragment], pg[rt]['ms2']['peaks_rt'][fragment], rt)
+        for fragment in pg[rt]['ms2']['peak_apex_i'].keys():
+            y0 = get_intensity_for_closest_rt(pg[rt]['ms2']['peak_apex_i'][fragment], pg[rt]['ms2']['peak_apex_rt'][fragment], rt)
             y.append(y0)
         pg_corr[rt] = np.corrcoef(x,y)[0][1]   #note: this is R, not R2
 
@@ -368,8 +377,10 @@ def find_best_match_pg_rule_g(pg, ref_pg):
     return pg_best
 
 def find_best_match_pg_rule_h(pg, ref_pg):
+
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
     pg2 = filter_peak_group_peak_shape(2, pg)
+
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)
 
