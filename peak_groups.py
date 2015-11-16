@@ -13,7 +13,22 @@ class Peak_group(object):
     def __init__(self, all_rt, chrom_data, peptide_data, tg, sample, rt):
         self.rt = rt
         self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i = find_matched_fragments(chrom_data, peptide_data, tg, sample, rt)
-        self.if_ms1_peak = check_if_ms1_peak()
+        self.if_ms1_peak = check_if_ms1_peak(chrom_data, peptide_data, tg, sample, rt)
+
+def check_if_ms1_peak(chrom_data, peptide_data, tg, sample, rt):
+
+    if_ms1_peak = 0
+
+    peak_apex_rt = chrom_data[tg][sample][tg].peak_apex_rt
+    peak_apex_i = chrom_data[tg][sample][tg].peak_apex_i
+    if peak_apex_rt != 'NA':
+        for rt0, i in zip(peak_apex_rt, peak_apex_i):
+            if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE : # 10 s for 2hr gradient
+                if_ms1_peak = 1
+                break
+
+    return if_ms1_peak
+
 
 def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
 
