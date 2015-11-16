@@ -54,10 +54,10 @@ def main():
     display_data = chrom.compute_peak_area_for_all(display_data)
 
     # write r code
-    all_r_codes = r_code.write_r_code_for_all_samples(d, sample_id, out_R_file)
+    all_r_codes = r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
 
     # write quantitation table
-    d = swath_quant.quant(d, quant_file)
+    d = swath_quant.quant(display_data, quant_file)
 
 
 start_time = time.time()

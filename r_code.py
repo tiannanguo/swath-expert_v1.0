@@ -5,33 +5,28 @@ import csv
 import chrom
 import peaks
 from collections import defaultdict
+import parameters
 
-PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
-
-class ngram(defaultdict):
-    def __init__(self):
-        super(ngram, self).__init__(ngram)
-
-def write_r_code_for_all_samples(d, sample_id, out_R_file):
+def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
     all_r_code_samples = []
 
-    for tg in d.keys():
+    for tg in display_data.keys():
 
-        num_transition = len(d[tg]['fragments'].keys())
-        max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(d, tg)
-        max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(d, tg)
+        num_transition = len(display_data[tg]['fragments'].keys())
+        max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(display_data, tg)
+        max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(display_data, tg)
 
-        r_code_create_png_file = create_png_file(tg, 600, 1000, num_transition)
+        r_code_create_png_file = create_png_file(tg, parameters.PNG_FILE_WIDTH, parameters.PNG_FILE_HEIGHT, num_transition)
         all_r_code_samples.append(r_code_create_png_file)
 
         for sample in sample_id:
 
             r_code_samples_par = write_sample_par(sample)
 
-            r_code_sample_ms1 = write_sample_ms1(d, sample, tg)
+            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg)
 
-            r_code_sample_ms2, transition_color_code_mapping = write_sample_ms2(d, sample, tg)
+            r_code_sample_ms2, transition_color_code_mapping = write_sample_ms2(display_data, sample, tg)
 
             r_code_this_sample = r_code_samples_par + r_code_sample_ms1 + r_code_sample_ms2
 
@@ -40,27 +35,33 @@ def write_r_code_for_all_samples(d, sample_id, out_R_file):
             # debug the codes in peak_groups.py, chrom.py, peaks.py, io_swath.py, etc.
             all_r_code_samples.append(r_code_this_sample)
 
-        r_code_close_png_file = write_r_code_close_png_file(tg, num_transition, max_intensity_ms1, max_intensity_ms2, d[tg]['display_pg'][sample_id[0]]['rt_list'].keys()) #contains legend
+        r_code_close_png_file = write_r_code_close_png_file(
+            tg, num_transition, max_intensity_ms1, max_intensity_ms2,
+            display_data[tg][sample_id[0]]['rt_list'].keys()) #contains legend
 
         all_r_code_samples.append(r_code_close_png_file)
 
 
     #TODO write R codes into the file out_R_file
-
+    with open(out_R_file, 'wb') as out_file:
+        for line in all_r_code_samples:
+            out_file.write(line)
 
     return 1
 
-def get_max_ms2_intensity_in_all_samples(d, tg):
+def get_max_ms2_intensity_in_all_samples(display_data, tg):
+
     i = []
-    for sample in d[tg]['display_pg'].keys():
-        i0 = max (d[tg]['display_pg'][sample]['i'].values())
+    for sample in display_data[tg].keys():
+        i0 = max (display_data[tg][sample]['peak_apex_i'].values())
         i.append(i0)
+
     return max(i)
 
-def get_max_ms1_intensity_in_all_samples(d, tg):
+def get_max_ms1_intensity_in_all_samples(display_data, tg):
     i = []
-    for sample in d[tg]['display_pg'].keys():
-        i.append(d[tg]['display_pg'][sample]['ms1']['i'])
+    for sample in display_data[tg].keys():
+        i.append(display_data[tg][sample]['ms1']['peak_apex_i'])
     return max(i)
 
 def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2, transition_list):
@@ -101,7 +102,8 @@ def write_add_legend_function():
     return r_code
 
 
-def create_png_file (tg_id, width, height, num_colors):
+def create_png_file(tg_id, width, height, num_colors):
+
     code = '''# %s \n''' % tg_id
     code += '''png("%s.png", width = %i, height = %i)\n''' % \
             (tg_id.replace('(', '_').replace(')', '_').replace(':', "_"), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
@@ -112,23 +114,23 @@ def create_png_file (tg_id, width, height, num_colors):
     return code
 
 
-def write_sample_par (sample):
+def write_sample_par(sample):
     code = '''#sample %s\n''' % sample
     code += '''par(mar=c(5,1,5,1))\n'''
     return code
 
-def write_sample_ms1(d, sample, tg):
+def write_sample_ms1(display_data, sample, tg):
 
     r_code = '''#MS1 chrom\n'''
     r_code += '''#MS1 id is %s\n''' % tg
-    r_code += '''rt = c(%s)\n''' % ','.join(map(str, d[tg]['display_pg'][sample]['ms1']['rt_list']))
-    r_code += '''int = c(%s)\n''' % ','.join(map(str, [x * (-1) for x in d[tg]['display_pg'][sample]['ms1']['i_list']]))
+    r_code += '''rt = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms1']['rt_list']))
+    r_code += '''int = c(%s)\n''' % ','.join(map(str, [x * (-1) for x in display_data[tg][sample]['ms1']['i_list']]))
 
     r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-100, 100), ''' \
                          '''lwd = %.1f, xlab = "rt (s)", ylab = "intensity (''' % (
-                             d[tg]['display_pg'][sample]['rt_left'],
-                             d[tg]['display_pg'][sample]['rt_right'],
-                             PLOT_LINE_WIDTH) + '%' + ''')", yaxt = "n", cex.axis = 1.5, frame.plot=FALSE)\n'''
+                             display_data[tg][sample]['rt_left'],
+                             display_data[tg][sample]['rt_right'],
+                             parameters.PLOT_LINE_WIDTH) + '%' + ''')", yaxt = "n", cex.axis = 1.5, frame.plot=FALSE)\n'''
     r_code += '''rm (rt, int)\n'''
 
     # write text
@@ -139,20 +141,20 @@ def write_sample_ms1(d, sample, tg):
     return r_code
 
 
-def write_sample_ms2(d, sample, tg):
+def write_sample_ms2(display_data, sample, tg):
 
     r_code = ''
 
     transition_color_code = 1.0
     transition_color_code_mapping = {}
 
-    for fragment in d[tg]['display_pg'][sample]['rt_list'].keys():
+    for fragment in display_data[tg][sample]['ms2']['rt_list'].keys():
         r_code += '''#MS2 chrom\n'''
         r_code += '''#MS2 id is %s\n''' % fragment
-        r_code += '''rt = c(%s)\n''' % ','.join(map(str, d[tg]['display_pg'][sample]['rt_list'][fragment]))
-        r_code += '''int = c(%s)\n''' % ','.join(map(str, d[tg]['display_pg'][sample]['i_list'][fragment]))
+        r_code += '''rt = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms2']['rt_list'][fragment]))
+        r_code += '''int = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms2']['i_list'][fragment]))
         r_code += '''lines(rt, int, type = "l", col = %d, lwd = %.1f)\n''' % (
-            transition_color_code, PLOT_LINE_WIDTH)
+            transition_color_code, parameters.PLOT_LINE_WIDTH)
         r_code += '''rm (rt, int)\n'''
 
         transition_color_code_mapping[transition_color_code] = fragment
