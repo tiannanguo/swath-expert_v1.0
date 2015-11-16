@@ -4,6 +4,7 @@ __author__ = 'guot'
 import numpy as np
 from collections import defaultdict
 import peaks
+import parameters
 
 
 # def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
@@ -30,22 +31,23 @@ import peaks
 #     return rt_boundary
 
 
-def compute_reference_sample_peak_boundary(d, MAX_PEAK_WIDTH):
+def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 
-    for tg in d.keys():
+    for tg in chrom_data.keys():
 
-        reference_sample = d[tg]['reference_sample']['name']
-        peak_rt = d[tg]['reference_sample']['rt']
-        peak_rt_found = d[tg]['peak_groups'][reference_sample].keys()[0]
-        d[tg]['reference_sample']['peak_rt_found'] = peak_rt_found
+        reference_sample = ref_sample_data[tg].sample_name
+        peak_rt = ref_sample_data[tg].peak_rt
+        peak_rt_found = ref_sample_data[tg].peak_rt_found
 
-        #read data from computed peak_group
-        fragments = d[tg]['peak_groups'][reference_sample][peak_rt_found]['fragments']
-        i = d[tg]['peak_groups'][reference_sample][peak_rt_found]['i']
+        # read data from computed peak_group
+        fragments = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments
+        i = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_i
         rt_left = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_left']
         rt_right = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_right']
 
-        d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'] = get_peak_group_boundary(fragments, i, rt_left, rt_right, MAX_PEAK_WIDTH)#
+        ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left, rt_right)
+
+        ref_sample_data[tg].read_peak_boundary(ref_sample_rt_left, ref_sample_rt_right)
 
         # store the chrom to be displayed for the reference sample
         d[tg]['display_pg'][reference_sample]['rt_left'] = d[tg]['reference_sample']['rt_left']
@@ -74,7 +76,7 @@ def refine_reference_sample_rt_range(d, tg, reference_sample, peak_rt_found):
 
     return d
 
-def get_peak_group_boundary(fragments, i, rt_left, rt_right, MAX_PEAK_WIDTH):
+def get_peak_group_boundary(fragments, i, rt_left, rt_right):
 
     # sort by decreasing intensity
     i2 = sorted(i, reverse=1)
@@ -86,7 +88,7 @@ def get_peak_group_boundary(fragments, i, rt_left, rt_right, MAX_PEAK_WIDTH):
     rt_right3 = -1
     # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, decending the fragment untill find a reasonable boundary
     for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left2, rt_right2):
-        if rt_right0 - rt_left0 > MAX_PEAK_WIDTH:
+        if rt_right0 - rt_left0 > parameters.MAX_PEAK_WIDTH:
             continue
         else:
             rt_left3 = rt_left0

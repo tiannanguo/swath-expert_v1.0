@@ -5,20 +5,7 @@ import peaks
 import numpy as np
 from collections import defaultdict
 import parameters
-
 import data_holder
-
-
-class Peak_group(object):
-    def __init__(self, all_rt, chrom_data, peptide_data, tg, sample, rt):
-        self.rt = rt
-        self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i,\
-            self.matched_fragment_peak_rt_left, self.matched_fragment_peak_rt_right = \
-                find_matched_fragments(chrom_data, peptide_data, tg, sample, rt)
-
-        self.num_matched_fragments = len(self.matched_fragments)
-        self.if_ms1_peak = check_if_ms1_peak(chrom_data, peptide_data, tg, sample, rt)
-
 
 
 
@@ -42,8 +29,8 @@ def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
     matched_fragments = []
     matched_fragments_rt = []
     matched_fragments_i = []
-    matched_fragment_peak_rt_left = []
-    matched_fragment_peak_rt_right = []
+    matched_fragments_peak_rt_left = []
+    matched_fragments_peak_rt_right = []
 
     for fragment in chrom_data[tg][sample].keys():
         if fragment != tg:
@@ -58,11 +45,11 @@ def find_matched_fragments(chrom_data, peptide_data, tg, sample, rt):
                         rt_list = chrom_data[tg][sample][fragment].rt_list
                         i_list = chrom_data[tg][sample][fragment].i_list
                         rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt0)
-                        matched_fragment_peak_rt_left.append(rt_left)
-                        matched_fragment_peak_rt_right.append(rt_right)
+                        matched_fragments_peak_rt_left.append(rt_left)
+                        matched_fragments_peak_rt_right.append(rt_right)
 
                         break
-    return matched_fragments, matched_fragments_rt, matched_fragments_i, matched_fragment_peak_rt_left, matched_fragment_peak_rt_right
+    return matched_fragments, matched_fragments_rt, matched_fragments_i, matched_fragments_peak_rt_left, matched_fragments_peak_rt_right
 
 def find_best_peak_group_based_on_reference_sample(d, id, MAX_RT_TOLERANCE, PEAK_WIDTH_FOLD_VARIATION):
     for tg in d.keys():
@@ -408,9 +395,9 @@ def find_all_rt_values(chrom_data, tg, sample):
     return all_rt
 
 
-def find_peak_groups(chrom_data, sample_id, peptide_data):
+def find_peak_group_candidates(chrom_data, sample_id, peptide_data):
 
-    peak_groups = {}
+    peak_group_candidates = data_holder.Nested_dict()
 
     for tg in chrom_data.keys():
 
@@ -420,61 +407,70 @@ def find_peak_groups(chrom_data, sample_id, peptide_data):
 
             for rt in all_rt:
 
-                peak_groups[rt] = Peak_group(all_rt, chrom_data, peptide_data, tg, sample, rt)
+                #compute the peak boundary for each fragment, not the consensus peak boundary
+                this_peak_group = data_holder.Peak_group(chrom_data, peptide_data, tg, sample, rt)
+                if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
+                    peak_group_candidates[tg][sample][rt] = this_peak_group
 
-                if len(peak_groups_fragment[rt]) >= MIN_FRAGMENTS: # at least 4 transitions
-                    d[tg]['peak_groups'][sample][rt]['fragments'] = peak_groups_fragment[rt]
-                    for fragment, i in zip(peak_groups_fragment[rt] , peak_groups_i[rt]):
-                        d[tg]['peak_groups'][sample][rt]['i'][fragment] = i
-                    for fragment in peak_groups_fragment[rt]:
-                        rt_list = map(float, peaks.rt_three_values_to_full_list_string(d[tg]['fragments'][fragment]['rt'][sample]).split(','))
-                        i_list = map(float, d[tg]['fragments'][fragment]['i'][sample].split(','))
-                        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt)
-                        d[tg]['peak_groups'][sample][rt]['rt_left'][fragment] = rt_left
-                        d[tg]['peak_groups'][sample][rt]['rt_right'][fragment] = rt_right
-
-    return peak_groups
+    return peak_group_candidates
 
 
-def find_rt_for_reference_sample(d, tg, reference_sample, reference_rt, MAX_RT_TOLERANCE):
+def find_rt_for_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates, tg):
+
     # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
+    sample = ref_sample_data[tg].sample_name
+    best_rt = ref_sample_data[tg].peak_rt
+    num_good_fragments = 0
     good_fragments = []
-    rt_dif = MAX_RT_TOLERANCE
+    rt_dif = parameters.MAX_RT_TOLERANCE
     rt_found = -1.0
-    for rt in d[tg]['peak_groups'][reference_sample].keys():
-        if abs(rt - reference_rt) < rt_dif:
-            good_fragments = d[tg]['peak_groups'][reference_sample][rt]['fragments']
-            rt_dif = abs(rt - reference_rt)
-            rt_found = rt
+    for rt in peak_group_candidates[tg][sample].keys():
+        if abs(rt - best_rt) < rt_dif:
+            num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
+            if num_fragments > num_good_fragments:
+                good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
+                num_good_fragments = len(good_fragments)
+                rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
+                rt_found = rt
+
     return good_fragments, rt_dif, rt_found
 
 
-def refine_fragments_based_on_reference_sample(d, MAX_RT_TOLERANCE, MIN_FRAGMENTS):
+def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 
-    for tg in d.keys():
+    # for each tg, find the peak_forming fragments in the reference sample
 
-        reference_sample = d[tg]['reference_sample']['name']
-        reference_rt = d[tg]['reference_sample']['rt']
+    for tg in chrom_data.keys():
 
-        good_fragments, rt_dif, rt_found = find_rt_for_reference_sample(d, tg, reference_sample, reference_rt, MAX_RT_TOLERANCE)
+        ref_sample = ref_sample_data[tg].sample_name
 
-        # remove rt for other peak groups, only keep the picked peak group rt
-        for rt in d[tg]['peak_groups'][reference_sample].keys():
-            if rt != rt_found:
-                del d[tg]['peak_groups'][reference_sample][rt]
+        # find the matched rt in the reference sample
+        good_fragments, rt_dif, rt_found = find_rt_for_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates, tg)
 
-        # delete data for non-selected fragments
-        for fragment in d[tg]['fragments'].keys():
-            if fragment in good_fragments:
-                pass
-            else:
-                del d[tg]['fragments'][fragment]
+        ref_sample_data[tg].read_peak_rt_found(rt_found)
 
-    # remove tg with < 4 good fragments in the reference sample
-    for tg in d.keys():
-        if len(d[tg]['fragments'].keys()) < MIN_FRAGMENTS:
-            del d[tg]
-    return d
+        # if num of good fragments < MIN_FRAGMENTS, remove the tg from all variables
+        if len(good_fragments) < parameters.MIN_FRAGMENTS:
+            del chrom_data[tg]
+            del peptide_data[tg]
+            del ref_sample_data[tg]
+            del peak_group_candidates[tg]
+        else:
+            # remove rt for other peak groups for the reference sample, only keep the picked peak group rt
+            for rt in peak_group_candidates[tg][ref_sample].keys():
+                if rt != rt_found:
+                    del peak_group_candidates[tg][rt]
+
+            # for all samples, delete chrom data for non-selected fragments
+            for sample in chrom_data[tg].keys():
+                for fragment in chrom_data[tg][sample].keys():
+                    if fragment in good_fragments or fragment == tg:
+                        pass
+                    else:
+                        del chrom_data[tg][sample][fragment]
+                        del peptide_data[tg]['ms2'][fragment]
+
+    return ref_sample_data, chrom_data, peptide_data, peak_group_candidates
 
 def binning_rt_values (rt):
     if len(rt) > 1:
