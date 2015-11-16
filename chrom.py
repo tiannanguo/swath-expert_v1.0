@@ -5,6 +5,7 @@ import numpy as np
 from collections import defaultdict
 import peaks
 import parameters
+import data_holder
 
 
 # def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
@@ -33,48 +34,43 @@ import parameters
 
 def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 
+    display_data = data_holder.Nested_dict()
+
     for tg in chrom_data.keys():
 
         reference_sample = ref_sample_data[tg].sample_name
         peak_rt = ref_sample_data[tg].peak_rt
         peak_rt_found = ref_sample_data[tg].peak_rt_found
 
-        # read data from computed peak_group
+        # get the peak boundary for the reference sample
         fragments = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments
         i = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_i
-        rt_left = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_left']
-        rt_right = d[tg]['peak_groups'][reference_sample][peak_rt_found]['rt_right']
+        rt_left = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_rt_left
+        rt_right = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_rt_right
 
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left, rt_right)
 
         ref_sample_data[tg].read_peak_boundary(ref_sample_rt_left, ref_sample_rt_right)
 
         # store the chrom to be displayed for the reference sample
-        d[tg]['display_pg'][reference_sample]['rt_left'] = d[tg]['reference_sample']['rt_left']
-        d[tg]['display_pg'][reference_sample]['rt_right'] = d[tg]['reference_sample']['rt_right']
+        display_data[tg][reference_sample]['rt_left'] = ref_sample_rt_left
+        display_data[tg][reference_sample]['rt_right'] = ref_sample_rt_right
 
         # use the range to narrow MS1 and fragment rt range
-        d = refine_reference_sample_rt_range(d, tg, reference_sample, peak_rt_found)
+        display_data = refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sample, peak_rt_found)
 
-    return d
+    return display_data
 
-def refine_reference_sample_rt_range(d, tg, reference_sample, peak_rt_found):
+def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sample, peak_rt_found):
 
-    # process MS1
-    ms1_rt_list = map(float, peaks.rt_three_values_to_full_list_string(d[tg]['precursor']['rt_list'][reference_sample]).split(','))
-    ms1_i_list = map(float, d[tg]['precursor']['i_list'][reference_sample].split(','))
-    d[tg]['display_pg'][reference_sample]['ms1']['rt_list'], d[tg]['display_pg'][reference_sample]['ms1']['i_list'] = \
-        get_chrom_range(d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'], ms1_rt_list, ms1_i_list)
+    # process MS1 and MS2 together
+    for fragment in chrom_data[tg][reference_sample].keys():
+        rt_list = chrom_data[tg][reference_sample][fragment].rt_list
+        i_list = chrom_data[tg][reference_sample][fragment].i_list
+        display_data[tg][reference_sample]['rt_list'][fragment], display_data[tg][reference_sample]['i_list'][fragment] = \
+            get_chrom_range(display_data[tg][reference_sample]['rt_left'], display_data[tg][reference_sample]['rt_right'], rt_list, i_list)
 
-    #process MS2
-    for fragment in d[tg]['peak_groups'][reference_sample][peak_rt_found]['fragments'].keys():
-        rt_list = map(float, peaks.rt_three_values_to_full_list_string(d[tg]['fragments'][fragment]['rt_list'][reference_sample]).split(','))
-        i_list = map(float, d[tg]['fragments'][fragment]['i_list'][reference_sample].split(','))
-        d[tg]['display_pg'][reference_sample]['rt_list'][fragment], d[tg]['display_pg'][reference_sample]['i_list'][fragment] = \
-            get_chrom_range(d[tg]['reference_sample']['rt_left'], d[tg]['reference_sample']['rt_right'], rt_list, i_list)
-        d[tg]['display_pg'][reference_sample]['i'][fragment] = d[tg]['peak_groups'][reference_sample][peak_rt_found]['i'][fragment]
-
-    return d
+    return display_data
 
 def get_peak_group_boundary(fragments, i, rt_left, rt_right):
 
