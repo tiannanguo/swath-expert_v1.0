@@ -174,15 +174,19 @@ def filter_peak_group_top_fragment(n, pg, ref_pg):
     return pg2
 
 def filter_peak_group_ms1(pg):
-    for rt in pg.keys():
+
+    pg2 = pg
+
+    for rt in pg2.keys():
         if_peak_found = 0
-        for rt0 in pg[rt]['ms1']['peaks_apex_rt_list']:
+        for rt0 in pg2[rt]['ms1']['peaks_apex_rt_list']:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
         if if_peak_found == 0:
-            del pg[rt]
-    return pg
+            del pg2[rt]
+
+    return pg2
 
 def compute_transition_intensity(rt0, rt_list, i_list):
     #based on a rt value, find the best match rt value, then find out the chrom peak intensity
