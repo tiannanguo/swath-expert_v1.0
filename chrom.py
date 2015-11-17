@@ -67,7 +67,7 @@ def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sam
         rt_list = chrom_data[tg][reference_sample][fragment].rt_list
         i_list = chrom_data[tg][reference_sample][fragment].i_list
         if fragment == tg:
-            display_data[tg][reference_sample]['ms1']['rt_list'][fragment], display_data[tg][reference_sample]['ms1']['i_list'][fragment] = \
+            display_data[tg][reference_sample]['ms1']['rt_list'], display_data[tg][reference_sample]['ms1']['i_list'] = \
             get_chrom_range(display_data[tg][reference_sample]['rt_left'], display_data[tg][reference_sample]['rt_right'], rt_list, i_list)
         else:
             display_data[tg][reference_sample]['ms2']['rt_list'][fragment], display_data[tg][reference_sample]['ms2']['i_list'][fragment] = \
