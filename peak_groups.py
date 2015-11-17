@@ -155,68 +155,69 @@ def find_top_n_fragment(option, ref_pg):
 
     return fragment_sorted[int(option) - 1]
 
-def filter_peak_group_top_fragment(n, pg, ref_pg):
+def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
-    pg2 = pg.__deepcopy__()
+    pg_filtered_rt2 = []
 
     fragment = find_top_n_fragment(n, ref_pg)
 
-    for rt in pg2.keys():
+    for rt in pg.keys():
 
         if_peak_found = 0
 
-        for rt0 in pg2[rt]['ms2']['peak_apex_rt_list'][fragment]:
+        for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
 
-        if if_peak_found == 0:
-            del pg2[rt]
+        if if_peak_found == 1 and rt in pg_filtered_rt:
+            pg_filtered_rt2.append(rt)
 
-    return pg2
+    return pg_filtered_rt2
 
-def filter_peak_group_ms1(pg):
+def filter_peak_group_ms1(pg, pg_filtered_rt):
 
-    pg2 = pg.__deepcopy__()
+    pg_filtered_rt2 = []
 
-    for rt in pg2.keys():
+    for rt in pg.keys():
         if_peak_found = 0
-        for rt0 in pg2[rt]['ms1']['peak_apex_rt_list']:
+        for rt0 in pg[rt]['ms1']['peak_apex_rt_list']:
+
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
-        if if_peak_found == 0:
-            del pg2[rt]
 
-    return pg2
+        if if_peak_found == 1 and rt in pg_filtered_rt:
+            pg_filtered_rt2.append(rt)
+
+    return pg_filtered_rt2
 
 
 
-def filter_peak_group_peak_shape(n, pg, ref_pg):
+def filter_peak_group_peak_shape(n, pg, ref_pg, pg_filtered_rt):
 
-    pg2 = pg.__deepcopy__()
+    pg_filtered_rt2 = []
 
-    for rt in pg2.keys():
+    for rt in pg.keys():
 
         fragment = find_top_n_fragment(n, ref_pg)
 
-        peak_intensity_apex = pg2[rt]['ms2']['peak_apex_i'][fragment]
+        peak_intensity_apex = pg[rt]['ms2']['peak_apex_i'][fragment]
 
         peak_intensity_left = get_intensity_for_closest_rt(
-            pg2[rt]['ms2']['rt_left'][fragment], pg2[rt]['ms2']['rt_list'][fragment], pg2[rt]['ms2']['i_list'][fragment])
+            pg[rt]['ms2']['rt_left'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
         peak_intensity_right = get_intensity_for_closest_rt(
-            pg2[rt]['ms2']['rt_right'][fragment], pg2[rt]['ms2']['rt_list'][fragment], pg2[rt]['ms2']['i_list'][fragment])
+            pg[rt]['ms2']['rt_right'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
 
         fold_change_left = float(peak_intensity_apex) / (float(peak_intensity_left) + 1)
         fold_change_right = float(peak_intensity_apex) / (float(peak_intensity_right) + 1)
 
-        if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
-            pass  # good peak boundary
-        else:
-            del pg[rt]
+        if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION and rt in pg_filtered_rt:
+            pg_filtered_rt2.append(rt) # good peak boundary
+
     return pg
 
-def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg):
+def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt):
 
     if len(pg.keys()) > 0:
 
@@ -229,7 +230,7 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg):
             for fragment in pg[rt]['ms2']['peak_apex_i'].keys():
                 y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['peak_apex_rt_list'][fragment], pg[rt]['ms2']['peak_apex_i_list'][fragment])
                 y.append(y0)
-            pg_corr[rt] = np.corrcoef(x,y)[0][1]   #note: this is R, not R2
+            pg_corr[rt] = np.corrcoef(x, y)[0][1]   #note: this is R, not R2
 
         # select the peak group with highest corr value
         pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
@@ -237,7 +238,8 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg):
         return pg_sorted[0]
 
     else:
-        return 0
+        print 'WARNING: no peak group found when computing fragment intensity correlation'
+        return ref_pg['peak_rt']
 
 def get_intensity_for_closest_rt(rt0, rt_list, i_list):
 
@@ -257,25 +259,23 @@ def get_intensity_for_closest_rt(rt0, rt_list, i_list):
 
     return i
 
-def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg):
+def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
-    pg2 = pg.__deepcopy__()
+    pg_filtered_rt2 = []
 
-    for rt in pg2.keys():
+    for rt in pg.keys():
 
         fragment = find_top_n_fragment(n, ref_pg)
 
         ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
 
-        peak_width = float(pg2[rt]['ms2']['rt_right'][fragment] - pg2[rt]['ms2']['rt_left'][fragment])
+        peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
 
-        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
-            pass  # good peak boundary
+        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION and rt in pg_filtered_rt:
 
-        else:
-            del pg2[rt]
+            pg_filtered_rt2.append(rt) # good peak boundary
 
-    return pg2
+    return pg_filtered_rt2
 
 def find_top_fragment_with_peak(pg):
 
@@ -321,132 +321,132 @@ def only_one_pg(pg, ref_pg):
 def find_best_match_pg_rule_a(pg, ref_pg):
 
     # filter out peak groups without top 1 fragment as a peak
-    pg2 = filter_peak_group_top_fragment(1, pg, ref_pg)
+    pg_filtered_rt = filter_peak_group_top_fragment(1, pg, ref_pg, pg.keys())
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_b(pg, ref_pg)
+    elif len(pg_filtered_rt) == 0:
+        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg.keys())
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_b(pg2, ref_pg)
+    elif len(pg_filtered_rt) > 1:
+        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt)
 
     return pg_best
 
 
-def find_best_match_pg_rule_b(pg, ref_pg):
+def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 2 fragment as a peak
-    pg2 = filter_peak_group_top_fragment(2, pg, ref_pg)  #####BUGBUGBUGBUG. after this, pg becomes empty!!
+    pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)  #####BUGBUGBUGBUG. after this, pg becomes empty!!
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_c(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_c(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
-def find_best_match_pg_rule_c(pg, ref_pg):
+def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without MS1 as a peak
-    pg2 = filter_peak_group_ms1(pg)
+    pg_filtered_rt2 = filter_peak_group_ms1(pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_d(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_d(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
 
-def find_best_match_pg_rule_d(pg, ref_pg):
+def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 1 fragment showing good peak boundary
-    pg2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg)
+    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_e(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_e(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
-def find_best_match_pg_rule_e(pg, ref_pg):
+def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 2 fragment showing good peak boundary
-    pg2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg)
+    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_f(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_f(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
-def find_best_match_pg_rule_f(pg, ref_pg):
+def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 1 fragment showing good peak shape
-    pg2 = filter_peak_group_peak_shape(1, pg, ref_pg)
+    pg_filtered_rt2 = filter_peak_group_peak_shape(1, pg, ref_pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_g(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_g(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
-def find_best_match_pg_rule_g(pg, ref_pg):
+def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 2 fragment showing good peak shape
-    pg2 = filter_peak_group_peak_shape(2, pg, ref_pg)
+    pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        pg_best = find_best_match_pg_rule_h(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt)
 
-    elif len(pg2) > 1:
-        pg_best = find_best_match_pg_rule_h(pg2, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt2)
 
     return pg_best
 
-def find_best_match_pg_rule_h(pg, ref_pg):
+def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt):
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
-    pg2 = filter_peak_group_peak_shape(2, pg, ref_pg)
+    pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
 
-    if len(pg2) == 1:
-        pg_best = only_one_pg(pg2, ref_pg)
+    if len(pg_filtered_rt2) == 1:
+        pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
-    elif len(pg2) == 0:
-        best_pg_rt = most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg)
+    elif len(pg_filtered_rt2) == 0:
+        best_pg_rt = most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt)
         pg_best = get_peak_group_values(pg, best_pg_rt, ref_pg)
 
-    elif len(pg2) > 1:
-        best_pg_rt = most_correlated_peak_group_based_on_fragment_intensity(pg2, ref_pg)
-        pg_best = get_peak_group_values(pg2, best_pg_rt, ref_pg)
+    elif len(pg_filtered_rt2) > 1:
+        best_pg_rt = most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt2)
+        pg_best = get_peak_group_values(pg, best_pg_rt, ref_pg)
 
     return pg_best
 

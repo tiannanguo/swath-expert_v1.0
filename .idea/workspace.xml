@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. deepcopy issue. pg2 and pg are still linked. why????">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/r_code.py" afterPath="$PROJECT_DIR$/r_code.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. try to solve deepcopy issue. still not work.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="swath-expert.iws" />
@@ -87,8 +86,8 @@
       <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6085791">
-              <caret line="323" column="6" selection-start-line="323" selection-start-column="6" selection-end-line="323" selection-end-column="6" />
+            <state vertical-scroll-proportion="1.1045576">
+              <caret line="241" column="32" selection-start-line="241" selection-start-column="32" selection-end-line="241" selection-end-column="32" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -169,10 +168,10 @@
         <option value="$PROJECT_DIR$/chrom.py" />
         <option value="$PROJECT_DIR$/parameters.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/peak_groups.py" />
         <option value="$PROJECT_DIR$/data_holder.py" />
         <option value="$PROJECT_DIR$/r_code.py" />
         <option value="$PROJECT_DIR$/swath_expert.py" />
+        <option value="$PROJECT_DIR$/peak_groups.py" />
       </list>
     </option>
   </component>
@@ -697,7 +696,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447787516389</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="debug. try to solve deepcopy issue. still not work.">
+      <created>1447792458339</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1447792458346</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -768,7 +773,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="finish get_peak_group_values. best_pg" />
     <MESSAGE value="finish find_best_peak_group_based_on_reference_sample" />
     <MESSAGE value="re-write compute_peak_area_for_all" />
     <MESSAGE value="modify write_r_code_for_all_samples" />
@@ -793,7 +797,8 @@
     <MESSAGE value="working for golden data set." />
     <MESSAGE value="beatify r code. add_legend. make legend visible." />
     <MESSAGE value="debug. deepcopy issue. pg2 and pg are still linked. why????" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug. deepcopy issue. pg2 and pg are still linked. why????" />
+    <MESSAGE value="debug. try to solve deepcopy issue. still not work." />
+    <option name="LAST_COMMIT_MESSAGE" value="debug. try to solve deepcopy issue. still not work." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1133,8 +1138,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peak_groups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6085791">
-          <caret line="323" column="6" selection-start-line="323" selection-start-column="6" selection-end-line="323" selection-end-column="6" />
+        <state vertical-scroll-proportion="1.1045576">
+          <caret line="241" column="32" selection-start-line="241" selection-start-column="32" selection-end-line="241" selection-end-column="32" />
           <folding>
             <element signature="e#21#33#0" expanded="true" />
           </folding>
