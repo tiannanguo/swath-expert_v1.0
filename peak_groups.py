@@ -59,9 +59,15 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
+            if sample == 'gold2':
+                pass
+
             if sample != ref_sample_data[tg].sample_name:
                 # for each peak group, create a data structure containing all the information above
                 pg = build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates, sample)
+
+                if len(pg) == 0:
+                    print 'error, no pg found'
 
                 pg_best = find_best_match_pg(pg, ref_pg)
 
@@ -170,7 +176,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg):
 def filter_peak_group_ms1(pg):
     for rt in pg.keys():
         if_peak_found = 0
-        for rt0 in pg[rt]['ms1']['peaks_rt']:
+        for rt0 in pg[rt]['ms1']['peaks_apex_rt_list']:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. pg class: add peak_apex_i_list, peak_apex_rt_list, peak_apex_i">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. display_data, add peak_apex_i for reference sample">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -50,7 +50,7 @@
               <entry file="file://$PROJECT_DIR$/peak_groups.py">
                 <provider selected="true" editor-type-id="text-editor">
                   <state vertical-scroll-proportion="0.0">
-                    <caret line="540" column="88" selection-start-line="540" selection-start-column="88" selection-end-line="540" selection-end-column="88" />
+                    <caret line="546" column="88" selection-start-line="546" selection-start-column="88" selection-end-line="546" selection-end-column="88" />
                     <folding>
                       <element signature="e#21#33#0" expanded="true" />
                     </folding>
@@ -85,7 +85,7 @@
         <entry file="file://$PROJECT_DIR$/r_code.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
+              <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
               <folding>
                 <element signature="e#45#56#0" expanded="true" />
               </folding>
@@ -142,8 +142,8 @@
       <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.641604">
-              <caret line="485" column="113" selection-start-line="485" selection-start-column="113" selection-end-line="485" selection-end-column="113" />
+            <state vertical-scroll-proportion="0.24561404">
+              <caret line="175" column="25" selection-start-line="175" selection-start-column="4" selection-end-line="175" selection-end-column="25" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -155,7 +155,7 @@
         <entry file="file://$PROJECT_DIR$/swath_expert.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding>
                 <element signature="e#45#56#0" expanded="true" />
               </folding>
@@ -649,7 +649,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447756842581</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="debug. display_data, add peak_apex_i for reference sample">
+      <created>1447763075644</created>
+      <option name="number" value="00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1447763075644</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -677,7 +683,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32809773" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35078534" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34729493" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -697,7 +703,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6666667" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2582897" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32984293" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984293" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32809773" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20446096" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -705,7 +711,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35078534" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34729493" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -720,7 +726,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="[format] small format changes" />
     <MESSAGE value="[function] remove old function get_max_intensity_ms1_ms2" />
     <MESSAGE value="[add] add description to readme file" />
     <MESSAGE value="rename swath-expert.py file" />
@@ -745,21 +750,22 @@
     <MESSAGE value="debug. function build_reference_peak_group. peak_apex_i should be one value, not a list" />
     <MESSAGE value="debug. function build_reference_peak_group. peak_apex_i should be one value, not a list. more" />
     <MESSAGE value="debug. pg class: add peak_apex_i_list, peak_apex_rt_list, peak_apex_i" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug. pg class: add peak_apex_i_list, peak_apex_rt_list, peak_apex_i" />
+    <MESSAGE value="debug. display_data, add peak_apex_i for reference sample" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug. display_data, add peak_apex_i for reference sample" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="python-line">
+        <line-breakpoint type="python-line">
           <url>file://$PROJECT_DIR$/r_code.py</url>
           <line>56</line>
-          <option name="timeStamp" value="71" />
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/r_code.py</url>
-          <line>16</line>
-          <option name="timeStamp" value="73" />
+          <url>file://$PROJECT_DIR$/peak_groups.py</url>
+          <line>62</line>
+          <option name="timeStamp" value="79" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -772,7 +778,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="76" />
+      <option name="time" value="80" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1016,39 +1022,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swath_quant.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-7.2">
           <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_holder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18311292">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/r_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
-          <folding>
-            <element signature="e#45#56#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1062,10 +1040,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/swath_quant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/r_code.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+          <folding>
+            <element signature="e#45#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_holder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18311292">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/swath_expert.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
           <folding>
             <element signature="e#45#56#0" expanded="true" />
           </folding>
@@ -1074,8 +1080,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peak_groups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.641604">
-          <caret line="485" column="113" selection-start-line="485" selection-start-column="113" selection-end-line="485" selection-end-column="113" />
+        <state vertical-scroll-proportion="0.24561404">
+          <caret line="175" column="25" selection-start-line="175" selection-start-column="4" selection-end-line="175" selection-end-column="25" />
           <folding>
             <element signature="e#21#33#0" expanded="true" />
           </folding>
