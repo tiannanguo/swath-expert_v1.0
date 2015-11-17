@@ -37,7 +37,7 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
         r_code_close_png_file = write_r_code_close_png_file(
             tg, num_transition, max_intensity_ms1, max_intensity_ms2,
-            display_data[tg][sample_id[0]]['rt_list'].keys()) #contains legend
+            display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) #contains legend
 
         all_r_code_samples.append(r_code_close_png_file)
 
@@ -64,9 +64,11 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
     return max(i)
 
 def get_max_ms1_intensity_in_all_samples(display_data, tg):
+
     i = []
     for sample in display_data[tg].keys():
         i.append(display_data[tg][sample]['ms1']['peak_apex_i'])
+
     return max(i)
 
 def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2, transition_list):
@@ -77,8 +79,7 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
         '''mtext("Peptide precursor id = %s, number of transitions = %i, max MS1 intensity = %.1f, max MS2 intensity = %.1f\n", NORTH<-3, outer= TRUE, cex = 4)\n''' % (
             this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2))
 
-
-    #add legend
+    # add legend
     transition_list_quoted_csv_string = '"'
     for this_transition in transition_list[:-1]:
         transition_list_quoted_csv_string += (this_transition + '", "')

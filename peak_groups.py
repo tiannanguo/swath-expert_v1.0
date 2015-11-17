@@ -139,7 +139,7 @@ def get_peak_group_values(pg, rt, ref_pg):
     pg_best['ms1']['rt_list'], pg_best['ms1']['i_list'] = \
         chrom.get_chrom_range(pg_best['rt_left'], pg_best['rt_right'], pg[rt]['ms1']['rt_list'], pg[rt]['ms1']['i_list'])
 
-    pg_best['ms1']['i'], pg_best['ms1']['if_found_peak'] = get_fragment_intensity_for_peak_group(\
+    pg_best['ms1']['peak_apex_i'], pg_best['ms1']['if_found_peak'] = get_fragment_intensity_for_peak_group(\
             pg[rt]['ms1']['peak_apex_rt_list'], pg[rt]['ms1']['peak_apex_i_list'], rt)
 
     return pg_best
