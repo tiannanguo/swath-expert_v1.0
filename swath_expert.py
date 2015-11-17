@@ -38,7 +38,6 @@ def main():
     ref_sample_data, chrom_data, peptide_data, peak_group_candidates = \
         peak_groups.refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates)
 
-
     #TODO
     #read library file to get annotation for the fragments
 

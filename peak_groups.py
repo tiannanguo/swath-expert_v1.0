@@ -54,7 +54,7 @@ def find_matched_fragments(chrom_data, tg, sample, rt):
 def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id):
 
     for tg in chrom_data.keys():
-        # build a ngram object for the peak group from reference sample
+        # build a Nested_dict object for the peak group from reference sample
         ref_pg = build_reference_peak_group(ref_sample_data, chrom_data, tg)
 
         for sample in sample_id:
@@ -147,6 +147,9 @@ def find_top_n_fragment(option, rt, pg):
     return fragment_sorted[int(option) - 1]
 
 def filter_peak_group_top_fragment(n, pg):
+
+    pg2 = pg
+
     for rt in pg.keys():
         fragment = find_top_n_fragment(n, rt, pg)
         if_peak_found = 0
@@ -154,9 +157,11 @@ def filter_peak_group_top_fragment(n, pg):
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
+
         if if_peak_found == 0:
-            del pg[rt]
-    return pg
+            del pg2[rt]
+
+    return pg2
 
 def filter_peak_group_ms1(pg):
     for rt in pg.keys():
@@ -199,21 +204,26 @@ def filter_peak_group_peak_shape(n, pg):
 
 def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg):
 
-    pg_corr = {}
+    if len(pg.keys()) > 0:
 
-    for rt in pg.keys():
+        pg_corr = {}
 
-        x = [ref_pg['ms2']['peak_apex_i'][fragment] for fragment in pg[rt]['ms2']['peak_apex_i'].keys()]
-        y = []
-        for fragment in pg[rt]['ms2']['peak_apex_i'].keys():
-            y0 = get_intensity_for_closest_rt(pg[rt]['ms2']['peak_apex_i'][fragment], pg[rt]['ms2']['peak_apex_rt'][fragment], rt)
-            y.append(y0)
-        pg_corr[rt] = np.corrcoef(x,y)[0][1]   #note: this is R, not R2
+        for rt in pg.keys():
 
-    # select the peak group with highest corr value
-    pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
+            x = [ref_pg['ms2']['peak_apex_i'][fragment] for fragment in pg[rt]['ms2']['peak_apex_i'].keys()]
+            y = []
+            for fragment in pg[rt]['ms2']['peak_apex_i'].keys():
+                y0 = get_intensity_for_closest_rt(pg[rt]['ms2']['peak_apex_i'][fragment], pg[rt]['ms2']['peak_apex_rt'][fragment], rt)
+                y.append(y0)
+            pg_corr[rt] = np.corrcoef(x,y)[0][1]   #note: this is R, not R2
 
-    return pg_sorted[0]
+        # select the peak group with highest corr value
+        pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
+
+        return pg_sorted[0]
+
+    else:
+        return 0
 
 def get_intensity_for_closest_rt(peaks_i, peaks_rt, rt):
     i = -1
