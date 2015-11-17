@@ -146,13 +146,14 @@ def compute_peak_area(rt_list, i_list, rt_left, rt_right):
     return rt_list2, i_list2, area
 
 def compute_peak_area2(rt_list, i_list):
-    rt_list2 = []
-    i_list2 = []
+
+    # the rt_list and i_list is already refined. directly compute the area
+
     area = 0
+
     for i in range(1, len(rt_list), 1):
         area += 0.5 * (i_list[i] + i_list[i-1]) * (rt_list[i] - rt_list[i-1])
-        rt_list2.append[rt_list[i]]
-        i_list2.append[i_list[i]]
+
     return area
 
 
