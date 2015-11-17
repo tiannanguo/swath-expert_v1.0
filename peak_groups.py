@@ -6,6 +6,7 @@ import numpy as np
 from collections import defaultdict
 import parameters
 import data_holder
+import copy
 
 
 
@@ -59,7 +60,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold2':
+            if sample == 'gold11':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -156,15 +157,15 @@ def find_top_n_fragment(option, ref_pg):
 
 def filter_peak_group_top_fragment(n, pg, ref_pg):
 
-    pg2 = pg
+    pg2 = pg.__deepcopy__()
 
     fragment = find_top_n_fragment(n, ref_pg)
 
-    for rt in pg.keys():
+    for rt in pg2.keys():
 
         if_peak_found = 0
 
-        for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
+        for rt0 in pg2[rt]['ms2']['peak_apex_rt_list'][fragment]:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
@@ -176,7 +177,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg):
 
 def filter_peak_group_ms1(pg):
 
-    pg2 = pg
+    pg2 = pg.__deepcopy__()
 
     for rt in pg2.keys():
         if_peak_found = 0
@@ -193,7 +194,7 @@ def filter_peak_group_ms1(pg):
 
 def filter_peak_group_peak_shape(n, pg, ref_pg):
 
-    pg2 = pg
+    pg2 = pg.__deepcopy__()
 
     for rt in pg2.keys():
 
@@ -258,7 +259,7 @@ def get_intensity_for_closest_rt(rt0, rt_list, i_list):
 
 def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg):
 
-    pg2 = pg
+    pg2 = pg.__deepcopy__()
 
     for rt in pg2.keys():
 
@@ -337,7 +338,7 @@ def find_best_match_pg_rule_a(pg, ref_pg):
 def find_best_match_pg_rule_b(pg, ref_pg):
 
     # filter out peak groups without top 2 fragment as a peak
-    pg2 = filter_peak_group_top_fragment(2, pg, ref_pg)
+    pg2 = filter_peak_group_top_fragment(2, pg, ref_pg)  #####BUGBUGBUGBUG. after this, pg becomes empty!!
 
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)

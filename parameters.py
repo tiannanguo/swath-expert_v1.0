@@ -17,8 +17,13 @@ PNG_FILE_HEIGHT = 2000
 figure_num_per_row = 10
 figures_num_rows = 3
 title_font_size = 2
-out_margin_area_south = 10
-out_margin_area_west = 5
-out_margin_area_north = 15
-out_margin_area_east = 5
+plot_out_margin_area_south = 10
+plot_out_margin_area_west = 5
+plot_out_margin_area_north = 15
+plot_out_margin_area_east = 5
+subplot_out_margin_area_south = 5
+subplot_out_margin_area_west = 2
+subplot_out_margin_area_north = 5
+subplot_out_margin_area_east = 2
+frame_of_plot = 'TRUE' # whether show a frame outside the subplots
 

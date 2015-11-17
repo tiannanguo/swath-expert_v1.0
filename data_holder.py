@@ -3,12 +3,16 @@ import peaks
 import peak_groups
 import chrom
 import numpy as np
+import copy
 
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
 class Nested_dict(defaultdict):
     def __init__(self):
         super(Nested_dict, self).__init__(Nested_dict)
+
+    def __deepcopy__(self):
+        return self
 
 class Chromatogram(object):
 

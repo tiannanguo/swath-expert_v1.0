@@ -137,10 +137,10 @@ def create_png_file(tg_id, width, height, num_colors):
             (tg_id.replace('(', '_').replace(')', '_').replace(':', "_"), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
 
     code += '''par(mfrow=c(%s,%s), oma = c(%s,%s,%s,%s))\n''' % (parameters.figures_num_rows, parameters.figure_num_per_row,
-                                                              parameters.out_margin_area_south,
-                                                              parameters.out_margin_area_west,
-                                                              parameters.out_margin_area_north,
-                                                              parameters.out_margin_area_east)
+                                                              parameters.plot_out_margin_area_south,
+                                                              parameters.plot_out_margin_area_west,
+                                                              parameters.plot_out_margin_area_north,
+                                                              parameters.plot_out_margin_area_east)
     code += '''palette(rainbow(%d))\n''' % num_colors
 
     return code
@@ -148,7 +148,10 @@ def create_png_file(tg_id, width, height, num_colors):
 
 def write_sample_par(sample):
     code = '''#sample %s\n''' % sample
-    code += '''par(mar=c(5,1,5,1))\n'''
+    code += '''par(mar=c(%s,%s,%s,%s))\n''' % (parameters.subplot_out_margin_area_south,
+                                               parameters.subplot_out_margin_area_west,
+                                               parameters.subplot_out_margin_area_north,
+                                               parameters.subplot_out_margin_area_east)
     return code
 
 def write_sample_ms1(display_data, sample, tg, max_intensity_ms1):
@@ -165,10 +168,10 @@ def write_sample_ms1(display_data, sample, tg, max_intensity_ms1):
     r_code += '''int = c(%s)\n''' % i_list
 
     r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-100, 100), ''' \
-                         '''lwd = %.1f, xlab = "rt (s)", ylab = "intensity (''' % (
+                         '''lwd = %.1f, xlab = "retention time (s)", ylab = "intensity (''' % (
                              display_data[tg][sample]['rt_left'],
                              display_data[tg][sample]['rt_right'],
-                             parameters.PLOT_LINE_WIDTH) + '%' + ''')", yaxt = "n", cex.axis = 1.5, frame.plot=FALSE)\n'''
+                             parameters.PLOT_LINE_WIDTH) + '%' + ''')", yaxt = "n", cex.axis = 1.5, frame.plot=%s)\n''' % parameters.frame_of_plot
     r_code += '''rm (rt, int)\n'''
 
     # write text
