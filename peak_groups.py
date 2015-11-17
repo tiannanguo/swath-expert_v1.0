@@ -29,8 +29,8 @@ def find_matched_fragments(chrom_data, tg, sample, rt):
     matched_fragments = []
     matched_fragments_rt_list = []
     matched_fragments_i_list = []
-    matched_fragments_peak_rt_left = []
-    matched_fragments_peak_rt_right = []
+    matched_fragments_peak_rt_left_list = []
+    matched_fragments_peak_rt_right_list = []
 
     for fragment in chrom_data[tg][sample].keys():
         if fragment != tg:
@@ -45,11 +45,11 @@ def find_matched_fragments(chrom_data, tg, sample, rt):
                         rt_list = chrom_data[tg][sample][fragment].rt_list
                         i_list = chrom_data[tg][sample][fragment].i_list
                         rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt0)
-                        matched_fragments_peak_rt_left.append(rt_left)
-                        matched_fragments_peak_rt_right.append(rt_right)
+                        matched_fragments_peak_rt_left_list.append(rt_left)
+                        matched_fragments_peak_rt_right_list.append(rt_right)
 
                         break
-    return matched_fragments, matched_fragments_rt_list, matched_fragments_i_list, matched_fragments_peak_rt_left, matched_fragments_peak_rt_right
+    return matched_fragments, matched_fragments_rt_list, matched_fragments_i_list, matched_fragments_peak_rt_left_list, matched_fragments_peak_rt_right_list
 
 def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id):
 
@@ -202,7 +202,7 @@ def compute_transition_intensity(rt0, rt_list, i_list):
         transition_intensity[this_transition] = this_intensity
     return transition_intensity
 
-def filter_peak_group_peak_shape(n, pg):
+def filter_peak_group_peak_shape(n, pg, ref_pg):
     for rt in pg.keys():
         fragment = find_top_n_fragment(n, ref_pg)
         peak_intensity_apex = compute_transition_intensity(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
@@ -395,7 +395,7 @@ def find_best_match_pg_rule_e(pg, ref_pg):
 def find_best_match_pg_rule_f(pg, ref_pg):
 
     # filter out peak groups without top 1 fragment showing good peak shape
-    pg2 = filter_peak_group_peak_shape(1, pg)
+    pg2 = filter_peak_group_peak_shape(1, pg, ref_pg)
 
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)
@@ -411,7 +411,7 @@ def find_best_match_pg_rule_f(pg, ref_pg):
 def find_best_match_pg_rule_g(pg, ref_pg):
 
     # filter out peak groups without top 2 fragment showing good peak shape
-    pg2 = filter_peak_group_peak_shape(2, pg)
+    pg2 = filter_peak_group_peak_shape(2, pg, ref_pg)
 
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)
@@ -427,7 +427,7 @@ def find_best_match_pg_rule_g(pg, ref_pg):
 def find_best_match_pg_rule_h(pg, ref_pg):
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
-    pg2 = filter_peak_group_peak_shape(2, pg)
+    pg2 = filter_peak_group_peak_shape(2, pg, ref_pg)
 
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)
@@ -465,14 +465,39 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
                 pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
                     find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
                                                chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
-                pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
-                pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
+                pg[peak_rt]['ms2']['rt_left_list'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left_list
+                pg[peak_rt]['ms2']['rt_right_list'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right_list
+                pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
+                    find_peak_apex_boundary(pg[peak_rt]['ms2']['rt_left_list'][fragment], pg[peak_rt]['ms2']['rt_right_list'][fragment],
+                    chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
 
     if len(pg) == 0:
         print 'no peak group'
         pass
 
     return pg
+
+def find_peak_apex_boundary(rt_left_list, rt_right_list, rt_list, rt):
+
+    if len(rt_left_list) == 1:
+        return rt_left_list[0], rt_right_list[0]
+
+    else:
+        rt0 = rt_list[0]
+        rt_left = rt_left_list[0]
+        rt_right = rt_right_list[0]
+
+        rt_dif = abs(rt - rt0)
+
+        for rt_, left_, right_ in zip(rt_list, rt_left_list, rt_right_list):
+            rt_dif2 = abs(rt - rt_)
+            if rt_dif2 < rt_dif:
+                rt0 = rt
+                rt_left = left_
+                rt_right = right_
+                rt_dif = rt_dif2
+
+        return rt_left, rt_right
 
 def build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg):
 

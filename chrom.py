@@ -44,10 +44,10 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         # get the peak boundary for the reference sample
         fragments = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments
         i = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_i
-        rt_left = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left
-        rt_right = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right
+        rt_left_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left_list
+        rt_right_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right_list
 
-        ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left, rt_right)
+        ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
 
         ref_sample_data[tg].read_peak_boundary(ref_sample_rt_left, ref_sample_rt_right)
 
@@ -75,18 +75,18 @@ def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sam
 
     return display_data
 
-def get_peak_group_boundary(fragments, i, rt_left, rt_right):
+def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list):
 
     # sort by decreasing intensity
     i2 = sorted(i, reverse=1)
     fragments2 = [x for (y, x) in sorted(zip(i, fragments), reverse=1)]
-    rt_left2 = [y for (y, x) in sorted(zip(rt_left, fragments), reverse=1)]
-    rt_right2 = [y for (y, x) in sorted(zip(rt_right, fragments), reverse=1)]
+    rt_left_list2 = [y for (y, x) in sorted(zip(rt_left_list, fragments), reverse=1)]
+    rt_right_list2 = [y for (y, x) in sorted(zip(rt_right_list, fragments), reverse=1)]
 
     rt_left3 = -1
     rt_right3 = -1
     # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, decending the fragment untill find a reasonable boundary
-    for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left2, rt_right2):
+    for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left_list2, rt_right_list2):
         if rt_right0 - rt_left0 > parameters.MAX_PEAK_WIDTH:
             continue
         else:
@@ -95,8 +95,8 @@ def get_peak_group_boundary(fragments, i, rt_left, rt_right):
             break
     # if no peak boundary found, use the one from highest peak
     if rt_left3 < 0:
-        rt_left3 = rt_left2[0]
-        rt_right3 = rt_right2[0]
+        rt_left3 = rt_left_list2[0]
+        rt_right3 = rt_right_list2[0]
 
     return rt_left3, rt_right3
 
