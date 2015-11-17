@@ -11,6 +11,11 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
     all_r_code_samples = []
 
+    # a r function used for adding legend
+    add_legend_function = write_add_legend_function()
+
+    all_r_code_samples.append(add_legend_function)
+
     for tg in display_data.keys():
 
         num_transition = len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
@@ -86,14 +91,21 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
     r_code_close_file = []
 
     r_code_close_file.append(
-        '''mtext("Peptide precursor id = %s, number of transitions = %i, max MS1 intensity = %.1f, max MS2 intensity = %.1f\n", NORTH<-3, outer= TRUE, cex = %s)\n''' % (
+        '''mtext("Peptide precursor id = %s, \nnumber of transitions = %i, \nmax MS1 intensity = %.1f, \nmax MS2 intensity = %.1f\n", NORTH<-3, outer= TRUE, cex = %s)\n''' % (
             this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2, parameters.title_font_size))
 
     # add legend
     transition_list_quoted_csv_string = '"'
     for this_transition in transition_list[:-1]:
-        transition_list_quoted_csv_string += (this_transition + '", "')
-    transition_list_quoted_csv_string += (transition_list[-1] + '"')
+        # example: 7404_a4_1_SWATGSPDSSNR(UniMod:267)_2
+        ts = this_transition.split('_')
+        this_transition_short = ts[0] + '_' + ts[1]
+        transition_list_quoted_csv_string += (this_transition_short + '", "')
+
+    last_transition = transition_list[-1]
+    ts_last = last_transition.split('_')
+    last_transition_short = ts_last[0] + '_' + ts_last[1]
+    transition_list_quoted_csv_string += (last_transition_short + '"')
 
     color_code_csv_string = ''
     for n in range(len(transition_list)):
@@ -124,7 +136,11 @@ def create_png_file(tg_id, width, height, num_colors):
     code += '''png("%s.png", width = %i, height = %i)\n''' % \
             (tg_id.replace('(', '_').replace(')', '_').replace(':', "_"), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
 
-    code += '''par(mfrow=c(%s,%s), oma = c(5,5,15,5))\n''' % (parameters.figures_num_rows, parameters.figure_num_per_row)
+    code += '''par(mfrow=c(%s,%s), oma = c(%s,%s,%s,%s))\n''' % (parameters.figures_num_rows, parameters.figure_num_per_row,
+                                                              parameters.out_margin_area_south,
+                                                              parameters.out_margin_area_west,
+                                                              parameters.out_margin_area_north,
+                                                              parameters.out_margin_area_east)
     code += '''palette(rainbow(%d))\n''' % num_colors
 
     return code
