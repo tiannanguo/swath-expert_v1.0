@@ -102,6 +102,8 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
         this_transition_short = ts[0] + '_' + ts[1]
         transition_list_quoted_csv_string += (this_transition_short + '", "')
 
+    # print transition_list
+
     last_transition = transition_list[-1]
     ts_last = last_transition.split('_')
     last_transition_short = ts_last[0] + '_' + ts_last[1]

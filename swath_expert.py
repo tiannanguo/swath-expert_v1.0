@@ -52,12 +52,18 @@ def main():
     # compute peak area for display_pg
     display_data = chrom.compute_peak_area_for_all(display_data)
 
-    # write r code into a file
-    r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
+    for tg in display_data.keys():
+        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > parameters.MIN_FRAGMENTS:
+            # write r code into a file
+            print tg
+            print len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
+            print "r code writing..."
+            r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
 
-    # write quantitation table
-    d = swath_quant.quant(display_data, quant_file)
-
+            # write quantitation table
+            d = swath_quant.quant(display_data, quant_file)
+        else:
+            print 'not enough fragments for ' + tg
 
 start_time = time.time()
 main()
