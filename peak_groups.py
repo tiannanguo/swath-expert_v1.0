@@ -58,30 +58,36 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
         ref_pg = build_reference_peak_group(ref_sample_data, chrom_data, tg)
 
         for sample in sample_id:
+
             if sample != ref_sample_data[tg].sample_name:
                 # for each peak group, create a data structure containing all the information above
                 pg = build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates, sample)
+                # print pg
 
                 pg_best = find_best_match_pg(pg, ref_pg)
 
                 if pg_best == 0:
                     #TODO no peak found. cannot be!!!
+                    # use looser criteria to find peak groups and then select the best one
                     ##  debug debug debug......
+                    pass
 
-                # write into display_pg
-                display_data[tg][sample]['rt_left'] = pg_best['rt_left']
-                display_data[tg][sample]['rt_right'] = pg_best['rt_right']
+                else:
 
-                for fragment in pg_best['ms2']['rt_list'].keys():
-                    display_data[tg][sample]['ms2']['rt_list'][fragment] = pg_best['ms2']['rt_list'][fragment]
-                    display_data[tg][sample]['ms2']['i_list'][fragment] = pg_best['ms2']['i_list'][fragment]
-                    display_data[tg][sample]['ms2']['peak_apex_i'][fragment] = pg_best['ms2']['peak_apex_i'][fragment]
-                    display_data[tg][sample]['ms2']['if_found_peak'][fragment] = pg_best['ms2']['if_found_peak'][fragment]
+                    # write into display_pg
+                    display_data[tg][sample]['rt_left'] = pg_best['rt_left']
+                    display_data[tg][sample]['rt_right'] = pg_best['rt_right']
 
-                display_data[tg][sample]['ms1']['rt_list'] = pg_best['ms1']['rt_list']
-                display_data[tg][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
-                display_data[tg][sample]['ms1']['peak_apex_i'] = pg_best['ms1']['peak_apex_i']
-                display_data[tg][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
+                    for fragment in pg_best['ms2']['rt_list'].keys():
+                        display_data[tg][sample]['ms2']['rt_list'][fragment] = pg_best['ms2']['rt_list'][fragment]
+                        display_data[tg][sample]['ms2']['i_list'][fragment] = pg_best['ms2']['i_list'][fragment]
+                        display_data[tg][sample]['ms2']['peak_apex_i'][fragment] = pg_best['ms2']['peak_apex_i'][fragment]
+                        display_data[tg][sample]['ms2']['if_found_peak'][fragment] = pg_best['ms2']['if_found_peak'][fragment]
+
+                    display_data[tg][sample]['ms1']['rt_list'] = pg_best['ms1']['rt_list']
+                    display_data[tg][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
+                    display_data[tg][sample]['ms1']['peak_apex_i'] = pg_best['ms1']['peak_apex_i']
+                    display_data[tg][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
 
     return display_data
 
@@ -257,9 +263,11 @@ def find_best_match_pg(pg, ref_pg):
 
     if len(pg) == 0:
         return 0
+
     elif len(pg) == 1:
         pg_best = only_one_pg(pg, ref_pg)
         return pg_best
+
     else:
         pg_best = find_best_match_pg_rule_a(pg, ref_pg)
         return pg_best
@@ -413,12 +421,14 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
 
         for fragment in ref_pg['ms2']['rt_list'].keys():
             if fragment != tg:
-                pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment]['rt_list']
-                pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment]['i_list']
-                pg[peak_rt]['ms2']['peak_apex_rt'][fragment] = chrom_data[tg][sample][fragment]['peak_apex_rt']
-                pg[peak_rt]['ms2']['peak_apex_i'][fragment] = chrom_data[tg][sample][fragment]['peak_apex_i']
-                pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_rt_left
-                pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_rt_right
+                pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment].rt_list
+                pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
+                pg[peak_rt]['ms2']['peak_apex_rt'][fragment] = chrom_data[tg][sample][fragment].peak_apex_rt
+                pg[peak_rt]['ms2']['peak_apex_i'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i
+                pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
+                pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
+            else:
+                print 'ok'
 
     return pg
 
@@ -480,6 +490,20 @@ def find_peak_group_candidates(chrom_data, sample_id):
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
                     if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
+
+                if len(peak_group_candidates[tg][sample].keys()) == 0:
+                    # if no good peak group is found, then use whatever peak group
+                    for rt in all_rt:
+
+                        #compute the peak boundary for each fragment, not the consensus peak boundary
+                        this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                        peak_group_candidates[tg][sample][rt] = this_peak_group
+
+                    if len(peak_group_candidates[tg][sample].keys()) == 0:
+                    # if still no peak group is found. Most likely in case of empty chrom. Use all rt as peak group
+                        for rt in all_rt:
+                            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                            peak_group_candidates[tg][sample][rt] = this_peak_group
 
     return peak_group_candidates
 

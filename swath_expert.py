@@ -15,7 +15,7 @@ import chrom
 import parameters
 
 # name of files
-chrom_file = 'com_chrom_10.txt.gz'    #sys.argv[1]
+chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')

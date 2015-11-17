@@ -2,6 +2,7 @@ from collections import defaultdict
 import peaks
 import peak_groups
 import chrom
+import numpy as np
 
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
@@ -21,8 +22,25 @@ class Chromatogram(object):
 
         max_peaks, __ = peaks.peakdetect(i_list, rt_list, 9.0, 0.3)
 
-        self.peak_apex_rt = [rt for (rt, i) in max_peaks]
-        self.peak_apex_i = [i for (rt, i) in max_peaks]
+        if len(max_peaks) > 0:
+
+            self.peak_apex_rt = [rt for (rt, i) in max_peaks]
+            self.peak_apex_i = [i for (rt, i) in max_peaks]
+
+        else:
+            # if no peak found. Most likely there is no signal. Use looser criteria to detect peaks
+
+            max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
+
+            if len(max_peaks) > 0:
+                self.peak_apex_rt = [rt for (rt, i) in max_peaks]
+                self.peak_apex_i = [i for (rt, i) in max_peaks]
+
+            else:
+                # if still no peak found, most likely it is an empty chrom.
+                # use the point in the median value as peak
+                self.peak_apex_rt = [np.median(np.array(rt_list))]
+                self.peak_apex_i = [np.median(np.array(i_list))]
 
         # peak_rt_left, peak_rt_right = peaks.get_all_peak_boundary(rt_list, i_list, max_peaks)
 
@@ -31,8 +49,8 @@ class Chromatogram(object):
 
 
 
-    def size(self):
-        return len(self.rt_list)
+    # def size(self):
+    #     return len(self.rt_list)
 
 
 class Reference_sample(object):
