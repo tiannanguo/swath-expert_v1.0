@@ -145,6 +145,7 @@ def get_peak_group_values(pg, rt, ref_pg):
     return pg_best
 
 def find_top_n_fragment(option, ref_pg):
+
     # sort fragment based on i, and then select the top n fragment
     fragment_sorted = []
 
@@ -179,7 +180,7 @@ def filter_peak_group_ms1(pg):
 
     for rt in pg2.keys():
         if_peak_found = 0
-        for rt0 in pg2[rt]['ms1']['peaks_apex_rt_list']:
+        for rt0 in pg2[rt]['ms1']['peak_apex_rt_list']:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
@@ -203,7 +204,7 @@ def compute_transition_intensity(rt0, rt_list, i_list):
 
 def filter_peak_group_peak_shape(n, pg):
     for rt in pg.keys():
-        fragment = find_top_n_fragment(n, rt, pg)
+        fragment = find_top_n_fragment(n, ref_pg)
         peak_intensity_apex = compute_transition_intensity(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
         peak_intensity_left = compute_transition_intensity(pg[rt]['ms2']['rt_left'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
         peak_intensity_right = compute_transition_intensity(pg[rt]['ms2']['rt_right'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
@@ -249,15 +250,24 @@ def get_intensity_for_closest_rt(peaks_i, peaks_rt, rt):
     return i
 
 def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg):
-    for rt in pg.keys():
-        fragment = find_top_n_fragment(n, rt, pg)
+
+    pg2 = pg
+
+    for rt in pg2.keys():
+
+        fragment = find_top_n_fragment(n, ref_pg)
+
         ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
-        peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
+
+        peak_width = float(pg2[rt]['ms2']['rt_right'][fragment] - pg2[rt]['ms2']['rt_left'][fragment])
+
         if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
             pass  # good peak boundary
+
         else:
-            del pg[rt]
-    return pg
+            del pg2[rt]
+
+    return pg2
 
 def find_top_fragment_with_peak(pg):
 
