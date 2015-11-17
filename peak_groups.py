@@ -428,15 +428,15 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
     for peak_rt in peak_group_candidates[tg][sample].keys():
         pg[peak_rt]['ms1']['rt_list'] = chrom_data[tg][sample][tg].rt_list
         pg[peak_rt]['ms1']['i_list'] = chrom_data[tg][sample][tg].i_list
-        pg[peak_rt]['ms1']['peak_apex_rt'] = chrom_data[tg][sample][tg].peak_apex_rt
-        pg[peak_rt]['ms1']['peak_apex_i'] = chrom_data[tg][sample][tg].peak_apex_i
+        pg[peak_rt]['ms1']['peak_apex_i'] = \
+            find_peak_apex_i_from_list(chrom_data[tg][sample][tg].peak_apex_i, chrom_data[tg][sample][tg].peak_apex_rt, peak_rt)
 
         for fragment in ref_pg['ms2']['rt_list'].keys():
             if fragment != tg:
                 pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment].rt_list
                 pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
-                pg[peak_rt]['ms2']['peak_apex_rt'][fragment] = chrom_data[tg][sample][fragment].peak_apex_rt
-                pg[peak_rt]['ms2']['peak_apex_i'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i
+                pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
+                    find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i, chrom_data[tg][sample][fragment].peak_apex_rt, peak_rt)
                 pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
                 pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
 
@@ -457,7 +457,8 @@ def build_reference_peak_group(ref_sample_data, chrom_data, tg):
 
     ref_pg['ms1']['rt_list'] = chrom_data[tg][ref_sample][tg].rt_list
     ref_pg['ms1']['i_list'] = chrom_data[tg][ref_sample][tg].i_list
-    ref_pg['ms1']['peak_apex_i'] = chrom_data[tg][ref_sample][tg].peak_apex_i
+    ref_pg['ms1']['peak_apex_i'] = \
+        find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i, chrom_data[tg][ref_sample][tg].peak_apex_rt, ref_pg['peak_rt'])
 
     for fragment in chrom_data[tg][ref_sample].keys():
         if fragment != tg:
