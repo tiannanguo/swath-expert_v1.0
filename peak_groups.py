@@ -141,7 +141,7 @@ def find_top_n_fragment(option, rt, pg):
     # sort fragment based on i, and then select the top n fragment
     fragment_sorted = []
 
-    for fragment, i in sorted(zip(pg[rt]['ms2']['i'].values(), pg[rt]['ms2']['i'].values()), reverse = True):
+    for fragment, i in sorted(zip(pg[rt]['ms2']['peak_apex_i'].keys(), pg[rt]['ms2']['peak_apex_i'].values()), reverse = True):
         fragment_sorted.append(fragment)
 
     return fragment_sorted[int(option) - 1]
@@ -427,8 +427,6 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
                 pg[peak_rt]['ms2']['peak_apex_i'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i
                 pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
                 pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
-            else:
-                print 'ok'
 
     return pg
 
