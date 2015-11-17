@@ -54,9 +54,12 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
     i = []
 
     for sample in display_data[tg].keys():
-        i0 = max(display_data[tg][sample]['ms2']['peak_apex_i'].values())
 
-        i.append(i0)
+        all_i = display_data[tg][sample]['ms2']['peak_apex_i'].values()
+
+        if len(all_i) > 0:
+            i0 = max(all_i)
+            i.append(i0)
 
     return max(i)
 
