@@ -12,6 +12,8 @@ PEAK_SHAPE_FOLD_VARIATION = 3.0
 #MIN_TRANSITION_NUMBER = 5  # after optimization, I find set min 5 transitions is good
 
 PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
-PNG_FILE_WIDTH = 600
-PNG_FILE_HEIGHT = 1000
-
+PNG_FILE_WIDTH = 10000
+PNG_FILE_HEIGHT = 6000
+figure_num_per_row = 10
+figures_num_rows = 3
+title_font_size = 2

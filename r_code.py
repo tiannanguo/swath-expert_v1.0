@@ -24,9 +24,9 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
             r_code_samples_par = write_sample_par(sample)
 
-            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg)
+            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1)
 
-            r_code_sample_ms2, transition_color_code_mapping = write_sample_ms2(display_data, sample, tg)
+            r_code_sample_ms2, transition_color_code_mapping = write_sample_ms2(display_data, sample, tg, max_intensity_ms2)
 
             r_code_this_sample = r_code_samples_par + r_code_sample_ms1 + r_code_sample_ms2
 
@@ -61,7 +61,12 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
             i0 = max(all_i)
             i.append(i0)
 
-    return max(i)
+    max_i = float(max(i))
+
+    if max_i == 0:
+        max_i = 0.1
+
+    return max_i
 
 def get_max_ms1_intensity_in_all_samples(display_data, tg):
 
@@ -69,15 +74,20 @@ def get_max_ms1_intensity_in_all_samples(display_data, tg):
     for sample in display_data[tg].keys():
         i.append(display_data[tg][sample]['ms1']['peak_apex_i'])
 
-    return max(i)
+    max_i = float(max(i))
+
+    if max_i == 0:
+        max_i = 0.1
+
+    return max_i
 
 def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2, transition_list):
 
     r_code_close_file = []
 
     r_code_close_file.append(
-        '''mtext("Peptide precursor id = %s, number of transitions = %i, max MS1 intensity = %.1f, max MS2 intensity = %.1f\n", NORTH<-3, outer= TRUE, cex = 4)\n''' % (
-            this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2))
+        '''mtext("Peptide precursor id = %s, number of transitions = %i, max MS1 intensity = %.1f, max MS2 intensity = %.1f\n", NORTH<-3, outer= TRUE, cex = %s)\n''' % (
+            this_tg, num_transitions, max_intensity_ms1, max_intensity_ms2, parameters.title_font_size))
 
     # add legend
     transition_list_quoted_csv_string = '"'
@@ -94,7 +104,7 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
                              % (transition_list_quoted_csv_string, color_code_csv_string))
     r_code_close_file.append("dev.off()\n")
 
-    return r_code_close_file
+    return ''.join(r_code_close_file)
 
 def write_add_legend_function():
     #a function to write legend
@@ -114,7 +124,7 @@ def create_png_file(tg_id, width, height, num_colors):
     code += '''png("%s.png", width = %i, height = %i)\n''' % \
             (tg_id.replace('(', '_').replace(')', '_').replace(':', "_"), width, height)  # change 55_AAAGEFADDPC(UniMod:4)SSVK_2  to 55_AAAGEFADDPC_UniMod_4_SSVK_2
 
-    code += '''par(mfrow=c(2,60), oma = c(5,5,15,5))\n'''
+    code += '''par(mfrow=c(%s,%s), oma = c(5,5,15,5))\n''' % (parameters.figures_num_rows, parameters.figure_num_per_row)
     code += '''palette(rainbow(%d))\n''' % num_colors
 
     return code
@@ -125,12 +135,18 @@ def write_sample_par(sample):
     code += '''par(mar=c(5,1,5,1))\n'''
     return code
 
-def write_sample_ms1(display_data, sample, tg):
+def write_sample_ms1(display_data, sample, tg, max_intensity_ms1):
 
     r_code = '''#MS1 chrom\n'''
     r_code += '''#MS1 id is %s\n''' % tg
-    r_code += '''rt = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms1']['rt_list']))
-    r_code += '''int = c(%s)\n''' % ','.join(map(str, [x * (-1) for x in display_data[tg][sample]['ms1']['i_list']]))
+
+    rt_list = ','.join(map(str, display_data[tg][sample]['ms1']['rt_list']))
+
+    r_code += '''rt = c(%s)\n''' % rt_list
+
+    i_list = ','.join(map(str, [round(x * (-100) / max_intensity_ms1, 1) for x in display_data[tg][sample]['ms1']['i_list']]))
+
+    r_code += '''int = c(%s)\n''' % i_list
 
     r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-100, 100), ''' \
                          '''lwd = %.1f, xlab = "rt (s)", ylab = "intensity (''' % (
@@ -147,7 +163,7 @@ def write_sample_ms1(display_data, sample, tg):
     return r_code
 
 
-def write_sample_ms2(display_data, sample, tg):
+def write_sample_ms2(display_data, sample, tg, max_intensity_ms2):
 
     r_code = ''
 
@@ -157,8 +173,11 @@ def write_sample_ms2(display_data, sample, tg):
     for fragment in display_data[tg][sample]['ms2']['rt_list'].keys():
         r_code += '''#MS2 chrom\n'''
         r_code += '''#MS2 id is %s\n''' % fragment
-        r_code += '''rt = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms2']['rt_list'][fragment]))
-        r_code += '''int = c(%s)\n''' % ','.join(map(str, display_data[tg][sample]['ms2']['i_list'][fragment]))
+
+        rt_list = ','.join(map(str, display_data[tg][sample]['ms2']['rt_list'][fragment]))
+        r_code += '''rt = c(%s)\n''' % rt_list
+        i_list = ','.join(map(str, [round(float(x) * 100.0 / max_intensity_ms2, 2) for x in display_data[tg][sample]['ms2']['i_list'][fragment]]))
+        r_code += '''int = c(%s)\n''' % i_list
         r_code += '''lines(rt, int, type = "l", col = %d, lwd = %.1f)\n''' % (
             transition_color_code, parameters.PLOT_LINE_WIDTH)
         r_code += '''rm (rt, int)\n'''
