@@ -15,8 +15,11 @@ import chrom
 import parameters
 
 # name of files
-chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
-id_mapping_file = 'goldenSets90_test.txt'
+# chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
+# chrom_file = 'com_chrom_10.txt.gz'    #sys.argv[1]
+chrom_file = sys.argv[1]
+id_mapping_file = 'goldenSets90.txt'
+# id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
 quant_file = chrom_file.replace('.txt.gz', '.quant.txt')
@@ -55,9 +58,6 @@ def main():
     for tg in display_data.keys():
         if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > parameters.MIN_FRAGMENTS:
             # write r code into a file
-            print tg
-            print len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
-            print "r code writing..."
             r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file)
 
             # write quantitation table
