@@ -13,7 +13,7 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
     for tg in display_data.keys():
 
-        num_transition = len(display_data[tg]['fragments'].keys())
+        num_transition = len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
         max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(display_data, tg)
         max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(display_data, tg)
 
@@ -52,8 +52,10 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 def get_max_ms2_intensity_in_all_samples(display_data, tg):
 
     i = []
+
     for sample in display_data[tg].keys():
-        i0 = max (display_data[tg][sample]['peak_apex_i'].values())
+        i0 = max(display_data[tg][sample]['ms2']['peak_apex_i'].values())
+
         i.append(i0)
 
     return max(i)

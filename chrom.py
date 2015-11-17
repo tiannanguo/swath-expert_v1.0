@@ -39,7 +39,6 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
     for tg in chrom_data.keys():
 
         reference_sample = ref_sample_data[tg].sample_name
-        peak_rt = ref_sample_data[tg].peak_rt
         peak_rt_found = ref_sample_data[tg].peak_rt_found
 
         # get the peak boundary for the reference sample
@@ -67,7 +66,11 @@ def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sam
     for fragment in chrom_data[tg][reference_sample].keys():
         rt_list = chrom_data[tg][reference_sample][fragment].rt_list
         i_list = chrom_data[tg][reference_sample][fragment].i_list
-        display_data[tg][reference_sample]['rt_list'][fragment], display_data[tg][reference_sample]['i_list'][fragment] = \
+        if fragment == tg:
+            display_data[tg][reference_sample]['ms1']['rt_list'][fragment], display_data[tg][reference_sample]['ms1']['i_list'][fragment] = \
+            get_chrom_range(display_data[tg][reference_sample]['rt_left'], display_data[tg][reference_sample]['rt_right'], rt_list, i_list)
+        else:
+            display_data[tg][reference_sample]['ms2']['rt_list'][fragment], display_data[tg][reference_sample]['ms2']['i_list'][fragment] = \
             get_chrom_range(display_data[tg][reference_sample]['rt_left'], display_data[tg][reference_sample]['rt_right'], rt_list, i_list)
 
     return display_data
