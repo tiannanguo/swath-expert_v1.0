@@ -487,7 +487,11 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
 
 def find_peak_apex_boundary(rt_left_list, rt_right_list, rt_list, rt):
 
-    if len(rt_left_list) == 1:
+    if len(rt_left_list) == 0:
+        # if no left and right, (no peak found even at loose condition), use the rt from reference sample
+        return rt, rt
+
+    elif len(rt_left_list) == 1:
         return rt_left_list[0], rt_right_list[0]
 
     else:
