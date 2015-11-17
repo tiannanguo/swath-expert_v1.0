@@ -145,7 +145,7 @@ def find_top_n_fragment(option, ref_pg):
 
     return fragment_sorted[int(option) - 1]
 
-def filter_peak_group_top_fragment(n, pg, ref_pg):
+def filter_peak_group_top_fragment(n, pg, ref_pg, chrom_data, tg, sample):
 
     pg2 = pg
 
@@ -155,7 +155,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg):
 
         if_peak_found = 0
 
-        for rt0 in pg[rt]['ms2']['peaks_rt'][fragment]:
+        for rt0 in chrom_data[tg][sample][fragment].peak_apex_rt:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
                 if_peak_found = 1
                 break
@@ -198,7 +198,7 @@ def filter_peak_group_peak_shape(n, pg):
         fold_change_left = float(peak_intensity_apex) / float(peak_intensity_left)
         fold_change_right = float(peak_intensity_apex) / float(peak_intensity_right)
 
-        if  fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
+        if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
             pass  # good peak boundary
         else:
             del pg[rt]
@@ -308,7 +308,7 @@ def find_best_match_pg_rule_a(pg, ref_pg):
 def find_best_match_pg_rule_b(pg, ref_pg):
 
     # filter out peak groups without top 2 fragment as a peak
-    pg2 = filter_peak_group_top_fragment(2, pg)
+    pg2 = filter_peak_group_top_fragment(2, pg, ref_pg)
 
     if len(pg2) == 1:
         pg_best = only_one_pg(pg2, ref_pg)
@@ -428,15 +428,21 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
     for peak_rt in peak_group_candidates[tg][sample].keys():
         pg[peak_rt]['ms1']['rt_list'] = chrom_data[tg][sample][tg].rt_list
         pg[peak_rt]['ms1']['i_list'] = chrom_data[tg][sample][tg].i_list
+        pg[peak_rt]['ms1']['peak_apex_i_list'] = chrom_data[tg][sample][tg].peak_apex_i_list
+        pg[peak_rt]['ms1']['peak_apex_rt_list'] = chrom_data[tg][sample][tg].peak_apex_rt_list
         pg[peak_rt]['ms1']['peak_apex_i'] = \
-            find_peak_apex_i_from_list(chrom_data[tg][sample][tg].peak_apex_i, chrom_data[tg][sample][tg].peak_apex_rt, peak_rt)
+            find_peak_apex_i_from_list(chrom_data[tg][sample][tg].peak_apex_i_list,
+                                       chrom_data[tg][sample][tg].peak_apex_rt_list, peak_rt)
 
         for fragment in ref_pg['ms2']['rt_list'].keys():
             if fragment != tg:
                 pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment].rt_list
                 pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
+                pg[peak_rt]['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i_list
+                pg[peak_rt]['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_rt_list
                 pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
-                    find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i, chrom_data[tg][sample][fragment].peak_apex_rt, peak_rt)
+                    find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
+                                               chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
                 pg[peak_rt]['ms2']['rt_left'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
                 pg[peak_rt]['ms2']['rt_right'][fragment] = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
 
@@ -457,16 +463,21 @@ def build_reference_peak_group(ref_sample_data, chrom_data, tg):
 
     ref_pg['ms1']['rt_list'] = chrom_data[tg][ref_sample][tg].rt_list
     ref_pg['ms1']['i_list'] = chrom_data[tg][ref_sample][tg].i_list
+    ref_pg['ms1']['peak_apex_i_list'] = chrom_data[tg][ref_sample][tg].peak_apex_i_list
+    ref_pg['ms1']['peak_apex_rt_list'] = chrom_data[tg][ref_sample][tg].peak_apex_rt_list
     ref_pg['ms1']['peak_apex_i'] = \
-        find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i, chrom_data[tg][ref_sample][tg].peak_apex_rt, ref_pg['peak_rt'])
+        find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i_list,
+                                   chrom_data[tg][ref_sample][tg].peak_apex_rt_list, ref_pg['peak_rt'])
 
     for fragment in chrom_data[tg][ref_sample].keys():
         if fragment != tg:
             ref_pg['ms2']['rt_list'][fragment] = chrom_data[tg][ref_sample][fragment].rt_list
             ref_pg['ms2']['i_list'][fragment] = chrom_data[tg][ref_sample][fragment].i_list
+            ref_pg['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_i_list
+            ref_pg['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_rt_list
             ref_pg['ms2']['peak_apex_i'][fragment] = \
-                find_peak_apex_i_from_list(chrom_data[tg][ref_sample][fragment].peak_apex_i,
-                                           chrom_data[tg][ref_sample][fragment].peak_apex_rt, ref_pg['peak_rt'])
+                find_peak_apex_i_from_list(chrom_data[tg][ref_sample][fragment].peak_apex_i_list,
+                                           chrom_data[tg][ref_sample][fragment].peak_apex_rt_list, ref_pg['peak_rt'])
 
     return ref_pg
 
