@@ -189,27 +189,42 @@ def filter_peak_group_ms1(pg):
 
     return pg2
 
-def compute_transition_intensity(rt0, rt_list, i_list):
+def compute_peak_boundary_intensity(rt0, rt_list, i_list):
+
     #based on a rt value, find the best match rt value, then find out the chrom peak intensity
-    transition_intensity = {}
-    for this_transition in rt_list.keys():
-        rt_distance = 9999
-        this_intensity = 0.0
-        for rt, i in zip (rt_list[this_transition], i_list[this_transition]):
-            if abs(rt - rt0) < rt_distance:
-                rt_distance = abs(rt - rt0)
-                this_intensity = i
-        transition_intensity[this_transition] = this_intensity
-    return transition_intensity
+
+    i = i_list[0]
+    rt = rt_list[0]
+    rt_dif = abs(rt - rt0)
+
+    for rt_, i_ in zip(rt_list, i_list):
+        rt_dif_ = abs(rt_ - rt0)
+
+        if rt_dif_ < rt_dif:
+            i = i_
+            rt = rt_
+            rt_dif = rt_dif_
+
+    return i
 
 def filter_peak_group_peak_shape(n, pg, ref_pg):
-    for rt in pg.keys():
+
+    pg2 = pg
+
+    for rt in pg2.keys():
+
         fragment = find_top_n_fragment(n, ref_pg)
-        peak_intensity_apex = compute_transition_intensity(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
-        peak_intensity_left = compute_transition_intensity(pg[rt]['ms2']['rt_left'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
-        peak_intensity_right = compute_transition_intensity(pg[rt]['ms2']['rt_right'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['rt_list'][fragment])
-        fold_change_left = float(peak_intensity_apex) / float(peak_intensity_left)
-        fold_change_right = float(peak_intensity_apex) / float(peak_intensity_right)
+
+        peak_intensity_apex = pg2[rt]['ms2']['peak_apex_i'][fragment]
+
+        peak_intensity_left = compute_peak_boundary_intensity(
+            pg2[rt]['ms2']['rt_left'][fragment], pg2[rt]['ms2']['rt_list'][fragment], pg2[rt]['ms2']['i_list'][fragment])
+        peak_intensity_right = compute_peak_boundary_intensity(
+            pg2[rt]['ms2']['rt_right'][fragment], pg2[rt]['ms2']['rt_list'][fragment], pg2[rt]['ms2']['i_list'][fragment])
+
+
+        fold_change_left = float(peak_intensity_apex) / (float(peak_intensity_left) + 1)
+        fold_change_right = float(peak_intensity_apex) / (float(peak_intensity_right) + 1)
 
         if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
             pass  # good peak boundary
