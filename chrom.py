@@ -46,8 +46,8 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         # get the peak boundary for the reference sample
         fragments = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments
         i = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_i
-        rt_left_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left_list
-        rt_right_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right_list
+        rt_left_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left
+        rt_right_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right
 
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
 

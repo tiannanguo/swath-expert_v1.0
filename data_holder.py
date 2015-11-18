@@ -79,7 +79,7 @@ class Peak_group(object):
     def __init__(self, chrom_data, tg, sample, rt, fold_change):
         self.rt = rt
         self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i,\
-            self.matched_fragments_peak_rt_left_list, self.matched_fragments_peak_rt_right_list = \
+            self.matched_fragments_peak_rt_left, self.matched_fragments_peak_rt_right = \
                 peak_groups.find_matched_fragments(chrom_data, tg, sample, rt, fold_change)
 
         self.num_matched_fragments = len(self.matched_fragments)
