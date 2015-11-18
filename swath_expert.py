@@ -17,13 +17,19 @@ import parameters
 # name of files
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_2.txt.gz'    #sys.argv[1]
-chrom_file = sys.argv[1]
+# chrom_file = sys.argv[1]
+chrom_file = 'debug_png_id_528.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
 quant_file = chrom_file.replace('.txt.gz', '.quant.txt')
 
+
+def write_tmp_bat_file(out_R_file):
+    with open('tmp_run.bat','w') as o:
+        cmd = '''C:\\R\\R-2.15.1\\bin\\x64\\Rcmd.exe BATCH %s\n''' % out_R_file
+        o.write(cmd)
 
 def main():
 
@@ -67,4 +73,5 @@ def main():
 
 start_time = time.time()
 main()
+write_tmp_bat_file(out_R_file)  #########3tmp
 print "--- %s seconds ---" % (time.time() - start_time)
