@@ -667,9 +667,13 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
                 rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
                 rt_found = rt
 
-    if abs(best_rt_check - best_rt) < parameters.MAX_RT_TOLERANCE:
+    # sometimes there is NO peak group in the openswath reported location!
+    if rt_found == -1.0:
+        return good_fragments_check, rt_dif_check, best_rt_check
 
-        return good_fragments, rt_dif, rt_found
+    elif abs(best_rt_check - best_rt) < parameters.MAX_RT_TOLERANCE:
+        # what we find here is comparable to openswath report
+        return good_fragments_check, rt_dif_check, best_rt_check
 
     # empirical rule
     else:
@@ -680,10 +684,14 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
         if if_ms1 == 0 and if_ms1_check == 1:
             if_unique_ms1 = 1
 
+        # what we find here is better to openswath report
         if (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_NO_MS1) \
             or (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_UNIQUE_MS1 and if_unique_ms1 == 1):
 
             return good_fragments_check, rt_dif_check, best_rt_check
+
+        else:
+            return good_fragments, rt_dif, best_rt
 
 
 def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):

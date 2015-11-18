@@ -2,8 +2,8 @@ __author__ = 'Tiannan Guo, ETH Zurich 2015'
 import gzip
 import csv
 
-file_num = 19
-png_id = 3
+file_num = 17
+png_id = 291
 
 in_file = 'com_chrom_%s.txt.gz' % file_num
 out_file = 'debug_png_id_%s.txt.gz' % png_id
