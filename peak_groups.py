@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold38':
+            if sample == 'gold48':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -264,11 +264,11 @@ def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
     pg_filtered_rt2 = []
 
-    for rt in pg.keys():
+    fragment = find_top_n_fragment(n, ref_pg)
 
-        fragment = find_top_n_fragment(n, ref_pg)
+    ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
 
-        ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
+    for rt in pg_filtered_rt:
 
         peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
 
@@ -369,7 +369,7 @@ def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt):
     return pg_best
 
 
-def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 1 fragment showing good peak boundary
     pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg, pg_filtered_rt)
@@ -385,7 +385,7 @@ def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt):
 
     return pg_best
 
-def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 2 fragment showing good peak boundary
     pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg, pg_filtered_rt)
@@ -401,7 +401,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
 
     return pg_best
 
-def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 1 fragment showing good peak shape
     pg_filtered_rt2 = filter_peak_group_peak_shape(1, pg, ref_pg, pg_filtered_rt)
@@ -417,7 +417,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
 
     return pg_best
 
-def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
 
     # filter out peak groups without top 2 fragment showing good peak shape
     pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
