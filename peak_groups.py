@@ -216,7 +216,7 @@ def filter_peak_group_peak_shape(n, pg, ref_pg, pg_filtered_rt):
         if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION and rt in pg_filtered_rt:
             pg_filtered_rt2.append(rt) # good peak boundary
 
-    return pg
+    return pg_filtered_rt2
 
 def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt):
 
