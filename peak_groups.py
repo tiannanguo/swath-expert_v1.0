@@ -60,9 +60,6 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold11':
-                pass
-
             if sample != ref_sample_data[tg].sample_name:
                 # for each peak group, create a data structure containing all the information above
                 pg = build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates, sample)
@@ -78,7 +75,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                     #TODO no peak found. cannot be!!!
                     # use looser criteria to find peak groups and then select the best one
                     ##  debug debug debug......
-                    print 'no best peak group'
+                    print 'WARNING:no best peak group!!'
 
                 else:
 
@@ -616,15 +613,49 @@ def find_peak_group_candidates(chrom_data, sample_id):
     return peak_group_candidates
 
 
-def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
+def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg):
 
-    # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
+    # find out the peak group with highest number of good fragments
+
     sample = ref_sample_data[tg].sample_name
     best_rt = ref_sample_data[tg].peak_rt
     num_good_fragments = 0
     good_fragments = []
+    if_ms1 = 0
     rt_dif = parameters.MAX_RT_TOLERANCE
     rt_found = -1.0
+
+    for rt in peak_group_candidates[tg][sample].keys():
+        num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
+        if num_fragments > num_good_fragments:
+            good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
+            num_good_fragments = num_fragments
+            rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
+            rt_found = rt
+            if_ms1 = peak_group_candidates[tg][sample][rt].if_ms1_peak
+
+
+    return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+
+
+def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
+
+    # 2015.11.18. sometimes OpenSWATH picked the wrong peak group even for the reference sample.
+    # here implement a check of correct peak group
+
+    best_rt_check, num_good_fragments_check, if_ms1_check, good_fragments_check, rt_dif_check = \
+        check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg)
+
+    # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
+
+    sample = ref_sample_data[tg].sample_name
+    best_rt = ref_sample_data[tg].peak_rt
+    num_good_fragments = 0
+    good_fragments = []
+    if_ms1 = 0
+    rt_dif = parameters.MAX_RT_TOLERANCE
+    rt_found = -1.0
+
     for rt in peak_group_candidates[tg][sample].keys():
         if abs(rt - best_rt) < rt_dif:
             num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
@@ -634,7 +665,23 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
                 rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
                 rt_found = rt
 
-    return good_fragments, rt_dif, rt_found
+    if abs(best_rt_check - best_rt) < parameters.MAX_RT_TOLERANCE:
+
+        return good_fragments, rt_dif, rt_found
+
+    # empirical rule
+    else:
+
+        num_fragments_dif = num_good_fragments_check - num_good_fragments
+
+        if_unique_ms1 = 0
+        if if_ms1 == 0 and if_ms1_check == 1:
+            if_unique_ms1 = 1
+
+        if (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_NO_MS1) \
+            or (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_UNIQUE_MS1 and if_unique_ms1 == 1):
+
+            return good_fragments_check, rt_dif_check, best_rt_check
 
 
 def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):

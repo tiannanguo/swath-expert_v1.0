@@ -5,6 +5,13 @@ PEAK_TOLERANCE = 6  # seconds, use to find if the peak is found
 title = ['transition_name','transition_group_id', 'best_rt', 'best_sample', 'best_score',
          'protein', 'irt', 'precursor_mz', 'transition_mz', 'transition_i']
 MIN_FRAGMENTS = 4
+# sometimes openswath reports wrong peak group for the reference sample.
+# # If finds another peak group better than this, this value sets the number higher than reference
+# if there is no MS1, higher than 5
+# if there is a unique MS1, higher than 2
+MIN_FRAGMENTS_HIGHER_THAN_INPUT_NO_MS1 = 4
+MIN_FRAGMENTS_HIGHER_THAN_INPUT_UNIQUE_MS1 = 1
+
 MAX_RT_TOLERANCE = 10
 MAX_PEAK_WIDTH = 100
 PEAK_WIDTH_FOLD_VARIATION = 2.0
