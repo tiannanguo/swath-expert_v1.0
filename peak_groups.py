@@ -25,7 +25,9 @@ def check_if_ms1_peak(chrom_data, tg, sample, rt):
     return if_ms1_peak
 
 
-def find_matched_fragments(chrom_data, tg, sample, rt):
+def find_matched_fragments(chrom_data, tg, sample, rt, fold_change):
+
+    # fold_change = 0.1 by default
 
     matched_fragments = []
     matched_fragments_rt_list = []
@@ -45,7 +47,7 @@ def find_matched_fragments(chrom_data, tg, sample, rt):
                         matched_fragments_i_list.append(i)
                         rt_list = chrom_data[tg][sample][fragment].rt_list
                         i_list = chrom_data[tg][sample][fragment].i_list
-                        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt0)
+                        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt0, fold_change)
                         matched_fragments_peak_rt_left_list.append(rt_left)
                         matched_fragments_peak_rt_right_list.append(rt_right)
 
@@ -592,7 +594,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
                 for rt in all_rt:
 
                     #compute the peak boundary for each fragment, not the consensus peak boundary
-                    this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                    this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
                     if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 
@@ -601,13 +603,13 @@ def find_peak_group_candidates(chrom_data, sample_id):
                     for rt in all_rt:
 
                         #compute the peak boundary for each fragment, not the consensus peak boundary
-                        this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                        this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 
                     if len(peak_group_candidates[tg][sample].keys()) == 0:
                     # if still no peak group is found. Most likely in case of empty chrom. Use all rt as peak group
                         for rt in all_rt:
-                            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
                             peak_group_candidates[tg][sample][rt] = this_peak_group
 
     return peak_group_candidates

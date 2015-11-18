@@ -6,6 +6,8 @@ from collections import defaultdict
 import peaks
 import parameters
 import data_holder
+import peak_groups
+import chrom
 
 
 # def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
@@ -49,6 +51,16 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
 
+        # sometimes within the range between rt_left and rt_right, there are two peaks
+        # in this case, perform an inspection to refine the peak bounary
+
+        num_pg_in_range = get_num_peak_groups_in_range(ref_sample_rt_left, ref_sample_rt_right, chrom_data, tg, reference_sample)
+
+        if num_pg_in_range > 1:
+
+            ref_sample_rt_left, ref_sample_rt_right = \
+                refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
+
         ref_sample_data[tg].read_peak_boundary(ref_sample_rt_left, ref_sample_rt_right)
 
         # store the chrom to be displayed for the reference sample
@@ -59,6 +71,75 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         display_data = refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sample, peak_rt_found)
 
     return display_data
+
+def get_num_peak_groups_in_range(rt_left, rt_right, chrom_data, tg, sample):
+
+    num_pg_in_range = -1
+
+    all_rt = peak_groups.find_all_rt_values(chrom_data, tg, sample)
+    all_rt2 = []
+
+    for rt in all_rt:
+        if float(rt_left) < rt < float(rt_right):
+            all_rt2.append(rt)
+
+    if len(all_rt2) <= 1:
+        pass
+
+    else:
+        pg_found = {}
+        for rt in all_rt2:
+            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
+            if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
+                pg_found[rt] = this_peak_group
+        num_pg_in_range = len(pg_found)
+
+    return num_pg_in_range
+
+
+def refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg):
+
+    # sometimes in the rt range, there are multiple peak groups, select only one
+    rt_range = ref_sample_rt_right - ref_sample_rt_left
+
+    if_rt_range_shrinked = 0
+    fold_change = 0.1
+    rt_left = ref_sample_rt_left
+    rt_right = ref_sample_rt_right
+
+    while if_rt_range_shrinked == 0:
+
+        fold_change += 0.05
+        this_pg = data_holder.Peak_group(chrom_data, tg, reference_sample, peak_rt_found, fold_change)
+
+        fragments = this_pg.matched_fragments
+        i = this_pg.matched_fragments_i
+        rt_left_list = this_pg.matched_fragments_peak_rt_left_list
+        rt_right_list = this_pg.matched_fragments_peak_rt_right_list
+
+        rt_left, rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
+
+        rt_range2 = rt_right - rt_left
+
+        # empirical rule
+        if rt_range == 0:
+            print "WARNING: rt range of reference sample is 0"
+        elif (rt_range - rt_range2) / rt_range > 0.3:
+            if_rt_range_shrinked = 1
+            break
+
+    return rt_left, rt_right
+
+
+def get_rt_list_in_a_range(rt_list, rt_left, rt_right):
+
+    rt_list2 = []
+
+    for rt in rt_list:
+        if float(rt_left) < rt < float(rt_right):
+            rt_list2.append(rt)
+
+    return rt_list2
 
 def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sample, peak_rt_found):
 
@@ -161,7 +242,9 @@ def compute_peak_area2(rt_list, i_list):
 
 
 
-def get_peak_boundary(rt_list, i_list, peak_rt):
+def get_peak_boundary(rt_list, i_list, peak_rt, fold_change):
+
+    # fold_change = 0.1 -> the intensity decrease at peak boundaries
 
     peak_rt_left = rt_list[0]
     peak_rt_right = rt_list[-1]
@@ -169,20 +252,20 @@ def get_peak_boundary(rt_list, i_list, peak_rt):
     max_int = -1.0
     peak_index = -1
     for i in range(len(rt_list)):
-        if abs (rt_list[i] - peak_rt ) < 3:
+        if abs(rt_list[i] - peak_rt) < 3:
             max_int = i_list[i]
             peak_index = i
             break
 
     for j in range(peak_index, len(rt_list)):
         #find the boundary, intensity < 10% of max intensity
-        if i_list[j] < max_int * 0.1:
+        if i_list[j] < max_int * fold_change:
             peak_rt_right = rt_list[j]
             break
 
     for j in range(peak_index, -1, -1):
         #find the boundary, intensity < 10% of max intensity
-        if i_list[j] < max_int * 0.1:
+        if i_list[j] < max_int * fold_change:
             peak_rt_left = rt_list[j]
             break
 
