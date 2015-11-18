@@ -7,6 +7,7 @@ from collections import defaultdict
 import parameters
 import data_holder
 import copy
+import operator
 
 
 
@@ -61,6 +62,9 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
         display_data, ref_pg = build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg)
 
         for sample in sample_id:
+
+            if sample == 'gold38':
+                pass
 
             if sample != ref_sample_data[tg].sample_name:
                 # for each peak group, create a data structure containing all the information above
@@ -147,12 +151,10 @@ def get_peak_group_values(pg, rt, ref_pg):
 def find_top_n_fragment(option, ref_pg):
 
     # sort fragment based on i, and then select the top n fragment
-    fragment_sorted = []
 
-    for fragment, i in sorted(zip(ref_pg['ms2']['peak_apex_i'].keys(), ref_pg['ms2']['peak_apex_i'].values()), reverse = True):
-        fragment_sorted.append(fragment)
+    peak_apex_i = sorted(ref_pg['ms2']['peak_apex_i'].items(), key=operator.itemgetter(1), reverse=True)
 
-    return fragment_sorted[int(option) - 1]
+    return peak_apex_i[int(option) - 1][0]
 
 def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
