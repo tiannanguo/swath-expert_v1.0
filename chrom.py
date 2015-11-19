@@ -114,8 +114,8 @@ def refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_righ
 
         fragments = this_pg.matched_fragments
         i = this_pg.matched_fragments_i
-        rt_left_list = this_pg.matched_fragments_peak_rt_left_list
-        rt_right_list = this_pg.matched_fragments_peak_rt_right_list
+        rt_left_list = this_pg.matched_fragments_peak_rt_left
+        rt_right_list = this_pg.matched_fragments_peak_rt_right
 
         rt_left, rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
 

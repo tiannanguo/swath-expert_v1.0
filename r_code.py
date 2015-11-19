@@ -7,7 +7,7 @@ import peaks
 from collections import defaultdict
 import parameters
 
-def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
+def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_name):
 
     all_r_code_samples = []
 
@@ -31,7 +31,11 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file):
 
             r_code_samples_par = write_sample_par(sample)
 
-            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1)
+            if_reference_sample = 0
+            if sample == ref_sample_name:
+                if_reference_sample =1
+
+            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)
 
             r_code_sample_ms2 = write_sample_ms2(display_data, sample, tg, max_intensity_ms2, fragment_color_code_mapping)
 
@@ -173,7 +177,7 @@ def write_sample_par(sample):
                                                parameters.subplot_out_margin_area_east)
     return code
 
-def write_sample_ms1(display_data, sample, tg, max_intensity_ms1):
+def write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample):
 
     r_code = '''#MS1 chrom\n'''
     r_code += '''#MS1 id is %s\n''' % tg
@@ -191,6 +195,8 @@ def write_sample_ms1(display_data, sample, tg, max_intensity_ms1):
                              display_data[tg][sample]['rt_left'],
                              display_data[tg][sample]['rt_right'],
                              parameters.PLOT_LINE_WIDTH) + '%' + ''')", yaxt = "n", cex.axis = 1.5, frame.plot=%s)\n''' % parameters.frame_of_plot
+    if if_reference_sample == 1:
+        r_code += '''box(col=\"red\")\n'''
     r_code += '''rm (rt, int)\n'''
 
     # write text
