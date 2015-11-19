@@ -18,12 +18,14 @@ import parameters
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
 # chrom_file = sys.argv[1]
-chrom_file = 'debug_png_id_186.txt.gz'
+chrom_file = 'debug_png_id_200.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
-quant_file = chrom_file.replace('.txt.gz', '.quant.txt')
+quant_file_fragments = chrom_file.replace('.txt.gz', '.quant.fragments.txt')
+quant_file_peptides = chrom_file.replace('.txt.gz', '.quant.peptides.txt')
+quant_file_proteins = chrom_file.replace('.txt.gz', '.quant.proteins.txt')
 
 def write_tmp_bat_file(out_R_file):
     with open('tmp_run.bat','w') as o:
@@ -60,13 +62,14 @@ def main():
     # compute peak area for display_pg
     display_data = chrom.compute_peak_area_for_all(display_data)
 
+    # compute peak area for only the peak-forming fragments
+    display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
+
     for tg in display_data.keys():
         if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > parameters.MIN_FRAGMENTS:
             # write r code into a file
             r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data[tg].sample_name)
 
-            # write quantitation table
-            d = swath_quant.quant(display_data, quant_file)
         else:
             print 'not enough fragments for ' + tg
 

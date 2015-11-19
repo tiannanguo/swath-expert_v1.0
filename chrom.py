@@ -227,7 +227,9 @@ def compute_peak_area_for_all(display_data):
             # ms2
             for fragment in display_data[tg][sample]['ms2']['rt_list'].keys():
 
-                area_ms2 = compute_peak_area2(display_data[tg][sample]['ms2']['rt_list'][fragment], display_data[tg][sample]['ms2']['i_list'][fragment])
+                area_ms2 = compute_peak_area2(display_data[tg][sample]['ms2']['rt_list'][fragment],
+                                              display_data[tg][sample]['ms2']['i_list'][fragment])
+
                 display_data[tg][sample]['ms2']['area'][fragment] = area_ms2
 
     return display_data
