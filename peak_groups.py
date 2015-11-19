@@ -576,6 +576,9 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
         for sample in sample_id:
 
+            if sample == 'gold10':
+                pass
+
             all_rt = find_all_rt_values(chrom_data, tg, sample)
 
             if len(all_rt) == 0:
@@ -725,30 +728,33 @@ def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chr
 
     return ref_sample_data, chrom_data, peptide_data, peak_group_candidates
 
-def binning_rt_values (rt):
-    if len(rt) > 1:
-        rt2 = sorted(list(set(rt)))
-        rt3 = []
+def binning_rt_values(rt_list):
+
+    if len(rt_list) > 1:
+        rt_list2 = sorted(list(set(rt_list)))
+        rt_list3 = []
         if_skip = 0
-        for i in range(1, len(rt2)):
+        for i in range(1, len(rt_list2)):
             if if_skip == 1:
                 if_skip = 0
                 continue
             else:
-                if (rt2[i] - rt2[i-1]) > 10 :
-                    rt3.append(rt2[i-1])
+                if (rt_list2[i] - rt_list2[i-1]) > parameters.BINNING_RT_VALUE_TOLERANCE:
+                    rt_list3.append(rt_list2[i-1])
                 else:
-                    new_rt = 0.5 * (rt2[i] + rt2[i-1])
-                    rt3.append(new_rt)
+                    new_rt = 0.5 * (rt_list2[i] + rt_list2[i-1])
+                    rt_list3.append(new_rt)
                     if_skip = 1
 
         #the last element is missing, process it separately
-        if rt2[-1] - rt3[-1] >10:
-            rt3.append(rt2[-1])
+        if rt_list2[-1] - rt_list3[-1] > parameters.BINNING_RT_VALUE_TOLERANCE:
+            rt_list3.append(rt_list2[-1])
         else:
-            new_rt = 0.5 * (rt2[-1] + rt3[-1])
-            rt3.append(new_rt)
-            del rt3[-2]
-        return rt3
+            new_rt = 0.5 * (rt_list2[-1] + rt_list3[-1])
+            rt_list3.append(new_rt)
+            del rt_list3[-2]
+        return rt_list3
+
     else:
-        return rt
+
+        return rt_list

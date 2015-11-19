@@ -49,7 +49,7 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         rt_left_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_left
         rt_right_list = peak_group_candidates[tg][reference_sample][peak_rt_found].matched_fragments_peak_rt_right
 
-        ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
+        ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found)
 
         # sometimes within the range between rt_left and rt_right, there are two peaks
         # in this case, perform an inspection to refine the peak bounary
@@ -117,7 +117,7 @@ def refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_righ
         rt_left_list = this_pg.matched_fragments_peak_rt_left
         rt_right_list = this_pg.matched_fragments_peak_rt_right
 
-        rt_left, rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list)
+        rt_left, rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found)
 
         rt_range2 = rt_right - rt_left
 
@@ -156,7 +156,7 @@ def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sam
 
     return display_data
 
-def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list):
+def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found):
 
     # sort by decreasing intensity
     i2 = sorted(i, reverse=1)
@@ -168,12 +168,27 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list):
     rt_right3 = -1
     # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, decending the fragment untill find a reasonable boundary
     for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left_list2, rt_right_list2):
-        if rt_right0 - rt_left0 > parameters.MAX_PEAK_WIDTH:
+
+        distance_left = peak_rt_found - rt_left0
+        distance_right = rt_right0 - peak_rt_found
+
+        if_good_peak_boundary = 0
+        if distance_left > 0 and distance_right > 0:
+            ratio = float(distance_left) / float(distance_right)
+            if parameters.PEAK_BOUNDARY_RT_LEFT_RIGHT_RATIO_TOLERANCE < ratio < 1 / parameters.PEAK_BOUNDARY_RT_LEFT_RIGHT_RATIO_TOLERANCE:
+                if_good_peak_boundary = 1
+
+
+        if rt_right0 - rt_left0 > parameters.MAX_PEAK_WIDTH or if_good_peak_boundary == 0:
+
             continue
+
         else:
+
             rt_left3 = rt_left0
             rt_right3 = rt_right0
             break
+
     # if no peak boundary found, use the one from highest peak
     if rt_left3 < 0:
         rt_left3 = rt_left_list2[0]
