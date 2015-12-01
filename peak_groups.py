@@ -724,7 +724,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
 
     for rt in peak_group_candidates[tg][sample].keys():
         num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
-        if num_fragments > num_good_fragments:
+        if num_fragments >= num_good_fragments - 1:
             good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
             num_good_fragments = num_fragments
             rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
