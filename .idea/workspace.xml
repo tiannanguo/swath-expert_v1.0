@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error. work now!">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_tmp_select_png_data.py" afterPath="$PROJECT_DIR$/_tmp_select_png_data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/r_code.py" afterPath="$PROJECT_DIR$/r_code.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
     </list>
     <ignored path="swath-expert.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="r_code.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="r_code.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/r_code.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="86" column="27" selection-start-line="86" selection-start-column="27" selection-end-line="86" selection-end-column="27" />
+            <state vertical-scroll-proportion="0.5729167">
+              <caret line="111" column="18" selection-start-line="111" selection-start-column="18" selection-end-line="111" selection-end-column="18" />
               <folding>
                 <element signature="e#45#56#0" expanded="true" />
               </folding>
@@ -85,7 +87,7 @@
         <entry file="file://$PROJECT_DIR$/swath_expert.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+              <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
               <folding>
                 <element signature="e#45#55#0" expanded="true" />
               </folding>
@@ -103,11 +105,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5729167">
-              <caret line="746" column="0" selection-start-line="746" selection-start-column="0" selection-end-line="746" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="865" column="10" selection-start-line="865" selection-start-column="10" selection-end-line="865" selection-end-column="10" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -119,7 +121,7 @@
         <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+              <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
               <folding>
                 <element signature="e#44#55#0" expanded="true" />
               </folding>
@@ -131,7 +133,7 @@
         <entry file="file://$PROJECT_DIR$/parameters.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="20" column="43" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="43" />
+              <caret line="17" column="25" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -165,7 +167,6 @@
         <option value="$PROJECT_DIR$/peaks.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/_tmp_test_best_sample.py" />
-        <option value="$PROJECT_DIR$/r_code.py" />
         <option value="$PROJECT_DIR$/parameters.py" />
         <option value="$PROJECT_DIR$/_test2.py" />
         <option value="$PROJECT_DIR$/swath_quant.py" />
@@ -174,9 +175,10 @@
         <option value="$PROJECT_DIR$/_test_detect_peaks.py" />
         <option value="$PROJECT_DIR$/data_holder.py" />
         <option value="$PROJECT_DIR$/chrom.py" />
+        <option value="$PROJECT_DIR$/peak_groups.py" />
         <option value="$PROJECT_DIR$/_tmp_select_png_data.py" />
         <option value="$PROJECT_DIR$/swath_expert.py" />
-        <option value="$PROJECT_DIR$/peak_groups.py" />
+        <option value="$PROJECT_DIR$/r_code.py" />
       </list>
     </option>
   </component>
@@ -473,12 +475,6 @@
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
     </task>
-    <task id="LOCAL-00022" summary="re-write compute_peak_area_for_all">
-      <created>1447698844574</created>
-      <option name="number" value="00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1447698844574</updated>
-    </task>
     <task id="LOCAL-00023" summary="modify write_r_code_for_all_samples">
       <created>1447699758366</created>
       <option name="number" value="00023" />
@@ -767,7 +763,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448998818413</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error. work now!">
+      <created>1448999268474</created>
+      <option name="number" value="00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1448999268474</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -838,7 +840,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug. try to solve deepcopy issue. still not work." />
     <MESSAGE value="debug. removed pg2, use pg_filtered_rt. this version works!" />
     <MESSAGE value="release. works." />
     <MESSAGE value="debug. correct some missing values." />
@@ -863,16 +864,17 @@
     <MESSAGE value="debug. most_correlated_peak_group_based_on_fragment_intensity. peak_apex_rt_list --&gt; rt_list" />
     <MESSAGE value="improve. compute_reference_sample_peak_boundary. ref_sample_rt_left -=5 --&gt; 3" />
     <MESSAGE value="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error" />
-    <option name="LAST_COMMIT_MESSAGE" value="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error" />
+    <MESSAGE value="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error. work now!" />
+    <option name="LAST_COMMIT_MESSAGE" value="add. check_best_peak_group_from_reference_sample. add functions to correct openswath error. work now!" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/peak_groups.py</url>
-          <line>865</line>
-          <option name="timeStamp" value="187" />
+          <url>file://$PROJECT_DIR$/r_code.py</url>
+          <line>111</line>
+          <option name="timeStamp" value="191" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -885,7 +887,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="188" />
+      <option name="time" value="192" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -1232,32 +1234,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/r_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="86" column="27" selection-start-line="86" selection-start-column="27" selection-end-line="86" selection-end-column="27" />
-          <folding>
-            <element signature="e#45#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swath_quant.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="43" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_test_detect_peaks.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1276,24 +1252,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/io_swath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="58" column="62" selection-start-line="58" selection-start-column="62" selection-end-line="58" selection-end-column="62" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-          <folding>
-            <element signature="e#44#55#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chrom.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1304,22 +1262,66 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/io_swath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="58" column="62" selection-start-line="58" selection-start-column="62" selection-end-line="58" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="865" column="10" selection-start-line="865" selection-start-column="10" selection-end-line="865" selection-end-column="10" />
+          <folding>
+            <element signature="e#21#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/parameters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="25" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+          <folding>
+            <element signature="e#44#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/swath_expert.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
           <folding>
             <element signature="e#45#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+    <entry file="file://$PROJECT_DIR$/swath_quant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/r_code.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5729167">
-          <caret line="746" column="0" selection-start-line="746" selection-start-column="0" selection-end-line="746" selection-end-column="0" />
+          <caret line="111" column="18" selection-start-line="111" selection-start-column="18" selection-end-line="111" selection-end-column="18" />
           <folding>
-            <element signature="e#21#33#0" expanded="true" />
+            <element signature="e#45#56#0" expanded="true" />
           </folding>
         </state>
       </provider>
