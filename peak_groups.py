@@ -169,7 +169,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
         for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
 
-                if_peak_is_a_top_peak = check_if_a_peak_if_a_top_peak(fragment, rt0, n, pg)
+                if_peak_is_a_top_peak = check_if_a_peak_if_a_top_peak(fragment, rt, n, pg)
 
                 if if_peak_is_a_top_peak == 1:
                     if_peak_found = 1
@@ -181,9 +181,9 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
     return pg_filtered_rt2
 
 
-def check_if_a_peak_if_a_top_peak(fragment, rt0, n, pg):
+def check_if_a_peak_if_a_top_peak(fragment, rt, n, pg):
 
-    rank_num = find_fragment_rank_in_a_pg(fragment, rt0, pg)
+    rank_num = find_fragment_rank_in_a_pg(fragment, rt, pg)
     # if the fragment rank is high enough, otherwise it's a wrong peak group
     if rank_num - n <= 3:
         return 1

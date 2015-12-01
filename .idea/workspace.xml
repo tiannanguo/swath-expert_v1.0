@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. improve ref sample peak boundary. based on golden200. gold10. found the peak group after revision.">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug add function.check_if_a_peak_if_a_top_peak. not working yet">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
     </list>
@@ -96,8 +96,8 @@
       <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.41734418">
-              <caret line="188" column="16" selection-start-line="188" selection-start-column="16" selection-end-line="188" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.40379405">
+              <caret line="164" column="21" selection-start-line="164" selection-start-column="21" selection-end-line="164" selection-end-column="21" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -461,12 +461,6 @@
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
     </task>
-    <task id="LOCAL-00014" summary="modify function find_matched_fragments: add peak boundary">
-      <created>1447668796973</created>
-      <option name="number" value="00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1447668796973</updated>
-    </task>
     <task id="LOCAL-00015" summary="modify class ref_sample_data, peak_group_candidate, etc">
       <created>1447682685476</created>
       <option name="number" value="00015" />
@@ -755,7 +749,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448969442663</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="debug add function.check_if_a_peak_if_a_top_peak. not working yet">
+      <created>1448971425709</created>
+      <option name="number" value="00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1448971425709</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -826,7 +826,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug. pg format. rt_left --&gt; rt_left_list" />
     <MESSAGE value="debug.new function compute_peak_boundary_intensity" />
     <MESSAGE value="debug.combine function compute_peak_boundary_intensity into get_intensity_for_closest_rt" />
     <MESSAGE value="debug.get_max_ms2_intensity_in_all_samples. max() issue" />
@@ -851,7 +850,8 @@
     <MESSAGE value="debug.bining_rt_values. refine_reference_sample_rt_range. add new empirical rules" />
     <MESSAGE value="add. refine fragment intensity for quan. write out quant_file_fragments." />
     <MESSAGE value="debug. improve ref sample peak boundary. based on golden200. gold10. found the peak group after revision." />
-    <option name="LAST_COMMIT_MESSAGE" value="debug. improve ref sample peak boundary. based on golden200. gold10. found the peak group after revision." />
+    <MESSAGE value="debug add function.check_if_a_peak_if_a_top_peak. not working yet" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug add function.check_if_a_peak_if_a_top_peak. not working yet" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1308,8 +1308,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peak_groups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41734418">
-          <caret line="188" column="16" selection-start-line="188" selection-start-column="16" selection-end-line="188" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.40379405">
+          <caret line="164" column="21" selection-start-line="164" selection-start-column="21" selection-end-line="164" selection-end-column="21" />
           <folding>
             <element signature="e#21#33#0" expanded="true" />
           </folding>
