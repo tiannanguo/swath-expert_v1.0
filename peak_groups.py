@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold30':
+            if sample == 'gold38':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -669,7 +669,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
         for sample in sample_id:
 
-            if sample == 'gold89':
+            if sample == 'gold38':
                 pass
 
             all_rt = find_all_rt_values(chrom_data, tg, sample)
@@ -683,7 +683,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
                     #compute the peak boundary for each fragment, not the consensus peak boundary
 
-                    if sample == 'gold89' and rt == 1769.3025:
+                    if sample == 'gold38' and abs(rt - 944.305) < 0.1:
                         pass
 
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)

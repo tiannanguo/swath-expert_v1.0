@@ -53,7 +53,7 @@ def read_com_chrom_file(chrom_file, sample_id):
                 i_list_csv = row[k + '_i']
 
                 ###########
-                if k == 'gold89' and fragment.startswith('158_'):
+                if k == 'gold38' and fragment.startswith('4332_'):
                     pass
 
                 chrom_data[tg][k][fragment] = data_holder.Chromatogram(rt_list_three_values_csv, i_list_csv)
