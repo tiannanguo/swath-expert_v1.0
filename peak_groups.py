@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold40':
+            if sample == 'gold30':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:

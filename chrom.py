@@ -63,8 +63,8 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
         # if the ref sample peak is too narrow, < 30 sec, extend 5 sec at both ends
         if ref_sample_rt_right - ref_sample_rt_left < 30:
-            ref_sample_rt_left -= 5
-            ref_sample_rt_right += 5
+            ref_sample_rt_left -= 3
+            ref_sample_rt_right += 3
 
         ref_sample_data[tg].read_peak_boundary(ref_sample_rt_left, ref_sample_rt_right)
 
