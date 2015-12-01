@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold10':
+            if sample == 'gold29':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -162,19 +162,45 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
     fragment = find_top_n_fragment(n, ref_pg)
 
-    for rt in pg.keys():
+    for rt in pg_filtered_rt:
 
         if_peak_found = 0
 
         for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
-                if_peak_found = 1
-                break
 
-        if if_peak_found == 1 and rt in pg_filtered_rt:
+                if_peak_is_a_top_peak = check_if_a_peak_if_a_top_peak(fragment, rt0, n, pg)
+
+                if if_peak_is_a_top_peak == 1:
+                    if_peak_found = 1
+                    break
+
+        if if_peak_found == 1:
             pg_filtered_rt2.append(rt)
 
     return pg_filtered_rt2
+
+
+def check_if_a_peak_if_a_top_peak(fragment, rt0, n, pg):
+
+    rank_num = find_fragment_rank_in_a_pg(fragment, rt0, pg)
+    # if the fragment rank is high enough, otherwise it's a wrong peak group
+    if rank_num - n <= 3:
+        return 1
+    else:
+        return 0
+
+def find_fragment_rank_in_a_pg(fragment, rt, pg):
+
+    rank_num = 1
+    fragment_i = pg[rt]['ms2']['peak_apex_i'][fragment]
+    for this_fragment in pg[rt]['ms2']['peak_apex_i'].keys():
+        if this_fragment != fragment:
+            if pg[rt]['ms2']['peak_apex_i'][this_fragment] > fragment_i:
+                rank_num += 1
+
+    return rank_num
+
 
 def filter_peak_group_ms1(pg, pg_filtered_rt):
 
@@ -346,11 +372,11 @@ def find_best_match_pg_rule_a(pg, ref_pg, sample):
 def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold29':
         pass
 
     # filter out peak groups without top 2 fragment as a peak
-    pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)  #####BUGBUGBUGBUG. after this, pg becomes empty!!
+    pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
