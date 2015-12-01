@@ -707,7 +707,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
     return peak_group_candidates
 
 
-def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg):
+def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data):
 
     # find out the peak group with highest number of good fragments
 
@@ -738,8 +738,10 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
     # in this case, check ms1, peak shape
     # case: golden data set #96. gold80
 
+    max_good_fragments = max(selected_rt_num_fragment.values())
+
     selected_rt_num_fragment_2, selected_rt_if_ms1_2 = \
-        select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, num_good_fragments)
+        select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, max_good_fragments)
 
     if len(selected_rt_num_fragment_2.keys()) > 1:
 
@@ -754,12 +756,19 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
             return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
 
         elif len(selected_rt_num_fragment_3.keys()) > 1:
-            # select based on ms1 peak shape
-            # this can be further improved in the future
-            # consider peak shape of ms2
-            # intensity ranking, et al.
-            rt_found = selected_rt_num_fragment_3.keys()[0]
-            num_good_fragments = selected_rt_num_fragment_3[rt_found]
+            # select based on ms1 and ms2 peak shape
+            num_good_shape_peak_ms2_dict = {}
+            for rt in selected_rt_num_fragment_3.keys():
+                num_good_shape_peak_ms2_dict[rt] = get_good_shape_peak_ms2(
+                    rt, sample, tg, chrom_data, peak_group_candidates)
+
+            selected_rt_num_fragment_4 = rank_good_shape_paks_ms2(num_good_shape_peak_ms2_dict)
+
+            # this may be further improved in the future
+            # consider intensity ranking, et al.
+
+            rt_found = selected_rt_num_fragment_4.keys()[0]
+            num_good_fragments = selected_rt_num_fragment_4[rt_found]
             if_ms1 = selected_rt_if_ms1_3[rt_found]
             good_fragments = peak_group_candidates[tg][sample][rt_found].matched_fragments
             rt_dif = abs(rt_found - ref_sample_data[tg].peak_rt)
@@ -771,6 +780,48 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
     else:
         # can not happen
         print "error: can not find a good rt, this should not happen"
+
+def rank_good_shape_paks_ms2(good_shape_fragment):
+    good_shape_fragment2 = {}
+    max_num_fragments = max(good_shape_fragment.values())
+    for rt in good_shape_fragment.keys():
+        if good_shape_fragment[rt] == max_num_fragments:
+            good_shape_fragment2[rt] = good_shape_fragment[rt]
+    return good_shape_fragment2
+
+
+
+def get_good_shape_peak_ms2(rt, sample, tg, chrom_data, peak_group_candidates):
+
+    good_shape_fragments = []
+
+    # get the peak boundary for the reference sample
+    fragments = peak_group_candidates[tg][sample][rt].matched_fragments
+    i = peak_group_candidates[tg][sample][rt].matched_fragments_i
+    rt_left_list = peak_group_candidates[tg][sample][rt].matched_fragments_peak_rt_left
+    rt_right_list = peak_group_candidates[tg][sample][rt].matched_fragments_peak_rt_right
+
+
+    ref_sample_rt_left, ref_sample_rt_right = chrom.get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, rt)
+
+    for fragment in fragments:
+
+        peak_intensity_apex = get_intensity_for_closest_rt(
+            rt, chrom_data[tg][sample][fragment].rt_list, chrom_data[tg][sample][fragment].i_list)
+        peak_intensity_left = get_intensity_for_closest_rt(
+            ref_sample_rt_left, chrom_data[tg][sample][fragment].rt_list, chrom_data[tg][sample][fragment].i_list)
+        peak_intensity_right = get_intensity_for_closest_rt(
+            ref_sample_rt_right, chrom_data[tg][sample][fragment].rt_list, chrom_data[tg][sample][fragment].i_list)
+
+        fold_change_left = float(peak_intensity_apex) / (float(peak_intensity_left) + 1)
+        fold_change_right = float(peak_intensity_apex) / (float(peak_intensity_right) + 1)
+
+        if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
+
+            good_shape_fragments.append(fragment)
+
+    return len(good_shape_fragments)
+
 
 def select_rt_from_reference_sample_based_on_ms1(selected_rt_num_fragment, selected_rt_if_ms1):
 
@@ -788,25 +839,25 @@ def select_rt_from_reference_sample_based_on_ms1(selected_rt_num_fragment, selec
         return selected_rt_num_fragment, selected_rt_if_ms1
 
 
-def select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, num_good_fragments):
+def select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, max_good_fragments):
 
     selected_rt_num_fragment_2 = {}
     selected_rt_if_ms1_2 ={}
 
     for rt in selected_rt_num_fragment.keys():
-        if selected_rt_num_fragment[rt] >= num_good_fragments - 1:
+        if selected_rt_num_fragment[rt] >= max_good_fragments - 1:
             selected_rt_num_fragment_2[rt] = selected_rt_num_fragment[rt]
             selected_rt_if_ms1_2[rt] = selected_rt_if_ms1[rt]
 
     return selected_rt_num_fragment_2, selected_rt_if_ms1_2
 
-def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
+def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data):
 
     # 2015.11.18. sometimes OpenSWATH picked the wrong peak group even for the reference sample.
     # here implement a check of correct peak group
 
     best_rt_check, num_good_fragments_check, if_ms1_check, good_fragments_check, rt_dif_check = \
-        check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg)
+        check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data)
 
     # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
 
@@ -863,7 +914,7 @@ def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chr
         ref_sample = ref_sample_data[tg].sample_name
 
         # find the matched rt in the reference sample
-        good_fragments, rt_dif, rt_found = find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg)
+        good_fragments, rt_dif, rt_found = find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data)
 
         ref_sample_data[tg].read_peak_rt_found(rt_found)
 
