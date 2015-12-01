@@ -255,7 +255,7 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
             x = [ref_pg['ms2']['peak_apex_i'][fragment] for fragment in pg[rt]['ms2']['peak_apex_i'].keys()]
             y = []
             for fragment in pg[rt]['ms2']['peak_apex_i'].keys():
-                y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['peak_apex_rt_list'][fragment], pg[rt]['ms2']['peak_apex_i_list'][fragment])
+                y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
                 y.append(y0)
             pg_corr[rt] = np.corrcoef(x, y)[0][1]   #note: this is R, not R2
 
@@ -271,9 +271,9 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
         else:
             # if there are multiple pg with same R2 value (in the same peak), select the one with highest intensity (apex)
             rt0 = pg_sorted_max[0]
-            i0 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['peak_apex_rt_list'][fragment], pg[rt0]['ms2']['peak_apex_i_list'][fragment])
+            i0 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][fragment], pg[rt0]['ms2']['i_list'][fragment])
             for rt in pg_sorted_max[1:]:
-                i = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['peak_apex_rt_list'][fragment], pg[rt]['ms2']['peak_apex_i_list'][fragment])
+                i = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
                 if i > i0:
                     rt0 = rt
 
@@ -525,7 +525,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold40':
         pass
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity

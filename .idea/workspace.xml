@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add.if the ref sample peak is too narrow, &lt; 30 sec, extend 5 sec at both ends">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add. get_max_rt_from_pg_sorted. sometimes, multiple R2 of same values found from the same peak. add function but not work yet.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
     </list>
     <ignored path="swath-expert.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -107,8 +106,8 @@
       <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3869281">
-              <caret line="285" column="29" selection-start-line="285" selection-start-column="4" selection-end-line="285" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.675817">
+              <caret line="268" column="35" selection-start-line="268" selection-start-column="35" selection-end-line="268" selection-end-column="35" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -473,12 +472,6 @@
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
     </task>
-    <task id="LOCAL-00018" summary="finish restructure of chrom.compute_reference_sample_peak_boundary">
-      <created>1447683790107</created>
-      <option name="number" value="00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1447683790107</updated>
-    </task>
     <task id="LOCAL-00019" summary="work on build peak groups. class ref_pg and pg">
       <created>1447686203797</created>
       <option name="number" value="00019" />
@@ -767,7 +760,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448976718808</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="add. get_max_rt_from_pg_sorted. sometimes, multiple R2 of same values found from the same peak. add function but not work yet.">
+      <created>1448979117913</created>
+      <option name="number" value="00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1448979117913</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -838,7 +837,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug.ms1_ms_intensity bug corrected" />
     <MESSAGE value="working for golden data set." />
     <MESSAGE value="beatify r code. add_legend. make legend visible." />
     <MESSAGE value="debug. deepcopy issue. pg2 and pg are still linked. why????" />
@@ -863,11 +861,19 @@
     <MESSAGE value="debug add function.check_if_a_peak_if_a_top_peak. working now!" />
     <MESSAGE value="improve. peaks.peakdetect(i_list, rt_list, 8.0, 0.3). down from 9-&gt;8, for gold89 in plot #9" />
     <MESSAGE value="add.if the ref sample peak is too narrow, &lt; 30 sec, extend 5 sec at both ends" />
-    <option name="LAST_COMMIT_MESSAGE" value="add.if the ref sample peak is too narrow, &lt; 30 sec, extend 5 sec at both ends" />
+    <MESSAGE value="add. get_max_rt_from_pg_sorted. sometimes, multiple R2 of same values found from the same peak. add function but not work yet." />
+    <option name="LAST_COMMIT_MESSAGE" value="add. get_max_rt_from_pg_sorted. sometimes, multiple R2 of same values found from the same peak. add function but not work yet." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/peak_groups.py</url>
+          <line>528</line>
+          <option name="timeStamp" value="180" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -878,7 +884,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="180" />
+      <option name="time" value="181" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -1309,8 +1315,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peak_groups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3869281">
-          <caret line="285" column="29" selection-start-line="285" selection-start-column="4" selection-end-line="285" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.675817">
+          <caret line="268" column="35" selection-start-line="268" selection-start-column="35" selection-end-line="268" selection-end-column="35" />
           <folding>
             <element signature="e#21#33#0" expanded="true" />
           </folding>
