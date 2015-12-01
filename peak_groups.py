@@ -719,6 +719,9 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
     rt_dif = parameters.MAX_RT_TOLERANCE
     rt_found = -1.0
 
+    selected_rt_num_fragment = {}
+    selected_rt_if_ms1 = {}
+
     for rt in peak_group_candidates[tg][sample].keys():
         num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
         if num_fragments > num_good_fragments:
@@ -728,9 +731,74 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
             rt_found = rt
             if_ms1 = peak_group_candidates[tg][sample][rt].if_ms1_peak
 
+            selected_rt_num_fragment[rt] = num_fragments
+            selected_rt_if_ms1[rt] = if_ms1
 
-    return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+    # soemtimes there are multiple rt with max number of good fragment
+    # in this case, check ms1, peak shape
+    # case: golden data set #96. gold80
 
+    selected_rt_num_fragment_2, selected_rt_if_ms1_2 = \
+        select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, num_good_fragments)
+
+    if len(selected_rt_num_fragment_2.keys()) > 1:
+
+        selected_rt_num_fragment_3, selected_rt_if_ms1_3 = select_rt_from_reference_sample_based_on_ms1(selected_rt_num_fragment_2, selected_rt_if_ms1_2)
+
+        if len(selected_rt_num_fragment_3.keys()) == 1:
+            rt_found = selected_rt_num_fragment_3.keys()[0]
+            num_good_fragments = selected_rt_num_fragment_3[rt_found]
+            if_ms1 = selected_rt_if_ms1_3[rt_found]
+            good_fragments = peak_group_candidates[tg][sample][rt_found].matched_fragments
+            rt_dif = abs(rt_found - ref_sample_data[tg].peak_rt)
+            return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+
+        elif len(selected_rt_num_fragment_3.keys()) > 1:
+            # select based on ms1 peak shape
+            # this can be further improved in the future
+            # consider peak shape of ms2
+            # intensity ranking, et al.
+            rt_found = selected_rt_num_fragment_3.keys()[0]
+            num_good_fragments = selected_rt_num_fragment_3[rt_found]
+            if_ms1 = selected_rt_if_ms1_3[rt_found]
+            good_fragments = peak_group_candidates[tg][sample][rt_found].matched_fragments
+            rt_dif = abs(rt_found - ref_sample_data[tg].peak_rt)
+            return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+
+    elif len(selected_rt_num_fragment_2.keys()) == 1:
+        # if only one
+        return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+    else:
+        # can not happen
+        print "error: can not find a good rt, this should not happen"
+
+def select_rt_from_reference_sample_based_on_ms1(selected_rt_num_fragment, selected_rt_if_ms1):
+
+    selected_rt_num_fragment_2 = {}
+    selected_rt_if_ms1_2 ={}
+
+    for rt in selected_rt_num_fragment.keys():
+        if selected_rt_if_ms1[rt] == 1:
+            selected_rt_num_fragment_2[rt] = selected_rt_num_fragment[rt]
+            selected_rt_if_ms1_2[rt] = selected_rt_if_ms1[rt]
+
+    if len(selected_rt_num_fragment_2.keys()) > 0:
+        return selected_rt_num_fragment_2, selected_rt_if_ms1_2
+    else:
+        return selected_rt_num_fragment, selected_rt_if_ms1
+
+
+def select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, num_good_fragments):
+
+    selected_rt_num_fragment_2 = {}
+    selected_rt_if_ms1_2 ={}
+
+    for rt in selected_rt_num_fragment.keys():
+        if selected_rt_num_fragment[rt] >= num_good_fragments - 1:
+            selected_rt_num_fragment_2[rt] = selected_rt_num_fragment[rt]
+            selected_rt_if_ms1_2[rt] = selected_rt_if_ms1[rt]
+
+    return selected_rt_num_fragment_2, selected_rt_if_ms1_2
 
 def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg):
 
