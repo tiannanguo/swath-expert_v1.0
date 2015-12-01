@@ -51,6 +51,11 @@ def read_com_chrom_file(chrom_file, sample_id):
             for k in sample_id:
                 rt_list_three_values_csv = row[k + '_rt']
                 i_list_csv = row[k + '_i']
+
+                ###########
+                if k == 'gold89' and fragment.startswith('158_'):
+                    pass
+
                 chrom_data[tg][k][fragment] = data_holder.Chromatogram(rt_list_three_values_csv, i_list_csv)
 
     return ref_sample_data, chrom_data, peptide_data

@@ -24,7 +24,7 @@ class Chromatogram(object):
         self.rt_list = rt_list
         self.i_list = i_list
 
-        max_peaks, __ = peaks.peakdetect(i_list, rt_list, 9.0, 0.3)
+        max_peaks, __ = peaks.peakdetect(i_list, rt_list, 8.0, 0.3)
 
         if len(max_peaks) > 0:
 

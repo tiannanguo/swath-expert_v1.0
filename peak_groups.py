@@ -42,7 +42,7 @@ def find_matched_fragments(chrom_data, tg, sample, rt, fold_change):
             peak_apex_i_list = chrom_data[tg][sample][fragment].peak_apex_i_list
             if peak_apex_rt_list != 'NA':
                 for rt0, i in zip(peak_apex_rt_list, peak_apex_i_list):
-                    if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE : # 10 s for 2hr gradient
+                    if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:# 10 s for 2hr gradient
                         matched_fragments.append(fragment)
                         matched_fragments_rt_list.append(rt0)
                         matched_fragments_i_list.append(i)
@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold29':
+            if sample == 'gold89':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -167,9 +167,10 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
         if_peak_found = 0
 
         for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
+
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
 
-                if_peak_is_a_top_peak = check_if_a_peak_if_a_top_peak(fragment, rt, n, pg)
+                if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(fragment, rt, n, pg)
 
                 if if_peak_is_a_top_peak == 1:
                     if_peak_found = 1
@@ -181,7 +182,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
     return pg_filtered_rt2
 
 
-def check_if_a_peak_if_a_top_peak(fragment, rt, n, pg):
+def check_if_a_peak_is_a_top_peak(fragment, rt, n, pg):
 
     rank_num = find_fragment_rank_in_a_pg(fragment, rt, pg)
     # if the fragment rank is high enough, otherwise it's a wrong peak group
@@ -351,7 +352,7 @@ def only_one_pg(pg, ref_pg):
 def find_best_match_pg_rule_a(pg, ref_pg, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold89':
         pass
 
     # filter out peak groups without top 1 fragment as a peak
@@ -637,7 +638,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
         for sample in sample_id:
 
-            if sample == 'gold10':
+            if sample == 'gold89':
                 pass
 
             all_rt = find_all_rt_values(chrom_data, tg, sample)
@@ -650,6 +651,10 @@ def find_peak_group_candidates(chrom_data, sample_id):
                 for rt in all_rt:
 
                     #compute the peak boundary for each fragment, not the consensus peak boundary
+
+                    if sample == 'gold89' and rt == 1769.3025:
+                        pass
+
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
                     if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
