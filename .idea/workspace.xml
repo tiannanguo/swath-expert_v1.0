@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug add function.check_if_a_peak_if_a_top_peak. working now!">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/_test_detect_peaks.py" />
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="improve. peaks.peakdetect(i_list, rt_list, 8.0, 0.3). down from 9-&gt;8, for gold89 in plot #9">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_tmp_select_png_data.py" afterPath="$PROJECT_DIR$/_tmp_select_png_data.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_holder.py" afterPath="$PROJECT_DIR$/data_holder.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/io_swath.py" afterPath="$PROJECT_DIR$/io_swath.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chrom.py" afterPath="$PROJECT_DIR$/chrom.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
     </list>
@@ -74,11 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chrom.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="chrom.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/chrom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.461538">
-              <caret line="125" column="17" selection-start-line="125" selection-start-column="12" selection-end-line="125" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.52088773">
+              <caret line="63" column="83" selection-start-line="63" selection-start-column="10" selection-end-line="63" selection-end-column="83" />
               <folding>
                 <element signature="e#22#40#0" expanded="true" />
               </folding>
@@ -90,7 +88,7 @@
         <entry file="file://$PROJECT_DIR$/swath_expert.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+              <caret line="50" column="46" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
               <folding>
                 <element signature="e#45#56#0" expanded="true" />
               </folding>
@@ -108,11 +106,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3292683">
-              <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="70" column="70" selection-start-line="70" selection-start-column="70" selection-end-line="70" selection-end-column="70" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -175,13 +173,13 @@
         <option value="$PROJECT_DIR$/_test2.py" />
         <option value="$PROJECT_DIR$/swath_quant.py" />
         <option value="$PROJECT_DIR$/_test_survival.py" />
-        <option value="$PROJECT_DIR$/chrom.py" />
         <option value="$PROJECT_DIR$/_tmp_select_png_data.py" />
-        <option value="$PROJECT_DIR$/swath_expert.py" />
         <option value="$PROJECT_DIR$/io_swath.py" />
         <option value="$PROJECT_DIR$/_test_detect_peaks.py" />
         <option value="$PROJECT_DIR$/data_holder.py" />
+        <option value="$PROJECT_DIR$/swath_expert.py" />
         <option value="$PROJECT_DIR$/peak_groups.py" />
+        <option value="$PROJECT_DIR$/chrom.py" />
       </list>
     </option>
   </component>
@@ -477,12 +475,6 @@
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
     </task>
-    <task id="LOCAL-00016" summary="finish restructure of chrom.compute_reference_sample_peak_boundary">
-      <created>1447683749109</created>
-      <option name="number" value="00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1447683749109</updated>
-    </task>
     <task id="LOCAL-00017" summary="finish restructure of chrom.compute_reference_sample_peak_boundary">
       <created>1447683766628</created>
       <option name="number" value="00017" />
@@ -771,7 +763,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448971735905</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="improve. peaks.peakdetect(i_list, rt_list, 8.0, 0.3). down from 9-&gt;8, for gold89 in plot #9">
+      <created>1448975740699</created>
+      <option name="number" value="00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1448975740699</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -790,16 +788,16 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20446096" sideWeight="0.49061662" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21929824" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22851562" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.296875" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22807017" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2962963" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24981412" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32752612" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20446096" sideWeight="0.5093834" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3203125" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3196881" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -842,7 +840,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug.combine function compute_peak_boundary_intensity into get_intensity_for_closest_rt" />
     <MESSAGE value="debug.get_max_ms2_intensity_in_all_samples. max() issue" />
     <MESSAGE value="debug.ms1_ms_intensity bug corrected" />
     <MESSAGE value="working for golden data set." />
@@ -867,7 +864,8 @@
     <MESSAGE value="debug. improve ref sample peak boundary. based on golden200. gold10. found the peak group after revision." />
     <MESSAGE value="debug add function.check_if_a_peak_if_a_top_peak. not working yet" />
     <MESSAGE value="debug add function.check_if_a_peak_if_a_top_peak. working now!" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug add function.check_if_a_peak_if_a_top_peak. working now!" />
+    <MESSAGE value="improve. peaks.peakdetect(i_list, rt_list, 8.0, 0.3). down from 9-&gt;8, for gold89 in plot #9" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve. peaks.peakdetect(i_list, rt_list, 8.0, 0.3). down from 9-&gt;8, for gold89 in plot #9" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -877,6 +875,11 @@
           <url>file://$PROJECT_DIR$/io_swath.py</url>
           <line>56</line>
           <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/peak_groups.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="176" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -889,7 +892,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="176" />
+      <option name="time" value="177" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -1226,7 +1229,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.53892213">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1234,7 +1236,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="17" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1300,10 +1301,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="70" column="70" selection-start-line="70" selection-start-column="70" selection-end-line="70" selection-end-column="70" />
+          <folding>
+            <element signature="e#21#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/swath_expert.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <caret line="50" column="46" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
           <folding>
             <element signature="e#45#56#0" expanded="true" />
           </folding>
@@ -1312,20 +1323,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/chrom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.461538">
-          <caret line="125" column="17" selection-start-line="125" selection-start-column="12" selection-end-line="125" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.52088773">
+          <caret line="63" column="83" selection-start-line="63" selection-start-column="10" selection-end-line="63" selection-end-column="83" />
           <folding>
             <element signature="e#22#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/peak_groups.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3292683">
-          <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
