@@ -262,11 +262,42 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
         # select the peak group with highest corr value
         pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
 
-        return pg_sorted[0]
+        # sometimes, the top peak is same, for example, golden data set peptide # 11, sample gold40. rt 2462, 2471, 2479 are in a same big peak.
+        pg_sorted_max = get_max_rt_from_pg_sorted(pg_sorted, pg_corr)
+
+        if len(pg_sorted_max) == 1:
+            return pg_sorted_max[0]
+
+        else:
+            # if there are multiple pg with same R2 value (in the same peak), select the one with highest intensity (apex)
+            rt0 = pg_sorted_max[0]
+            i0 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['peak_apex_rt_list'][fragment], pg[rt0]['ms2']['peak_apex_i_list'][fragment])
+            for rt in pg_sorted_max[1:]:
+                i = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['peak_apex_rt_list'][fragment], pg[rt]['ms2']['peak_apex_i_list'][fragment])
+                if i > i0:
+                    rt0 = rt
+
+            return rt0
 
     else:
         print 'WARNING: no peak group found when computing fragment intensity correlation'
         return ref_pg['peak_rt']
+
+def get_max_rt_from_pg_sorted(rt_list, pg_corr):
+
+    rt_final = []
+
+    rt_max = rt_list[0]
+    rt_final.append(rt_max)
+
+    corr_max = pg_corr[rt_max]
+
+    for rt in rt_list[1:]:
+        if pg_corr[rt] == corr_max:
+            rt_final.append(rt)
+
+    return rt_final
+
 
 def get_intensity_for_closest_rt(rt0, rt_list, i_list):
 
@@ -352,7 +383,7 @@ def only_one_pg(pg, ref_pg):
 def find_best_match_pg_rule_a(pg, ref_pg, sample):
 
     # for debugging
-    if sample == 'gold89':
+    if sample == 'gold40':
         pass
 
     # filter out peak groups without top 1 fragment as a peak
@@ -434,7 +465,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold40':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary

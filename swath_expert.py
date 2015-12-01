@@ -61,7 +61,6 @@ def main():
     # compute peak area for only the peak-forming fragments
     display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
 
-
     # TODO : 2015.11.21.. see page 77 outline.
     # swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_fragments, quant_file_peptides)
 
