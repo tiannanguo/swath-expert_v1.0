@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold40':
+            if sample == 'gold10':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -73,7 +73,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                 if len(pg) == 0:
                     print 'error, no pg found'
 
-                pg_best = find_best_match_pg(pg, ref_pg)
+                pg_best = find_best_match_pg(pg, ref_pg, sample)
 
                 #BUG:when there is no pg, fill with the best "peak group"!!!!!
 
@@ -265,7 +265,7 @@ def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
     fragment = find_top_n_fragment(n, ref_pg)
 
-    ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
+    ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'] - 10) #minus 10 seconds to be more precise
 
     for rt in pg_filtered_rt:
 
@@ -285,7 +285,7 @@ def find_top_fragment_with_peak(pg):
         if_peak_found = 0
         top_n_fragment_found = -1
         n = 1
-        for fragment in sorted(pg[rt]['ms2']['i'].keys(), reverse = True):
+        for fragment in sorted(pg[rt]['ms2']['i'].keys(), reverse=True):
             for rt0 in pg[rt]['ms2']['peaks_rt'][fragment]:
                 if abs(rt0 - rt) < parameters.MAX_RT_TOLERANCE:
                     if_peak_found = 1
@@ -301,7 +301,11 @@ def find_top_fragment_with_peak(pg):
 
 
 
-def find_best_match_pg(pg, ref_pg):
+def find_best_match_pg(pg, ref_pg, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     if len(pg) == 0:
         return 0
@@ -311,14 +315,18 @@ def find_best_match_pg(pg, ref_pg):
         return pg_best
 
     else:
-        pg_best = find_best_match_pg_rule_a(pg, ref_pg)
+        pg_best = find_best_match_pg_rule_a(pg, ref_pg, sample)
         return pg_best
 
 def only_one_pg(pg, ref_pg):
     return get_peak_group_values(pg, pg.keys()[0], ref_pg)
 
 
-def find_best_match_pg_rule_a(pg, ref_pg):
+def find_best_match_pg_rule_a(pg, ref_pg, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # filter out peak groups without top 1 fragment as a peak
     pg_filtered_rt = filter_peak_group_top_fragment(1, pg, ref_pg, pg.keys())
@@ -327,15 +335,19 @@ def find_best_match_pg_rule_a(pg, ref_pg):
         pg_best = get_peak_group_values(pg, pg_filtered_rt[0], ref_pg)
 
     elif len(pg_filtered_rt) == 0:
-        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg.keys())
+        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg.keys(), sample)
 
     elif len(pg_filtered_rt) > 1:
-        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample)
 
     return pg_best
 
 
-def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # filter out peak groups without top 2 fragment as a peak
     pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)  #####BUGBUGBUGBUG. after this, pg becomes empty!!
@@ -344,31 +356,39 @@ def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt):
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
-def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt, sample):
 
-    # filter out peak groups without MS1 as a peak
+    # for debugging
+    if sample == 'gold10':
+        pass
+
+        # filter out peak groups without MS1 as a peak
     pg_filtered_rt2 = filter_peak_group_ms1(pg, pg_filtered_rt)
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
 
-def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # filter out peak groups without top 1 fragment showing good peak boundary
     pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg, pg_filtered_rt)
@@ -377,14 +397,18 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt):
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
-def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary
     pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg, pg_filtered_rt)
@@ -393,30 +417,38 @@ def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt):
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
-def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt, sample):
 
-    # filter out peak groups without top 1 fragment showing good peak shape
+    # for debugging
+    if sample == 'gold10':
+        pass
+
+        # filter out peak groups without top 1 fragment showing good peak shape
     pg_filtered_rt2 = filter_peak_group_peak_shape(1, pg, ref_pg, pg_filtered_rt)
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
-def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # filter out peak groups without top 2 fragment showing good peak shape
     pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
@@ -425,14 +457,18 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt):
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
 
     elif len(pg_filtered_rt2) == 0:
-        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt)
+        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample)
 
     elif len(pg_filtered_rt2) > 1:
-        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt2)
+        pg_best = find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt2, sample)
 
     return pg_best
 
-def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt):
+def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
+
+    # for debugging
+    if sample == 'gold10':
+        pass
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
     pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
@@ -527,8 +563,7 @@ def build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg):
             ref_pg['ms2']['i_list'][fragment] = chrom_data[tg][ref_sample][fragment].i_list
             ref_pg['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_i_list
             ref_pg['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_rt_list
-            ref_pg['ms2']['peak_apex_i'][fragment] = \
-                find_peak_apex_i_from_list(chrom_data[tg][ref_sample][fragment].peak_apex_i_list,
+            ref_pg['ms2']['peak_apex_i'][fragment] = find_peak_apex_i_from_list(chrom_data[tg][ref_sample][fragment].peak_apex_i_list,
                                            chrom_data[tg][ref_sample][fragment].peak_apex_rt_list, ref_pg['peak_rt'])
 
             display_data[tg][ref_sample]['ms2']['peak_apex_i'][fragment] = ref_pg['ms2']['peak_apex_i'][fragment]
