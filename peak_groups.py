@@ -262,7 +262,7 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
         # select the peak group with highest corr value
         pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
 
-        # sometimes, the top peak is same, for example, golden data set peptide # 11, sample gold40. rt 2462, 2471, 2479 are in a same big peak.
+        # sometimes, the top peak is same
         pg_sorted_max = get_max_rt_from_pg_sorted(pg_sorted, pg_corr)
 
         if len(pg_sorted_max) == 1:
@@ -293,7 +293,7 @@ def get_max_rt_from_pg_sorted(rt_list, pg_corr):
     corr_max = pg_corr[rt_max]
 
     for rt in rt_list[1:]:
-        if pg_corr[rt] == corr_max:
+        if pg_corr[rt] >= corr_max * 0.9:  # empirical
             rt_final.append(rt)
 
     return rt_final
