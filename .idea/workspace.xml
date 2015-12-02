@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="change. max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)  : from 8 down to 6!! because golden peptide #289 sample 38 can not find the peak when it is sharp">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add. function get_good_shape_peak_ms2. when peakdetect param decreased from 8 to 6. many low quality peaks are found. Here I write additional function to remove poor peak groups.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/savitzky_golay.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/swath-expert.iml" afterPath="$PROJECT_DIR$/.idea/swath-expert.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_test_detect_peaks.py" afterPath="$PROJECT_DIR$/_test_detect_peaks.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_tmp_select_png_data.py" afterPath="$PROJECT_DIR$/_tmp_select_png_data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_holder.py" afterPath="$PROJECT_DIR$/data_holder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/io_swath.py" afterPath="$PROJECT_DIR$/io_swath.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
     </list>
@@ -49,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_holder.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="data_holder.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data_holder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="59" selection-start-line="26" selection-start-column="59" selection-end-line="26" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.7598425">
+              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -65,8 +70,23 @@
         <entry file="file://$PROJECT_DIR$/_test_detect_peaks.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="45" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
-              <folding />
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="16" selection-end-column="80" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="savitzky_golay.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/savitzky_golay.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#107#2069#1" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -74,8 +94,8 @@
       <file leaf-file-name="chrom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chrom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.1923075">
-              <caret line="163" column="18" selection-start-line="163" selection-start-column="18" selection-end-line="163" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding>
                 <element signature="e#22#40#0" expanded="true" />
               </folding>
@@ -87,7 +107,7 @@
         <entry file="file://$PROJECT_DIR$/swath_expert.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="54" column="40" selection-start-line="54" selection-start-column="40" selection-end-line="54" selection-end-column="40" />
+              <caret line="41" column="66" selection-start-line="41" selection-start-column="66" selection-end-line="41" selection-end-column="66" />
               <folding>
                 <element signature="e#45#55#0" expanded="true" />
               </folding>
@@ -99,17 +119,17 @@
         <entry file="file://$PROJECT_DIR$/io_swath.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="58" column="62" selection-start-line="58" selection-start-column="62" selection-end-line="58" selection-end-column="62" />
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3003096">
-              <caret line="793" column="27" selection-start-line="793" selection-start-column="4" selection-end-line="793" selection-end-column="27" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
@@ -121,20 +141,10 @@
         <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+              <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
               <folding>
                 <element signature="e#44#55#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="parameters.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/parameters.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="25" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="25" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -172,13 +182,14 @@
         <option value="$PROJECT_DIR$/swath_quant.py" />
         <option value="$PROJECT_DIR$/_test_survival.py" />
         <option value="$PROJECT_DIR$/r_code.py" />
-        <option value="$PROJECT_DIR$/io_swath.py" />
-        <option value="$PROJECT_DIR$/_test_detect_peaks.py" />
-        <option value="$PROJECT_DIR$/_tmp_select_png_data.py" />
-        <option value="$PROJECT_DIR$/data_holder.py" />
-        <option value="$PROJECT_DIR$/swath_expert.py" />
         <option value="$PROJECT_DIR$/chrom.py" />
+        <option value="$PROJECT_DIR$/_tmp_select_png_data.py" />
+        <option value="$PROJECT_DIR$/swath_expert.py" />
         <option value="$PROJECT_DIR$/peak_groups.py" />
+        <option value="$PROJECT_DIR$/io_swath.py" />
+        <option value="$PROJECT_DIR$/savitzky_golay.py" />
+        <option value="$PROJECT_DIR$/_test_detect_peaks.py" />
+        <option value="$PROJECT_DIR$/data_holder.py" />
       </list>
     </option>
   </component>
@@ -186,7 +197,7 @@
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
-    <option name="height" value="1034" />
+    <option name="height" value="1154" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -218,7 +229,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -231,28 +242,16 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="swath-expert" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="ToolWindowEvent Log.ShowToolbar" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.swath_expert">
+  <component name="RunManager" selected="Python._test_detect_peaks">
     <configuration default="false" name="swath_expert" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -469,9 +468,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.swath_expert" />
-        <item index="1" class="java.lang.String" itemvalue="Python._tmp_select_png_data" />
-        <item index="2" class="java.lang.String" itemvalue="Python._test_detect_peaks" />
+        <item index="0" class="java.lang.String" itemvalue="Python._test_detect_peaks" />
+        <item index="1" class="java.lang.String" itemvalue="Python.swath_expert" />
+        <item index="2" class="java.lang.String" itemvalue="Python._tmp_select_png_data" />
         <item index="3" class="java.lang.String" itemvalue="Python.swath_quant" />
         <item index="4" class="java.lang.String" itemvalue="Python._test2" />
       </list>
@@ -487,12 +486,6 @@
       <created>1447246281365</created>
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
-    </task>
-    <task id="LOCAL-00026" summary="debug. solve peak_apex_i issue. still bugs">
-      <created>1447750558563</created>
-      <option name="number" value="00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1447750558563</updated>
     </task>
     <task id="LOCAL-00027" summary="debug. sometimes pg is empty. correct it. still have bug">
       <created>1447752828970</created>
@@ -782,7 +775,13 @@
       <option name="project" value="LOCAL" />
       <updated>1449004638854</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="add. function get_good_shape_peak_ms2. when peakdetect param decreased from 8 to 6. many low quality peaks are found. Here I write additional function to remove poor peak groups.">
+      <created>1449008387616</created>
+      <option name="number" value="00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1449008387616</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -796,27 +795,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1034" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1154" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20431806" sideWeight="0.49061662" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297456" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.31893688" sideWeight="0.50605583" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21816169" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22702104" sideWeight="0.49815693" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29678848" sideWeight="0.49394417" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33856893" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21722114" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22700587" sideWeight="0.49815693" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30332682" sideWeight="0.49394417" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24960506" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32752612" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32681018" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20446096" sideWeight="0.5093834" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31893688" sideWeight="0.49394417" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31800392" sideWeight="0.49394417" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33856893" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -853,7 +852,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add. sometimes the best_sample differs, select the best sample for each tg in all samples. add function in swath_io" />
     <MESSAGE value="add fucntion find_rt_for_reference_sample. correct wrong ref peak groups selected by openswath" />
     <MESSAGE value="add fucntion refine_reference_sample_peak_boundary. two peak groups found in the reference sample" />
     <MESSAGE value="check bug. not much change." />
@@ -878,16 +876,17 @@
     <MESSAGE value="add. get more sophisticated codes to get the max value of ms2" />
     <MESSAGE value="improve. get_max_rt_from_pg_sorted. all corr values higher than 0.9 max are included." />
     <MESSAGE value="change. max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)  : from 8 down to 6!! because golden peptide #289 sample 38 can not find the peak when it is sharp" />
-    <option name="LAST_COMMIT_MESSAGE" value="change. max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)  : from 8 down to 6!! because golden peptide #289 sample 38 can not find the peak when it is sharp" />
+    <MESSAGE value="add. function get_good_shape_peak_ms2. when peakdetect param decreased from 8 to 6. many low quality peaks are found. Here I write additional function to remove poor peak groups." />
+    <option name="LAST_COMMIT_MESSAGE" value="add. function get_good_shape_peak_ms2. when peakdetect param decreased from 8 to 6. many low quality peaks are found. Here I write additional function to remove poor peak groups." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/peak_groups.py</url>
-          <line>742</line>
-          <option name="timeStamp" value="203" />
+          <url>file://$PROJECT_DIR$/io_swath.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="209" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -900,7 +899,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="204" />
+      <option name="time" value="210" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -909,24 +908,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="10" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/r_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-          <folding>
-            <element signature="e#45#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/swath_quant.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1273,48 +1254,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_test_detect_peaks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="45" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/io_swath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="58" column="62" selection-start-line="58" selection-start-column="62" selection-end-line="58" selection-end-column="62" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
-          <folding>
-            <element signature="e#44#55#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chrom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.1923075">
-          <caret line="163" column="18" selection-start-line="163" selection-start-column="18" selection-end-line="163" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding>
             <element signature="e#22#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_holder.py">
+    <entry file="file://$PROJECT_DIR$/_tmp_select_png_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="59" selection-start-line="26" selection-start-column="59" selection-end-line="26" selection-end-column="59" />
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#44#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd_exec.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.06140351">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+          <folding>
+            <element signature="e#21#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1322,19 +1295,48 @@
     <entry file="file://$PROJECT_DIR$/swath_expert.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="40" selection-start-line="54" selection-start-column="40" selection-end-line="54" selection-end-column="40" />
+          <caret line="41" column="66" selection-start-line="41" selection-start-column="66" selection-end-line="41" selection-end-column="66" />
           <folding>
             <element signature="e#45#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/peak_groups.py">
+    <entry file="file://$PROJECT_DIR$/io_swath.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3003096">
-          <caret line="793" column="27" selection-start-line="793" selection-start-column="4" selection-end-line="793" selection-end-column="27" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/savitzky_golay.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
           <folding>
-            <element signature="e#21#33#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#107#2069#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_test_detect_peaks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="16" selection-end-column="80" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_holder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7598425">
+          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>

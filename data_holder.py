@@ -4,6 +4,7 @@ import peak_groups
 import chrom
 import numpy as np
 import copy
+import savitzky_golay as sg
 
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
@@ -21,24 +22,29 @@ class Chromatogram(object):
         rt_list = map(float, peaks.rt_three_values_to_full_list_string(rt_list_three_values_csv).split(','))
         i_list = map(float, i_list_csv.split(','))
 
+        i_list_smoothed = smooth_chromatogram_using_Savitzky_Golay(i_list)
+
         self.rt_list = rt_list
         self.i_list = i_list
+        self.i_list_smoothed = i_list_smoothed
 
         max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)
+        max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 6.0, 0.3)
 
         if len(max_peaks) > 0:
 
-            self.peak_apex_rt_list = [rt for (rt, i) in max_peaks]
-            self.peak_apex_i_list = [i for (rt, i) in max_peaks]
+            self.peak_apex_rt_list = [rt for (rt, i) in max_peaks] + [rt for (rt, i) in max_peaks_smoothed]
+            self.peak_apex_i_list = [i for (rt, i) in max_peaks] + [i for (rt, i) in max_peaks_smoothed]
 
         else:
             # if no peak found. Most likely there is no signal. Use looser criteria to detect peaks
 
             max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
+            max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
 
             if len(max_peaks) > 0:
-                self.peak_apex_rt_list = [rt for (rt, i) in max_peaks]
-                self.peak_apex_i_list = [i for (rt, i) in max_peaks]
+                self.peak_apex_rt_list = [rt for (rt, i) in max_peaks] + [rt for (rt, i) in max_peaks_smoothed]
+                self.peak_apex_i_list = [i for (rt, i) in max_peaks] + [i for (rt, i) in max_peaks_smoothed]
 
             else:
                 # if still no peak found, most likely it is an empty chrom.
@@ -56,6 +62,11 @@ class Chromatogram(object):
     # def size(self):
     #     return len(self.rt_list)
 
+
+def smooth_chromatogram_using_Savitzky_Golay(i_list):
+
+    i_list2 = sg.savitzky_golay(i_list, 11, 3)  # window size 11, polynomial order 3. Optimized for chrom
+    return i_list2.tolist()
 
 class Reference_sample(object):
 

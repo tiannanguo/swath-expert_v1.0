@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold38':
+            if sample == 'gold90':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -75,7 +75,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
                 pg_best = find_best_match_pg(pg, ref_pg, sample)
 
-                #BUG:when there is no pg, fill with the best "peak group"!!!!!
+                #BUG:when there is no pg, fill with the best "peak group"!!!!! -? 151202
 
                 if pg_best == 0:
                     #TODO no peak found. cannot be!!!
@@ -404,7 +404,7 @@ def find_best_match_pg_rule_a(pg, ref_pg, sample):
 def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold29':
+    if sample == 'gold90':
         pass
 
     # filter out peak groups without top 2 fragment as a peak
