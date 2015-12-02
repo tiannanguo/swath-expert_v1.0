@@ -63,7 +63,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold90':
+            if sample == 'gold20':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -362,7 +362,7 @@ def find_top_fragment_with_peak(pg):
 def find_best_match_pg(pg, ref_pg, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold30':
         pass
 
     if len(pg) == 0:
@@ -404,7 +404,7 @@ def find_best_match_pg_rule_a(pg, ref_pg, sample):
 def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold90':
+    if sample == 'gold30':
         pass
 
     # filter out peak groups without top 2 fragment as a peak
@@ -723,7 +723,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
 
     for rt in peak_group_candidates[tg][sample].keys():
         num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
-        if num_fragments >= num_good_fragments - 1:
+        if num_fragments >= num_good_fragments - 3:
             good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
             num_good_fragments = num_fragments
             rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
@@ -844,7 +844,7 @@ def select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, sele
     selected_rt_if_ms1_2 ={}
 
     for rt in selected_rt_num_fragment.keys():
-        if selected_rt_num_fragment[rt] >= max_good_fragments - 1:
+        if selected_rt_num_fragment[rt] >= max_good_fragments - 3:
             selected_rt_num_fragment_2[rt] = selected_rt_num_fragment[rt]
             selected_rt_if_ms1_2[rt] = selected_rt_if_ms1[rt]
 

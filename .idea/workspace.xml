@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list id="28561294-6a7f-4fc7-8f51-aa825026f24b" name="upload to github" comment="upload to github" />
-    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="add. sometimes broad peaks with shoulders are missed. Smooth the curve with Savitzky Golay.">
+    <list default="true" id="866f8a1d-8c45-4e69-aaf1-287a1272ba4b" name="New changelist" comment="debug. After S.Golay smoothing, sometimes peak_rt in the ref sample is peaks found in smoothed curves. match it back to the raw peaks.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_holder.py" afterPath="$PROJECT_DIR$/data_holder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/parameters.py" afterPath="$PROJECT_DIR$/parameters.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peak_groups.py" afterPath="$PROJECT_DIR$/peak_groups.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swath_expert.py" afterPath="$PROJECT_DIR$/swath_expert.py" />
     </list>
     <ignored path="swath-expert.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,18 +27,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="r_code.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/r_code.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-              <folding>
-                <element signature="e#45#56#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="swath_quant.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/swath_quant.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -101,7 +90,7 @@
         <entry file="file://$PROJECT_DIR$/swath_expert.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+              <caret line="58" column="59" selection-start-line="58" selection-start-column="59" selection-end-line="58" selection-end-column="59" />
               <folding>
                 <element signature="e#45#55#0" expanded="true" />
               </folding>
@@ -122,11 +111,21 @@
       <file leaf-file-name="peak_groups.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peak_groups.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.024556616">
-              <caret line="880" column="15" selection-start-line="880" selection-start-column="15" selection-end-line="880" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.4023591">
+              <caret line="389" column="12" selection-start-line="389" selection-start-column="12" selection-end-line="389" selection-end-column="12" />
               <folding>
                 <element signature="e#21#33#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="parameters.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/parameters.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="68" selection-start-line="14" selection-start-column="68" selection-end-line="14" selection-end-column="68" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -171,18 +170,18 @@
         <option value="$PROJECT_DIR$/peaks.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/_tmp_test_best_sample.py" />
-        <option value="$PROJECT_DIR$/parameters.py" />
         <option value="$PROJECT_DIR$/_test2.py" />
         <option value="$PROJECT_DIR$/swath_quant.py" />
         <option value="$PROJECT_DIR$/_test_survival.py" />
         <option value="$PROJECT_DIR$/r_code.py" />
         <option value="$PROJECT_DIR$/chrom.py" />
         <option value="$PROJECT_DIR$/_tmp_select_png_data.py" />
-        <option value="$PROJECT_DIR$/swath_expert.py" />
         <option value="$PROJECT_DIR$/io_swath.py" />
         <option value="$PROJECT_DIR$/savitzky_golay.py" />
         <option value="$PROJECT_DIR$/_test_detect_peaks.py" />
         <option value="$PROJECT_DIR$/data_holder.py" />
+        <option value="$PROJECT_DIR$/swath_expert.py" />
+        <option value="$PROJECT_DIR$/parameters.py" />
         <option value="$PROJECT_DIR$/peak_groups.py" />
       </list>
     </option>
@@ -239,7 +238,7 @@
     <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="editor.preferences.smartKeys" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="ToolWindowEvent Log.ShowToolbar" value="false" />
@@ -480,12 +479,6 @@
       <created>1447246281365</created>
       <option name="number" value="Default" />
       <updated>1447247835835</updated>
-    </task>
-    <task id="LOCAL-00028" summary="debug. function compute_peak_area2">
-      <created>1447752965904</created>
-      <option name="number" value="00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1447752965904</updated>
     </task>
     <task id="LOCAL-00029" summary="debug. function refine_reference_sample_rt_range. display_data. reference sample. ms1, ms2 tags missing">
       <created>1447753825542</created>
@@ -775,7 +768,13 @@
       <option name="project" value="LOCAL" />
       <updated>1449053692186</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="debug. After S.Golay smoothing, sometimes peak_rt in the ref sample is peaks found in smoothed curves. match it back to the raw peaks.">
+      <created>1449057508643</created>
+      <option name="number" value="00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1449057508643</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <option name="trackContextForNewChangelist" value="true" />
     <servers />
   </component>
@@ -796,12 +795,12 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297456" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.31893688" sideWeight="0.50605583" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21722114" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22700587" sideWeight="0.49815693" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30332682" sideWeight="0.49394417" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22678398" sideWeight="0.49815693" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3030303" sideWeight="0.49394417" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24960506" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32681018" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20446096" sideWeight="0.5093834" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31800392" sideWeight="0.49394417" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31769305" sideWeight="0.49394417" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -846,7 +845,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add fucntion refine_reference_sample_peak_boundary. two peak groups found in the reference sample" />
     <MESSAGE value="check bug. not much change." />
     <MESSAGE value="debug. color codes for fragments in all samples are now synchronized" />
     <MESSAGE value="debug. bug in find_top_n_fragment. re-write the sort function" />
@@ -871,16 +869,22 @@
     <MESSAGE value="change. max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)  : from 8 down to 6!! because golden peptide #289 sample 38 can not find the peak when it is sharp" />
     <MESSAGE value="add. function get_good_shape_peak_ms2. when peakdetect param decreased from 8 to 6. many low quality peaks are found. Here I write additional function to remove poor peak groups." />
     <MESSAGE value="add. sometimes broad peaks with shoulders are missed. Smooth the curve with Savitzky Golay." />
-    <option name="LAST_COMMIT_MESSAGE" value="add. sometimes broad peaks with shoulders are missed. Smooth the curve with Savitzky Golay." />
+    <MESSAGE value="debug. After S.Golay smoothing, sometimes peak_rt in the ref sample is peaks found in smoothed curves. match it back to the raw peaks." />
+    <option name="LAST_COMMIT_MESSAGE" value="debug. After S.Golay smoothing, sometimes peak_rt in the ref sample is peaks found in smoothed curves. match it back to the raw peaks." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/swath_expert.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="216" />
+          <url>file://$PROJECT_DIR$/peak_groups.py</url>
+          <line>407</line>
+          <option name="timeStamp" value="226" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/peak_groups.py</url>
+          <line>65</line>
+          <option name="timeStamp" value="227" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -893,7 +897,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="217" />
+      <option name="time" value="228" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -1222,14 +1226,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="25" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/r_code.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1314,10 +1310,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/parameters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="68" selection-start-line="14" selection-start-column="68" selection-end-line="14" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/swath_expert.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <caret line="58" column="59" selection-start-line="58" selection-start-column="59" selection-end-line="58" selection-end-column="59" />
           <folding>
             <element signature="e#45#55#0" expanded="true" />
           </folding>
@@ -1326,8 +1330,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peak_groups.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.024556616">
-          <caret line="880" column="15" selection-start-line="880" selection-start-column="15" selection-end-line="880" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.4023591">
+          <caret line="389" column="12" selection-start-line="389" selection-start-column="12" selection-end-line="389" selection-end-column="12" />
           <folding>
             <element signature="e#21#33#0" expanded="true" />
           </folding>
