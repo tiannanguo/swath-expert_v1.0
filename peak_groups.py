@@ -712,7 +712,6 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
     # find out the peak group with highest number of good fragments
 
     sample = ref_sample_data[tg].sample_name
-    best_rt = ref_sample_data[tg].peak_rt
     num_good_fragments = 0
     good_fragments = []
     if_ms1 = 0
@@ -856,7 +855,7 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chr
     # 2015.11.18. sometimes OpenSWATH picked the wrong peak group even for the reference sample.
     # here implement a check of correct peak group
 
-    best_rt_check, num_good_fragments_check, if_ms1_check, good_fragments_check, rt_dif_check = \
+    best_rt_after_check, num_good_fragments_check, if_ms1_check, good_fragments_check, rt_dif_check = \
         check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data)
 
     # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
@@ -878,13 +877,16 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chr
                 rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
                 rt_found = rt
 
+    # after introducing S Golay smoothing, sometimes the best_rt_after_check is smoothed value. here match to the raw peak
+    best_rt_after_check = match_smoothed_peak_to_raw_peak(best_rt_after_check, peak_group_candidates[tg][sample].keys())
+
     # sometimes there is NO peak group in the openswath reported location!
     if rt_found == -1.0:
-        return good_fragments_check, rt_dif_check, best_rt_check
+        return good_fragments_check, rt_dif_check, best_rt_after_check
 
-    elif abs(best_rt_check - best_rt) < parameters.MAX_RT_TOLERANCE:
+    elif abs(best_rt_after_check - best_rt) < parameters.MAX_RT_TOLERANCE:
         # what we find here is comparable to openswath report
-        return good_fragments_check, rt_dif_check, best_rt_check
+        return good_fragments_check, rt_dif_check, best_rt_after_check
 
     # empirical rule
     else:
@@ -899,10 +901,35 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chr
         if (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_NO_MS1) \
             or (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_UNIQUE_MS1 and if_unique_ms1 == 1):
 
-            return good_fragments_check, rt_dif_check, best_rt_check
+            return good_fragments_check, rt_dif_check, best_rt_after_check
 
         else:
             return good_fragments, rt_dif, best_rt
+
+
+def match_smoothed_peak_to_raw_peak(rt0, rt_list):
+
+    rt1 = -1
+
+    if rt0 in rt_list:
+        rt1 = rt0
+    else:
+        # due to Savitzky Golay smoothing, sometimes the found rt0 is not the real one
+        rt1 = find_closest_rt_value(rt0, rt_list)
+
+    return rt1
+
+
+def find_closest_rt_value(rt0, rt_list):
+    rt1 = rt_list[0]
+    rt_dif = 9999.99
+    for rt in rt_list[1:]:
+        rt_dif2 = abs(rt1 - rt)
+        if rt_dif2 < rt_dif:
+            rt1 = rt
+            rt_dif = rt_dif2
+    return rt1
+
 
 
 def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
@@ -943,6 +970,8 @@ def refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chr
                             del peptide_data[tg]['ms2'][fragment]
 
     return ref_sample_data, chrom_data, peptide_data, peak_group_candidates
+
+
 
 def binning_rt_values(rt_list):
 

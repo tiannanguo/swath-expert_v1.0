@@ -65,7 +65,7 @@ class Chromatogram(object):
 
 def smooth_chromatogram_using_Savitzky_Golay(i_list):
 
-    i_list2 = sg.savitzky_golay(i_list, 11, 3)  # window size 11, polynomial order 3. Optimized for chrom
+    i_list2 = sg.savitzky_golay(np.array(i_list), 11, 3)  # window size 11, polynomial order 3. Optimized for chrom
     return i_list2.tolist()
 
 class Reference_sample(object):
