@@ -42,6 +42,8 @@ class Chromatogram(object):
             max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
             max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
 
+            max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+
             if len(max_peaks) > 0:
                 self.peak_apex_rt_list = [rt for (rt, i) in max_peaks] + [rt for (rt, i) in max_peaks_smoothed]
                 self.peak_apex_i_list = [i for (rt, i) in max_peaks] + [i for (rt, i) in max_peaks_smoothed]
@@ -61,6 +63,46 @@ class Chromatogram(object):
 
     # def size(self):
     #     return len(self.rt_list)
+
+def filter_smoothed_peaks_based_on_raw_peaks(peaks, peaks_smoothed):
+    peaks_smoothed2 = []
+    for rt, i in peaks_smoothed:
+        if_select = decide_whether_choose_a_smoothed_rt(rt, [rt for (rt, i) in peaks])
+        if if_select == 1:
+            peaks_smoothed2.append((rt, i))
+    return peaks_smoothed2
+
+def decide_whether_choose_a_smoothed_rt(rt0, rt_list):
+    if_select = 0
+
+    rt_closest_left = find_closest_rt_left(rt0, rt_list)
+    rt_closest_right = find_closest_rt_right(rt0, rt_list)
+
+    if abs(rt_closest_left - rt0) > 10 and abs(rt_closest_right - rt0) > 10:
+        if_select = 1
+    return if_select
+
+def find_closest_rt_left(rt0, rt_list):
+    rt1 = rt_list[0]
+    rt_dif = 999.999
+    for rt in rt_list[1:]:
+        if rt < rt0:
+            rt_dif2 = rt0 - rt
+            if rt_dif2 < rt_dif:
+                rt1 = rt
+                rt_dif = rt_dif2
+    return rt1
+
+def find_closest_rt_right(rt0, rt_list):
+    rt1 = rt_list[0]
+    rt_dif = 999.999
+    for rt in rt_list[1:]:
+        if rt > rt0:
+            rt_dif2 = rt - rt0
+            if rt_dif2 < rt_dif:
+                rt1 = rt
+                rt_dif = rt_dif2
+    return rt1
 
 
 def smooth_chromatogram_using_Savitzky_Golay(i_list):
