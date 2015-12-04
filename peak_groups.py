@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold10':
+            if sample == 'gold30':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -298,9 +298,15 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
         else:
             # if there are multiple pg with same R2 value (in the same peak), select the one with highest intensity (apex)
             rt0 = pg_sorted_max[0]
-            i0 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][fragment], pg[rt0]['ms2']['i_list'][fragment])
+            top1_fragment = find_top_n_fragment(1, ref_pg)
+            top2_fragment = find_top_n_fragment(2, ref_pg)
+            top3_fragment = find_top_n_fragment(3, ref_pg)
+            i0 = get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt0, pg)
+
             for rt in pg_sorted_max[1:]:
-                i = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
+
+                i = get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt, pg)
+
                 if i > i0:
                     rt0 = rt
 
@@ -309,6 +315,19 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
     else:
         print 'WARNING: no peak group found when computing fragment intensity correlation'
         return ref_pg['peak_rt']
+
+def get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt0, pg):
+
+    i1 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top1_fragment], pg[rt0]['ms2']['i_list'][top1_fragment])
+    i2 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top2_fragment],
+                                      pg[rt0]['ms2']['i_list'][top2_fragment])
+    i3 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top3_fragment],
+                                      pg[rt0]['ms2']['i_list'][top3_fragment])
+
+    return (i1 + i2 + i3) / 3.0
+
+
+
 
 def get_max_rt_from_pg_sorted(rt_list, pg_corr):
 
@@ -552,7 +571,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold40':
+    if sample == 'gold30':
         pass
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
