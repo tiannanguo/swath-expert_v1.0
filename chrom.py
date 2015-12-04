@@ -168,6 +168,9 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_f
     if pg_rt_left < 0:
         pg_rt_left = rt_left_list2[0]
         pg_rt_right = rt_right_list2[0]
+    else:
+        pg_rt_left += 3
+        pg_rt_right += 3
 
     return pg_rt_left, pg_rt_right
 
@@ -293,43 +296,6 @@ def get_peak_boundary_worker_right(start_index, end_index, rt_list, i_list):
 
     return rt_list[boundary_index]
 
-
-# back up. check two points to get the boundary
-# def get_peak_boundary_worker_right(start_index, end_index, rt_list, i_list):
-#
-#     # find the turning point by checking slope value
-#     boundary_index = -1
-#     boundary_index_backup = -1  #this is a backup turning point. if the true turning point confirmed by two slopes can not be found, then use this one
-#
-#     peak_i = i_list[start_index]
-#
-#     for j in range(start_index, end_index - 1):
-#         point_1_i = i_list[j]
-#         point_2_i = i_list[j + 1]
-#         point_3_i = i_list[j + 2]
-#
-#         i_ratio = point_1_i / (peak_i + 0.001)
-#
-#         if i_ratio < 0.3: # empirical value
-#             if point_1_i <= point_2_i:
-#                 # this is a turning point
-#                 boundary_index_backup = j
-#                 if point_2_i <= point_3_i:
-#                     # confirm by the next point that this is a true turning point
-#                     boundary_index = j
-#                     break
-#
-#     if boundary_index == -1:  # if no double-confirmed turning point is found, then use the backup
-#         if boundary_index_backup > 0:
-#             boundary_index = boundary_index_backup
-#         else:
-#             # if no turning point found, then use the end point
-#             boundary_index = end_index
-#
-#     return rt_list[boundary_index]
-
-
-
 def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
 
     # find the turning point by checking slope value
@@ -339,7 +305,7 @@ def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
 
     for j in range(start_index, end_index, -1):  #end point + 1 because we consider two points here
         point_1_i = i_list[j]
-        point_2_i = i_list[j + 1]
+        point_2_i = i_list[j - 1]
 
         i_ratio = point_1_i / (peak_i + 0.001)
 
@@ -354,37 +320,3 @@ def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
         boundary_index = end_index
 
     return rt_list[boundary_index]
-
-# back up. use two points to compute boundary
-# def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
-#
-#     # find the turning point by checking slope value
-#     boundary_index = -1
-#     boundary_index_backup = -1  #this is a backup turning point. if the true turning point confirmed by two slopes can not be found, then use this one
-#
-#     peak_i = i_list[start_index]
-#
-#     for j in range(start_index, end_index + 1, -1):  #end point + 1 because we consider two points here
-#         point_1_i = i_list[j]
-#         point_2_i = i_list[j + 1]
-#         point_3_i = i_list[j + 2]
-#
-#         i_ratio = point_1_i / (peak_i + 0.001)
-#
-#         if i_ratio < 0.3: # empirical value
-#             if point_1_i <= point_2_i:
-#                 # this is a turning point
-#                 boundary_index_backup = j
-#                 if point_2_i <= point_3_i:
-#                     # confirm by the next point that this is a true turning point
-#                     boundary_index = j
-#                     break
-#
-#     if boundary_index == -1:  # if no double-confirmed turning point is found, then use the backup
-#         if boundary_index_backup > 0:
-#             boundary_index = boundary_index_backup
-#         else:
-#             # if no turning point found, then use the end point
-#             boundary_index = end_index
-#
-#     return rt_list[boundary_index]
