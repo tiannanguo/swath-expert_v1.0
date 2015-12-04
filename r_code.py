@@ -210,7 +210,7 @@ def write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_s
 
     r_code += '''int = c(%s)\n''' % i_list
 
-    r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-100, 100), ''' \
+    r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-110, 110), ''' \
                          '''lwd = %.1f, xlab = "retention time (s)", ylab = "intensity (''' % (
                              display_data[tg][sample]['rt_left'],
                              display_data[tg][sample]['rt_right'],

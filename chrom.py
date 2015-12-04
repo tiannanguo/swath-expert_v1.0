@@ -52,14 +52,16 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found)
 
         # sometimes within the range between rt_left and rt_right, there are two peaks
-        # in this case, perform an inspection to refine the peak bounary
+        # in this case, perform an inspection to refine the peak boundary
 
         num_pg_in_range = get_num_peak_groups_in_range(ref_sample_rt_left, ref_sample_rt_right, chrom_data, tg, reference_sample)
 
         if num_pg_in_range > 1:
 
-            ref_sample_rt_left, ref_sample_rt_right = \
-                refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
+            print "the function get_num_peak_groups_in_range or get_peak_boundary still has bug. >1 pg found in reference sample"
+
+            #ref_sample_rt_left, ref_sample_rt_right = \
+            #    refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
 
         # if the ref sample peak is too narrow, < 30 sec, extend 5 sec at both ends
         if ref_sample_rt_right - ref_sample_rt_left < 30:
@@ -94,46 +96,13 @@ def get_num_peak_groups_in_range(rt_left, rt_right, chrom_data, tg, sample):
     else:
         pg_found = {}
         for rt in all_rt2:
-            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt, 0.1)
+            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
             if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
                 pg_found[rt] = this_peak_group
         num_pg_in_range = len(pg_found)
 
     return num_pg_in_range
 
-
-def refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg):
-
-    # sometimes in the rt range, there are multiple peak groups, select only one
-    rt_range = ref_sample_rt_right - ref_sample_rt_left
-
-    if_rt_range_shrinked = 0
-    fold_change = 0.1
-    rt_left = ref_sample_rt_left
-    rt_right = ref_sample_rt_right
-
-    while if_rt_range_shrinked == 0:
-
-        fold_change += 0.05
-        this_pg = data_holder.Peak_group(chrom_data, tg, reference_sample, peak_rt_found, fold_change)
-
-        fragments = this_pg.matched_fragments
-        i = this_pg.matched_fragments_i
-        rt_left_list = this_pg.matched_fragments_peak_rt_left
-        rt_right_list = this_pg.matched_fragments_peak_rt_right
-
-        rt_left, rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found)
-
-        rt_range2 = rt_right - rt_left
-
-        # empirical rule
-        if rt_range == 0:
-            print "WARNING: rt range of reference sample is 0"
-        elif (rt_range - rt_range2) / rt_range > 0.3:
-            if_rt_range_shrinked = 1
-            break
-
-    return rt_left, rt_right
 
 
 def get_rt_list_in_a_range(rt_list, rt_left, rt_right):
@@ -163,15 +132,16 @@ def refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sam
 
 def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found):
 
-    # sort by decreasing intensity
+    pg_rt_left = -1
+    pg_rt_right = -1
+
+    # sort fragments by decreasing intensity
     i2 = sorted(i, reverse=1)
     fragments2 = [x for (y, x) in sorted(zip(i, fragments), reverse=1)]
     rt_left_list2 = [y for (y, x) in sorted(zip(rt_left_list, fragments), reverse=1)]
     rt_right_list2 = [y for (y, x) in sorted(zip(rt_right_list, fragments), reverse=1)]
 
-    rt_left3 = -1
-    rt_right3 = -1
-    # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, decending the fragment untill find a reasonable boundary
+    # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, descending the fragment until find a reasonable boundary
     for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left_list2, rt_right_list2):
 
         distance_left = peak_rt_found - rt_left0
@@ -183,7 +153,6 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_f
             if parameters.PEAK_BOUNDARY_RT_LEFT_RIGHT_RATIO_TOLERANCE < ratio < 1 / parameters.PEAK_BOUNDARY_RT_LEFT_RIGHT_RATIO_TOLERANCE:
                 if_good_peak_boundary = 1
 
-
         if rt_right0 - rt_left0 > parameters.MAX_PEAK_WIDTH or if_good_peak_boundary == 0:
 
             continue
@@ -191,16 +160,16 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_f
         else:
 
             peak_half_width = min(distance_left, distance_right)
-            rt_left3 = peak_rt_found - peak_half_width
-            rt_right3 = peak_rt_found + peak_half_width
+            pg_rt_left = peak_rt_found - peak_half_width
+            pg_rt_right = peak_rt_found + peak_half_width
             break
 
     # if no peak boundary found, use the one from highest peak
-    if rt_left3 < 0:
-        rt_left3 = rt_left_list2[0]
-        rt_right3 = rt_right_list2[0]
+    if pg_rt_left < 0:
+        pg_rt_left = rt_left_list2[0]
+        pg_rt_right = rt_right_list2[0]
 
-    return rt_left3, rt_right3
+    return pg_rt_left, pg_rt_right
 
 def get_chrom_range(rt_left, rt_right, rt_list, i_list):
     rt_list2 = []
@@ -265,40 +234,33 @@ def compute_peak_area2(rt_list, i_list):
 
 
 
-def get_peak_boundary(rt_list, i_list, peak_rt, fold_change):
+def get_peak_boundary(rt_list, i_list, peak_rt):
 
-    # fold_change = 0.1 -> the intensity decrease at peak boundaries
-
-    peak_rt_left = rt_list[0]
-    peak_rt_right = rt_list[-1]
-
-    max_int = -1.0
+    # find the apex
     peak_index = -1
     for i in range(len(rt_list)):
         if abs(rt_list[i] - peak_rt) < 3:
-            max_int = i_list[i]
             peak_index = i
             break
 
-    for j in range(peak_index, len(rt_list)):
-        #find the boundary, intensity < 10% of max intensity
-        if i_list[j] < max_int * fold_change:
-            peak_rt_right = rt_list[j]
-            break
+    # find right boundary
+    start_index_right = peak_index
+    end_index_right = len(rt_list) - 1
+    peak_rt_right = get_peak_boundary_worker_right(start_index_right, end_index_right, rt_list, i_list)
 
-    for j in range(peak_index, -1, -1):
-        #find the boundary, intensity < 10% of max intensity
-        if i_list[j] < max_int * fold_change:
-            peak_rt_left = rt_list[j]
-            break
+    # find left boundary
+    start_index_left = peak_index
+    end_index_left = 0
+    peak_rt_left = get_peak_boundary_worker_left(start_index_left, end_index_left, rt_list, i_list)
 
-    #extent 5 seconds
-    if peak_rt_left - rt_list[0] > 5:
-        peak_rt_left -= 5
+    # extent 3 seconds
+    if peak_rt_left - rt_list[0] > 3:
+        peak_rt_left -= 3
     else:
         peak_rt_left = rt_list[0]
-    if rt_list[-1] - peak_rt_right > 5:
-        peak_rt_right += 5
+
+    if rt_list[-1] - peak_rt_right > 3:
+        peak_rt_right += 3
     else:
         peak_rt_right = rt_list[-1]
 
@@ -306,5 +268,69 @@ def get_peak_boundary(rt_list, i_list, peak_rt, fold_change):
 
 
 
+def get_peak_boundary_worker_right(start_index, end_index, rt_list, i_list):
+
+    # find the turning point by checking slope value
+    boundary_index = -1
+    boundary_index_backup = -1  #this is a backup turning point. if the true turning point confirmed by two slopes can not be found, then use this one
+
+    peak_i = i_list[start_index]
+
+    for j in range(start_index, end_index - 1):
+        point_1_i = i_list[j]
+        point_2_i = i_list[j + 1]
+        point_3_i = i_list[j + 2]
+
+        i_ratio = point_1_i / (peak_i + 0.001)
+
+        if i_ratio < 0.3: # empirical value
+            if point_1_i <= point_2_i:
+                # this is a turning point
+                boundary_index_backup = j
+                if point_2_i <= point_3_i:
+                    # confirm by the next point that this is a true turning point
+                    boundary_index = j
+                    break
+
+    if boundary_index == -1:  # if no double-confirmed turning point is found, then use the backup
+        if boundary_index_backup > 0:
+            boundary_index = boundary_index_backup
+        else:
+            # if no turning point found, then use the end point
+            boundary_index = end_index
+
+    return rt_list[boundary_index]
 
 
+def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
+
+    # find the turning point by checking slope value
+    boundary_index = -1
+    boundary_index_backup = -1  #this is a backup turning point. if the true turning point confirmed by two slopes can not be found, then use this one
+
+    peak_i = i_list[start_index]
+
+    for j in range(start_index, end_index + 1, -1):  #end point + 1 because we consider two points here
+        point_1_i = i_list[j]
+        point_2_i = i_list[j + 1]
+        point_3_i = i_list[j + 2]
+
+        i_ratio = point_1_i / (peak_i + 0.001)
+
+        if i_ratio < 0.3: # empirical value
+            if point_1_i <= point_2_i:
+                # this is a turning point
+                boundary_index_backup = j
+                if point_2_i <= point_3_i:
+                    # confirm by the next point that this is a true turning point
+                    boundary_index = j
+                    break
+
+    if boundary_index == -1:  # if no double-confirmed turning point is found, then use the backup
+        if boundary_index_backup > 0:
+            boundary_index = boundary_index_backup
+        else:
+            # if no turning point found, then use the end point
+            boundary_index = end_index
+
+    return rt_list[boundary_index]

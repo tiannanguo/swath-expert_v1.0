@@ -3,8 +3,8 @@ import peaks
 import peak_groups
 import chrom
 import numpy as np
-import copy
 import savitzky_golay as sg
+import parameters
 
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
@@ -22,31 +22,37 @@ class Chromatogram(object):
         rt_list = map(float, peaks.rt_three_values_to_full_list_string(rt_list_three_values_csv).split(','))
         i_list = map(float, i_list_csv.split(','))
 
-        i_list_smoothed = smooth_chromatogram_using_Savitzky_Golay(i_list)
+        # i_list_smoothed = smooth_chromatogram_using_Savitzky_Golay(i_list)
 
         self.rt_list = rt_list
         self.i_list = i_list
-        self.i_list_smoothed = i_list_smoothed
+        # self.i_list_smoothed = i_list_smoothed
 
-        max_peaks, __ = peaks.peakdetect(i_list, rt_list, 6.0, 0.3)
-        max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 6.0, 0.3)
+        max_peaks, __ = peaks.peakdetect(i_list, rt_list, 2.0, 0.3)
+        # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 6.0, 0.3)
 
         if len(max_peaks) > 0:
 
-            self.peak_apex_rt_list = [rt for (rt, i) in max_peaks] + [rt for (rt, i) in max_peaks_smoothed]
-            self.peak_apex_i_list = [i for (rt, i) in max_peaks] + [i for (rt, i) in max_peaks_smoothed]
+            # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+
+            max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
+
+            self.peak_apex_rt_list = [rt for (rt, i) in max_peaks_all]
+            self.peak_apex_i_list = [i for (rt, i) in max_peaks_all]
 
         else:
             # if no peak found. Most likely there is no signal. Use looser criteria to detect peaks
 
             max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
-            max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
+            # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
 
-            max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+            # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+
+            max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
 
             if len(max_peaks) > 0:
-                self.peak_apex_rt_list = [rt for (rt, i) in max_peaks] + [rt for (rt, i) in max_peaks_smoothed]
-                self.peak_apex_i_list = [i for (rt, i) in max_peaks] + [i for (rt, i) in max_peaks_smoothed]
+                self.peak_apex_rt_list = [rt for (rt, i) in max_peaks_all]
+                self.peak_apex_i_list = [i for (rt, i) in max_peaks_all]
 
             else:
                 # if still no peak found, most likely it is an empty chrom.
@@ -64,15 +70,77 @@ class Chromatogram(object):
     # def size(self):
     #     return len(self.rt_list)
 
+
+def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):
+
+    max_peaks_all = []
+
+    max_peaks_all = filter_peaks_based_on_peak_shape_worker(max_peaks, i_list, rt_list, max_peaks_all)
+
+    # max_peaks_all = filter_peaks_based_on_peak_shape_worker(max_peaks_smoothed, i_list, rt_list, max_peaks_all)
+
+    if len(max_peaks_all) == 0:
+        # if no peak is found, find the best peak in the chrom
+        max_peaks_all = filter_peaks_based_on_peak_shape_worker2(max_peaks, i_list, rt_list, max_peaks_all)
+
+    return max_peaks_all
+
+def filter_peaks_based_on_peak_shape_worker2(max_peaks, i_list, rt_list, max_peaks_all):
+
+    max_fold_change_score = -1
+    best_rt = -1
+    best_i = -1
+
+    for rt, i in max_peaks:
+
+        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt)
+        i_apex = float(i)
+        i_left = peak_groups.get_intensity_for_closest_rt(rt_left, rt_list, i_list)
+        i_right = peak_groups.get_intensity_for_closest_rt(rt_right, rt_list, i_list)
+        fold_change_left = i_apex / (i_left + 1.0)
+        fold_change_right = i_apex / (i_right + 1.0)
+
+        fold_change_score = fold_change_left * fold_change_right
+
+        if fold_change_score > max_fold_change_score:
+            max_fold_change_score = fold_change_score
+            best_rt = rt
+            best_i = i
+
+    max_peaks_all.append((best_rt, best_i))
+
+    return max_peaks_all
+
+
+def filter_peaks_based_on_peak_shape_worker(max_peaks, i_list, rt_list, max_peaks_all):
+
+    for rt, i in max_peaks:
+
+        rt_left, rt_right = chrom.get_peak_boundary(rt_list, i_list, rt)
+        i_apex = float(i)
+        i_left = peak_groups.get_intensity_for_closest_rt(rt_left, rt_list, i_list)
+        i_right = peak_groups.get_intensity_for_closest_rt(rt_right, rt_list, i_list)
+        fold_change_left = i_apex / (i_left + 1.0)
+        fold_change_right = i_apex / (i_right + 1.0)
+
+        if fold_change_left >= parameters.PEAK_SHAPE_FOLD_VARIATION_CRUDE and fold_change_right >= parameters.PEAK_SHAPE_FOLD_VARIATION_CRUDE:
+            max_peaks_all.append((rt, i))
+
+    return max_peaks_all
+
 def filter_smoothed_peaks_based_on_raw_peaks(peaks, peaks_smoothed):
+
     peaks_smoothed2 = []
+
     for rt, i in peaks_smoothed:
         if_select = decide_whether_choose_a_smoothed_rt(rt, [rt for (rt, i) in peaks])
         if if_select == 1:
             peaks_smoothed2.append((rt, i))
+
     return peaks_smoothed2
 
 def decide_whether_choose_a_smoothed_rt(rt0, rt_list):
+
     if_select = 0
 
     rt_closest_left = find_closest_rt_left(rt0, rt_list)
@@ -83,8 +151,11 @@ def decide_whether_choose_a_smoothed_rt(rt0, rt_list):
     return if_select
 
 def find_closest_rt_left(rt0, rt_list):
+
     rt1 = rt_list[0]
+
     rt_dif = 999.999
+
     for rt in rt_list[1:]:
         if rt < rt0:
             rt_dif2 = rt0 - rt
@@ -107,7 +178,7 @@ def find_closest_rt_right(rt0, rt_list):
 
 def smooth_chromatogram_using_Savitzky_Golay(i_list):
 
-    i_list2 = sg.savitzky_golay(np.array(i_list), 11, 3)  # window size 11, polynomial order 3. Optimized for chrom
+    i_list2 = sg.savitzky_golay(np.array(i_list), 7, 3)  # window size 11, polynomial order 3. Optimized for chrom
     return i_list2.tolist()
 
 class Reference_sample(object):
@@ -129,11 +200,11 @@ class Reference_sample(object):
 
 
 class Peak_group(object):
-    def __init__(self, chrom_data, tg, sample, rt, fold_change):
+    def __init__(self, chrom_data, tg, sample, rt):
         self.rt = rt
         self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i,\
             self.matched_fragments_peak_rt_left, self.matched_fragments_peak_rt_right = \
-                peak_groups.find_matched_fragments(chrom_data, tg, sample, rt, fold_change)
+                peak_groups.find_matched_fragments(chrom_data, tg, sample, rt)
 
         self.num_matched_fragments = len(self.matched_fragments)
         self.if_ms1_peak = peak_groups.check_if_ms1_peak(chrom_data, tg, sample, rt)
