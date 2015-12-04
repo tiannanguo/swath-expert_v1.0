@@ -309,6 +309,7 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
 
                 if i > i0:
                     rt0 = rt
+                    i0 = i
 
             return rt0
 
@@ -325,9 +326,6 @@ def get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment,
                                       pg[rt0]['ms2']['i_list'][top3_fragment])
 
     return (i1 + i2 + i3) / 3.0
-
-
-
 
 def get_max_rt_from_pg_sorted(rt_list, pg_corr):
 
