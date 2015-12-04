@@ -54,14 +54,14 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         # sometimes within the range between rt_left and rt_right, there are two peaks
         # in this case, perform an inspection to refine the peak boundary
 
-        num_pg_in_range = get_num_peak_groups_in_range(ref_sample_rt_left, ref_sample_rt_right, chrom_data, tg, reference_sample)
-
-        if num_pg_in_range > 1:
-
-            print "the function get_num_peak_groups_in_range or get_peak_boundary still has bug. >1 pg found in reference sample"
-
-            #ref_sample_rt_left, ref_sample_rt_right = \
-            #    refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
+        # num_pg_in_range = get_num_peak_groups_in_range(ref_sample_rt_left, ref_sample_rt_right, chrom_data, tg, reference_sample)
+        #
+        # if num_pg_in_range > 1:
+        #
+        #     print "the function get_num_peak_groups_in_range or get_peak_boundary still has bug. >1 pg found in reference sample"
+        #
+        #     #ref_sample_rt_left, ref_sample_rt_right = \
+        #     #    refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
 
         # if the ref sample peak is too narrow, < 30 sec, extend 5 sec at both ends
         if ref_sample_rt_right - ref_sample_rt_left < 30:
@@ -79,29 +79,29 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
     return display_data
 
-def get_num_peak_groups_in_range(rt_left, rt_right, chrom_data, tg, sample):
-
-    num_pg_in_range = -1
-
-    all_rt = peak_groups.find_all_rt_values(chrom_data, tg, sample)
-    all_rt2 = []
-
-    for rt in all_rt:
-        if float(rt_left) < rt < float(rt_right):
-            all_rt2.append(rt)
-
-    if len(all_rt2) <= 1:
-        pass
-
-    else:
-        pg_found = {}
-        for rt in all_rt2:
-            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
-            if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
-                pg_found[rt] = this_peak_group
-        num_pg_in_range = len(pg_found)
-
-    return num_pg_in_range
+# def get_num_peak_groups_in_range(rt_left, rt_right, chrom_data, tg, sample):
+#
+#     num_pg_in_range = -1
+#
+#     all_rt = peak_groups.find_all_rt_values(chrom_data, tg, sample)
+#     all_rt2 = []
+#
+#     for rt in all_rt:
+#         if float(rt_left) < rt < float(rt_right):
+#             all_rt2.append(rt)
+#
+#     if len(all_rt2) <= 1:
+#         pass
+#
+#     else:
+#         pg_found = {}
+#         for rt in all_rt2:
+#             this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+#             if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
+#                 pg_found[rt] = this_peak_group
+#         num_pg_in_range = len(pg_found)
+#
+#     return num_pg_in_range
 
 
 
