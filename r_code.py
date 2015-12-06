@@ -93,6 +93,7 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
             i_max = max(display_data[tg][sample]['ms2']['i_list'][fragment])
             if i_max == 0:
                 pass
+
             else:
                 i_left_fold_change = i_left / i_max
                 i_right_fold_change = i_right / i_max

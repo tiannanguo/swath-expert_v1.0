@@ -168,37 +168,33 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
     pg_filtered_rt2 = []
 
-    fragment = find_top_n_fragment(n, ref_pg)
-    fragment2 = find_top_n_fragment(n + 1, ref_pg)
+    top_fragment = find_top_n_fragment(n, ref_pg)
+
 
     for rt in pg_filtered_rt:
 
         if_peak_found = 0
 
-        for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment]:
+        for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][top_fragment]:
 
             if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
 
-                if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(fragment, rt, n, pg)
+                if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(top_fragment, rt, n, pg)
 
-                # sometimes the top1 peak in reference sample is not the best signal (still openswath issue)
-                # then check the top2 peak, if top2 peak is ok, still keep it.
 
-                if_a_good_peak_fragment2 = filter_peak_group_top_fragment_next(rt, fragment2, pg, n + 1)
 
-                if if_peak_is_a_top_peak == 1 or if_a_good_peak_fragment2 == 1:
+                if if_peak_is_a_top_peak == 1:
                     if_peak_found = 1
                     break
 
-        if if_peak_found == 0:
-            # sometimes the peak rt can not find, check the next fragment
-            for rt0 in pg[rt]['ms2']['peak_apex_rt_list'][fragment2]:
+                else:
+                    # sometimes the top1 peak in reference sample is not the best signal (still openswath issue)
+                    # then check the top2 peak, if top2 peak is ok, still keep it.
+                    next_fragment = find_top_n_fragment(n + 1, ref_pg)
 
-                if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
+                    if_a_good_peak_fragment2 = filter_peak_group_top_fragment_next(rt, next_fragment, pg, n + 1)
 
-                    if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(fragment2, rt, n + 1, pg)
-
-                    if if_peak_is_a_top_peak == 1:
+                    if if_a_good_peak_fragment2 == 1:
                         if_peak_found = 1
                         break
 
@@ -478,7 +474,7 @@ def only_one_pg(pg, ref_pg):
 def find_best_match_pg_rule_a(pg, ref_pg, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold40':
         pass
 
     # filter out peak groups without top 1 fragment as a peak
@@ -523,8 +519,9 @@ def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt, sample):
         pass
 
     # filter out peak groups without MS1 as a peak
-    pg_filtered_rt2 = filter_peak_group_ms1(pg, pg_filtered_rt)
-    # pg_filtered_rt2 = pg_filtered_rt
+    # pg_filtered_rt2 = filter_peak_group_ms1(pg, pg_filtered_rt)
+    # better not to use this because sometimes MS1 has inteference. like golden set gold 40, for peptide # 531.
+    pg_filtered_rt2 = pg_filtered_rt
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
