@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold69':
+            if sample == 'gold40':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -313,20 +313,20 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
             return pg_sorted_max[0]
 
         else:
-            # if there are multiple pg with same R2 value (in the same peak), select the one with highest intensity (apex)
+            # if there are multiple pg with similar R2 value (in the same peak), select the one with highest intensity (apex)
             rt0 = pg_sorted_max[0]
             top1_fragment = find_top_n_fragment(1, ref_pg)
             top2_fragment = find_top_n_fragment(2, ref_pg)
             top3_fragment = find_top_n_fragment(3, ref_pg)
-            i0 = get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt0, pg)
+            i1, i2, i3 = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt0, pg)
 
             for rt in pg_sorted_max[1:]:
 
-                i = get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt, pg)
+                i1_b, i2_b, i3_b = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt, pg)
 
-                if i > i0:
+                vote_based_on_top3_fragments = vote_which_rt_is_better_based_on_top3_fragments(i1, i2, i3, i1_b, i2_b, i3_b)
+                if vote_based_on_top3_fragments > 1:
                     rt0 = rt
-                    i0 = i
 
             return rt0
 
@@ -334,7 +334,22 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
         print 'WARNING: no peak group found when computing fragment intensity correlation'
         return ref_pg['peak_rt']
 
-def get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment, rt0, pg):
+
+def vote_which_rt_is_better_based_on_top3_fragments(i1, i2, i3, i1_b, i2_b, i3_b):
+
+    vote_num = 0
+
+    if i1_b > i1:
+        vote_num += 1
+    if i2_b > i2:
+        vote_num += 1
+    if i3_b > i3:
+        vote_num += 1
+
+    return vote_num
+
+
+def get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt0, pg):
 
     i1 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top1_fragment], pg[rt0]['ms2']['i_list'][top1_fragment])
     i2 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top2_fragment],
@@ -342,7 +357,7 @@ def get_intensity_for_top3_fragment(top1_fragment, top2_fragment, top3_fragment,
     i3 = get_intensity_for_closest_rt(rt0, pg[rt0]['ms2']['rt_list'][top3_fragment],
                                       pg[rt0]['ms2']['i_list'][top3_fragment])
 
-    return (i1 + i2 + i3) / 3.0
+    return i1, i2, i3
 
 def get_max_rt_from_pg_sorted(rt_list, pg_corr):
 
