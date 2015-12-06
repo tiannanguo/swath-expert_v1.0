@@ -14,8 +14,8 @@ import parameters
 # name of files
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
-chrom_file = sys.argv[1]
-# chrom_file = 'debug_png_id_616.txt.gz'
+# chrom_file = sys.argv[1]
+chrom_file = 'debug_png_id_616.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
@@ -25,8 +25,8 @@ quant_file_peptides = chrom_file.replace('.txt.gz', '.quant.peptides.txt')
 quant_file_proteins = chrom_file.replace('.txt.gz', '.quant.proteins.txt')
 
 # for test in windows
-dos_bat_file = chrom_file.replace('.txt.gz', '.bat')
-# dos_bat_file = 'tmp_run.bat'
+# dos_bat_file = chrom_file.replace('.txt.gz', '.bat')
+dos_bat_file = 'tmp_run.bat'
 def write_tmp_bat_file(out_R_file):
     with open(dos_bat_file, 'w') as o:
         cmd = '''C:\\R\\R-2.15.1\\bin\\x64\\Rcmd.exe BATCH %s\n''' % out_R_file
@@ -66,8 +66,8 @@ def main():
     # compute peak area for only the peak-forming fragments
     display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
 
-    # TODO : 2015.11.21.. see page 77 outline.
-    # swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_fragments, quant_file_peptides)
+    # compute peptide area
+    swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
 
     for tg in display_data.keys():
         if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > parameters.MIN_FRAGMENTS:
