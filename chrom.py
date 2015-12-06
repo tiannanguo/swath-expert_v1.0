@@ -67,32 +67,6 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
     return display_data
 
-# def get_num_peak_groups_in_range(rt_left, rt_right, chrom_data, tg, sample):
-#
-#     num_pg_in_range = -1
-#
-#     all_rt = peak_groups.find_all_rt_values(chrom_data, tg, sample)
-#     all_rt2 = []
-#
-#     for rt in all_rt:
-#         if float(rt_left) < rt < float(rt_right):
-#             all_rt2.append(rt)
-#
-#     if len(all_rt2) <= 1:
-#         pass
-#
-#     else:
-#         pg_found = {}
-#         for rt in all_rt2:
-#             this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
-#             if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
-#                 pg_found[rt] = this_peak_group
-#         num_pg_in_range = len(pg_found)
-#
-#     return num_pg_in_range
-
-
-
 def get_rt_list_in_a_range(rt_list, rt_left, rt_right):
 
     rt_list2 = []

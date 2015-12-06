@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold29':
+            if sample == 'gold4':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -358,6 +358,7 @@ def find_best_rt_based_on_top3_fragment(pg_sorted_max, pg, top1_fragment, top2_f
     return rt_final
 
 def get_max_intensity_sum(pg_vote2, pg, top1_fragment, top2_fragment, top3_fragment):
+
     rt_int_sum = {}
     for rt in pg_vote2.keys():
         i1, i2, i3 = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt, pg)
@@ -367,8 +368,9 @@ def get_max_intensity_sum(pg_vote2, pg, top1_fragment, top2_fragment, top3_fragm
 
     rt_final = -1
 
-    for rt in pg_vote2.keys():
-        if pg_vote2[rt] == max_i:
+    for rt in rt_int_sum.keys():
+
+        if rt_int_sum[rt] == max_i:
             rt_final = rt
 
     return rt_final
