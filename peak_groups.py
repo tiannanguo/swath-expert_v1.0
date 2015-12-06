@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold90':
+            if sample == 'gold29':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -314,25 +314,105 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
 
         else:
             # if there are multiple pg with similar R2 value (in the same peak), select the one with highest intensity (apex)
-            rt0 = pg_sorted_max[0]
             top1_fragment = find_top_n_fragment(1, ref_pg)
             top2_fragment = find_top_n_fragment(2, ref_pg)
             top3_fragment = find_top_n_fragment(3, ref_pg)
-            i1, i2, i3 = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt0, pg)
 
-            for rt in pg_sorted_max[1:]:
-
-                i1_b, i2_b, i3_b = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt, pg)
-
-                vote_based_on_top3_fragments = vote_which_rt_is_better_based_on_top3_fragments(i1, i2, i3, i1_b, i2_b, i3_b)
-                if vote_based_on_top3_fragments > 1:
-                    rt0 = rt
+            rt0 = find_best_rt_based_on_top3_fragment(pg_sorted_max, pg, top1_fragment, top2_fragment, top3_fragment)
 
             return rt0
 
     else:
         print 'WARNING: no peak group found when computing fragment intensity correlation'
         return ref_pg['peak_rt']
+
+def find_best_rt_based_on_top3_fragment(pg_sorted_max, pg, top1_fragment, top2_fragment, top3_fragment):
+
+    # find the pg with highest intensity sum from top3 fragment
+    pg_vote = {}
+    for rt in pg_sorted_max:
+        pg_vote[rt] = 0
+
+    # pair wise comparison for voting
+    for rt1 in pg_sorted_max:
+        for rt2 in pg_sorted_max:
+            if rt2 != rt1:
+                vote1, vote2 = pair_wise_vote(rt1, rt2, pg, top1_fragment, top2_fragment, top3_fragment)
+                pg_vote[rt1] += vote1
+                pg_vote[rt2] += vote2
+
+    max_vote = max(pg_vote.values())
+
+    pg_vote2 = {}
+    for rt in pg_vote.keys():
+        if pg_vote[rt] == max_vote:
+            pg_vote2[rt] = pg_vote[rt]
+
+    rt_final = -1
+
+    if len(pg_vote2.keys()) == 1:
+        rt_final = pg_vote2.keys()[0]
+    else:
+        rt_final = get_max_intensity_sum(pg_vote2, pg, top1_fragment, top2_fragment, top3_fragment)
+
+    return rt_final
+
+def get_max_intensity_sum(pg_vote2, pg, top1_fragment, top2_fragment, top3_fragment):
+    rt_int_sum = {}
+    for rt in pg_vote2.keys():
+        i1, i2, i3 = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt, pg)
+        rt_int_sum[rt] = i1 + i2 + i3
+
+    max_i = max(rt_int_sum.values())
+
+    rt_final = -1
+
+    for rt in pg_vote2.keys():
+        if pg_vote2[rt] == max_i:
+            rt_final = rt
+
+    return rt_final
+
+def pair_wise_vote(rt1, rt2, pg, top1_fragment, top2_fragment, top3_fragment):
+
+    vote1 = 0
+    vote2 = 0
+
+    i1, i2, i3 = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt1, pg)
+    i1_b, i2_b, i3_b = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt2, pg)
+    if i1 > i1_b:
+        vote1 += 1
+    else:
+        vote2 += 1
+    if i2 > i2_b:
+        vote1 += 1
+    else:
+        vote2 += 1
+    if i3 > i3_b:
+        vote1 += 1
+    else:
+        vote2 += 1
+
+    return vote1, vote2
+
+def get_top_voted_rt(voted_rt):
+    voted_rt2 = {}
+    vote_max = max(voted_rt.values())
+    for rt in voted_rt:
+        if voted_rt[rt] == vote_max:
+            voted_rt2[rt] = voted_rt[rt]
+    return voted_rt2
+
+def get_vote_based_on_top3_fragments(rt_list, top1_fragment, top2_fragment, top3_fragment, pg, i1, i2, i3):
+
+    vote_based_on_top3_fragments = {}
+
+    for rt in rt_list:
+        i1_b, i2_b, i3_b = get_intensity_for_top3_fragments(top1_fragment, top2_fragment, top3_fragment, rt, pg)
+        vote_based_on_top3_fragments[rt] = vote_which_rt_is_better_based_on_top3_fragments(i1, i2, i3, i1_b, i2_b, i3_b)
+
+    return vote_based_on_top3_fragments
+
 
 
 def vote_which_rt_is_better_based_on_top3_fragments(i1, i2, i3, i1_b, i2_b, i3_b):
