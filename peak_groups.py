@@ -196,7 +196,7 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
                 if abs(rt - rt0) < parameters.MAX_RT_TOLERANCE:
 
-                    if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(fragment, rt, n, pg)
+                    if_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(fragment2, rt, n + 1, pg)
 
                     if if_peak_is_a_top_peak == 1:
                         if_peak_found = 1
@@ -375,19 +375,38 @@ def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
     pg_filtered_rt2 = []
 
-    fragment = find_top_n_fragment(n, ref_pg)
+    top_fragment = find_top_n_fragment(n, ref_pg)
 
     ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
 
     for rt in pg_filtered_rt:
 
-        peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
+        if_top_fragment_good = check_peak_group_top_fragment_peak_boundary(n, rt, top_fragment, pg, ref_sample_peak_width)
 
-        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
+        if if_top_fragment_good == 1:
 
             pg_filtered_rt2.append(rt) # good peak boundary
 
+        else:
+            # if this is not good, sometimes it is still the good pg. This can happen due to interfering signals
+            next_fragment = find_top_n_fragment(n + 1, ref_pg)
+            if_next_fragment_good = check_peak_group_top_fragment_peak_boundary(n + 1, rt, next_fragment, pg, ref_sample_peak_width)
+
+            if if_next_fragment_good == 1:
+                pg_filtered_rt2.append(rt)
+
     return pg_filtered_rt2
+
+def check_peak_group_top_fragment_peak_boundary(n, rt, fragment, pg, ref_sample_peak_width):
+
+    if_good = 0
+
+    peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
+
+    if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
+        if_good = 1
+
+    return if_good
 
 def find_top_fragment_with_peak(pg):
 
