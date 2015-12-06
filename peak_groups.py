@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold4':
+            if sample == 'gold10':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -1050,55 +1050,6 @@ def find_rt_for_reference_sample(ref_sample_data, peak_group_candidates, tg, chr
         check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data)
 
     return good_fragments_check, rt_dif_check, best_rt_after_check
-
-    # # maybe multiple peak groups are found for the reference sample, here, find the peak rt closest to the rt found by openswath
-    # # below is to find the openswath results
-    # sample = ref_sample_data[tg].sample_name
-    # best_rt = ref_sample_data[tg].peak_rt
-    # num_good_fragments = 0
-    # good_fragments = []
-    # if_ms1 = 0
-    # rt_dif = parameters.MAX_RT_TOLERANCE
-    # rt_found = -1.0
-    #
-    # for rt in peak_group_candidates[tg][sample].keys():
-    #     if abs(rt - best_rt) < rt_dif:
-    #         num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
-    #         if num_fragments > num_good_fragments:
-    #             good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
-    #             num_good_fragments = len(good_fragments)
-    #             rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
-    #             rt_found = rt
-    #
-    # # sometimes there is NO peak group in the openswath reported location!
-    # # in this case, use the expert found rt
-    # if rt_found == -1.0:
-    #     return good_fragments_check, rt_dif_check, best_rt_after_check
-    #
-    # # if openswath results are similar to what the expert finds, use the expert results
-    # elif abs(best_rt_after_check - best_rt) < parameters.MAX_RT_TOLERANCE:
-    #     # what we find here is similar to openswath report
-    #     return good_fragments_check, rt_dif_check, best_rt_after_check
-    #
-    # # if what we found is very different from what openswath finds, then double-check
-    # else:
-    #
-    #     num_fragments_dif = num_good_fragments_check - num_good_fragments
-    #
-    #     if_unique_ms1 = 0
-    #     if if_ms1 == 0 and if_ms1_check == 1:
-    #         if_unique_ms1 = 1
-    #
-    #     # what we find here is better to openswath report
-    #     if (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_NO_MS1) \
-    #         or (num_fragments_dif > parameters.MIN_FRAGMENTS_HIGHER_THAN_INPUT_UNIQUE_MS1 and if_unique_ms1 == 1):
-    #
-    #         return good_fragments_check, rt_dif_check, best_rt_after_check
-    #
-    #     # if openswath is better. NOTE: this is corrected openswath results, not necessarily the original openswath results
-    #     # for example, golden data set #peptide 186. openswath reports 4024s in gold10 sample, we found 4013s, corrected openswath is 4.18s
-    #     else:
-    #         return good_fragments, rt_dif, rt_found
 
 def find_closest_rt_value(rt0, rt_list):
     rt1 = rt_list[0]

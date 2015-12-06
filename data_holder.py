@@ -77,8 +77,6 @@ def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):
 
     max_peaks_all = filter_peaks_based_on_peak_shape_worker(max_peaks, i_list, rt_list, max_peaks_all)
 
-    # max_peaks_all = filter_peaks_based_on_peak_shape_worker(max_peaks_smoothed, i_list, rt_list, max_peaks_all)
-
     if len(max_peaks_all) == 0:
         # if no peak is found, find the best peak in the chrom
         max_peaks_all = filter_peaks_based_on_peak_shape_worker2(max_peaks, i_list, rt_list, max_peaks_all)

@@ -8,6 +8,7 @@ import parameters
 import data_holder
 import peak_groups
 import chrom
+import swath_quant
 
 
 # def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
@@ -65,7 +66,63 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
         # use the range to narrow MS1 and fragment rt range
         display_data = refine_reference_sample_rt_range(display_data, chrom_data, tg, reference_sample, peak_rt_found)
 
-    return display_data
+        display_data, peak_group_candidates, chrom_data = further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg, reference_sample, chrom_data)
+
+    return display_data, peak_group_candidates, chrom_data
+
+def further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg, reference_sample, chrom_data):
+
+    # sometimes, some fragment in the ref sample is too broad
+    # it shows a broad peak group in chrom
+    # but in the defined boundary, it is not good
+    # remove these fragments in all samples
+    for fragment in display_data[tg][reference_sample]['ms2']['rt_list'].keys():
+        this_rt_list = display_data[tg][reference_sample]['ms2']['rt_list'][fragment]
+        this_i_list = display_data[tg][reference_sample]['ms2']['i_list'][fragment]
+        if_good_fragment = swath_quant.check_if_displayed_peak_a_good_one(this_rt_list, this_i_list, 1)
+
+        if if_good_fragment == 0:
+
+            # if not good, then remove the fragment
+            del display_data[tg][reference_sample]['ms2']['i_list'][fragment]
+            del display_data[tg][reference_sample]['ms2']['rt_list'][fragment]
+            peak_group_candidates = delete_fragment_from_peak_group_candidate(peak_group_candidates, fragment)
+            chrom_data = delete_fragment_from_chrom_data(chrom_data, fragment)
+    return display_data, peak_group_candidates, chrom_data
+
+def delete_fragment_from_chrom_data(chrom_data, fragment):
+
+    for tg in chrom_data.keys():
+        for sample in chrom_data[tg].keys():
+            del chrom_data[tg][sample][fragment]
+
+    return chrom_data
+
+def delete_fragment_from_peak_group_candidate(peak_group_candidates, fragment):
+
+    for tg in peak_group_candidates.keys():
+        for sample in peak_group_candidates[tg].keys():
+            for rt in peak_group_candidates[tg][sample].keys():
+                fragment_index = get_fragment_index(peak_group_candidates[tg][sample][rt].matched_fragments, fragment)
+                if fragment_index == -1:
+                    pass
+                else:
+                    del peak_group_candidates[tg][sample][rt].matched_fragments[fragment_index]
+                    del peak_group_candidates[tg][sample][rt].matched_fragments_i[fragment_index]
+                    del peak_group_candidates[tg][sample][rt].matched_fragments_peak_rt_left[fragment_index]
+                    del peak_group_candidates[tg][sample][rt].matched_fragments_peak_rt_right[fragment_index]
+                    del peak_group_candidates[tg][sample][rt].matched_fragments_rt[fragment_index]
+                    peak_group_candidates[tg][sample][rt].num_matched_fragments -= 1
+
+    return peak_group_candidates
+
+def get_fragment_index(fragments_list, fragment):
+    i2 = -1
+    for i in range(len(fragments_list)):
+        if fragments_list[i] == fragment:
+            i2 = i
+            break
+    return i2
 
 def get_rt_list_in_a_range(rt_list, rt_left, rt_right):
 
