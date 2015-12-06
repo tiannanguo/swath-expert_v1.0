@@ -185,7 +185,7 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak):
 
     # the apex_i should be close to the max intensity
     if_good_apex_i = 0
-    if point_apex_i > 0.9 * max_i:
+    if point_apex_i > 0.5 * max_i:
         if_good_apex_i = 1
 
     # the left_i and right_i should be both < apex_i, and they are similar

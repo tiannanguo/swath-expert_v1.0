@@ -162,7 +162,10 @@ def find_top_n_fragment(option, ref_pg):
 
     peak_apex_i = sorted(ref_pg['ms2']['peak_apex_i'].items(), key=operator.itemgetter(1), reverse=True)
 
-    return peak_apex_i[int(option) - 1][0]
+    if len(peak_apex_i) >= int(option):
+        return peak_apex_i[int(option) - 1][0]
+    else:
+        return 'NA'
 
 def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
@@ -170,6 +173,8 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
     top_fragment = find_top_n_fragment(n, ref_pg)
 
+    if top_fragment == 'NA':
+        return pg_filtered_rt
 
     for rt in pg_filtered_rt:
 
@@ -186,10 +191,12 @@ def filter_peak_group_top_fragment(n, pg, ref_pg, pg_filtered_rt):
 
             next_fragment = find_top_n_fragment(n + 1, ref_pg)
 
-            if_next_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(next_fragment, rt, n, pg)
+            if next_fragment != 'NA':
 
-            if if_next_peak_is_a_top_peak == 1:
-                if_peak_found = 1
+                if_next_peak_is_a_top_peak = check_if_a_peak_is_a_top_peak(next_fragment, rt, n, pg)
+
+                if if_next_peak_is_a_top_peak == 1:
+                    if_peak_found = 1
 
         if if_peak_found == 1:
             pg_filtered_rt2.append(rt)
@@ -247,7 +254,11 @@ def filter_peak_group_ms1(pg, pg_filtered_rt):
 def filter_peak_group_peak_shape(n, pg, ref_pg, pg_filtered_rt):
 
     pg_filtered_rt2 = []
+
     top_fragment = find_top_n_fragment(n, ref_pg)
+
+    if top_fragment == 'NA':
+        return pg_filtered_rt
 
     for rt in pg_filtered_rt:
 
@@ -259,10 +270,13 @@ def filter_peak_group_peak_shape(n, pg, ref_pg, pg_filtered_rt):
         else:
 
             next_fragment = find_top_n_fragment(n + 1, ref_pg)
-            if_next_fragment_good = check_peak_group_peak_shape(next_fragment, rt, pg)
 
-            if if_next_fragment_good == 1:
-                pg_filtered_rt2.append(rt)  # good peak boundary
+            if next_fragment != 'NA':
+
+                if_next_fragment_good = check_peak_group_peak_shape(next_fragment, rt, pg)
+
+                if if_next_fragment_good == 1:
+                    pg_filtered_rt2.append(rt)  # good peak boundary
 
     return pg_filtered_rt2
 
@@ -481,6 +495,9 @@ def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
     top_fragment = find_top_n_fragment(n, ref_pg)
 
+    if top_fragment == 'NA':
+        return pg_filtered_rt
+
     ref_sample_peak_width = float(ref_pg['rt_right'] - ref_pg['rt_left'])
 
     for rt in pg_filtered_rt:
@@ -494,10 +511,13 @@ def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
         else:
             # if this is not good, sometimes it is still the good pg. This can happen due to interfering signals
             next_fragment = find_top_n_fragment(n + 1, ref_pg)
-            if_next_fragment_good = check_peak_group_top_fragment_peak_boundary(n + 1, rt, next_fragment, pg, ref_sample_peak_width)
 
-            if if_next_fragment_good == 1:
-                pg_filtered_rt2.append(rt)
+            if next_fragment != 'NA':
+
+                if_next_fragment_good = check_peak_group_top_fragment_peak_boundary(n + 1, rt, next_fragment, pg, ref_sample_peak_width)
+
+                if if_next_fragment_good == 1:
+                    pg_filtered_rt2.append(rt)
 
     return pg_filtered_rt2
 
@@ -581,9 +601,9 @@ def find_best_match_pg_rule_a(pg, ref_pg, sample):
 def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold69':
+    if sample == 'gold4':
         pass
-
+    print sample #####################haha
     # filter out peak groups without top 2 fragment as a peak
     pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)
 
@@ -704,7 +724,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold30':
+    if sample == 'gold9':
         pass
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
