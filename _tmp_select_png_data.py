@@ -3,7 +3,7 @@ import gzip
 import csv
 
 
-png_id = 531
+png_id = 542
 
 def get_file_num(png_id):
     target_file = ''
