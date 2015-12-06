@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold70':
+            if sample == 'gold90':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -562,7 +562,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold40':
+    if sample == 'gold90':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary

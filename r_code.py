@@ -33,7 +33,7 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
 
             if_reference_sample = 0
             if sample == ref_sample_name:
-                if_reference_sample =1
+                if_reference_sample = 1
 
             r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)
 

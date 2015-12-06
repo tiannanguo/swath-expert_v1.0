@@ -273,7 +273,7 @@ def get_peak_boundary_worker_right(start_index, end_index, rt_list, i_list):
         i_ratio = point_1_i / (peak_i + 0.001)
 
         if i_ratio < 0.3: # empirical value
-            if point_1_i <= point_2_i:
+            if point_1_i <= point_2_i or i_ratio < 0.1:
                 # this is a turning point
                 boundary_index = j
                 break
@@ -298,7 +298,7 @@ def get_peak_boundary_worker_left(start_index, end_index, rt_list, i_list):
         i_ratio = point_1_i / (peak_i + 0.001)
 
         if i_ratio < 0.3: # empirical value
-            if point_1_i <= point_2_i:
+            if point_1_i <= point_2_i or i_ratio < 0.1:
                 # this is a turning point
                 boundary_index = j
                 break
