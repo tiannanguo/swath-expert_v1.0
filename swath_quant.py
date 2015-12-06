@@ -17,7 +17,7 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
         for tg in display_data.keys():
 
             ref_sample_id = ref_sample_data[tg].sample_name
-            ref_sample_top1_fragment, ref_sample_top1_fragment_i = get_ref_sample_top1_fragment_i(display_data, tg, ref_sample_id)
+            ref_sample_top1_fragment, ref_sample_top1_fragment_i = get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id)
 
             data_list = []
             data_list.append(tg)
@@ -103,20 +103,31 @@ def compute_fragment_correlation(area1, area2):
 
 
 
-def get_ref_sample_top1_fragment_i(display_data, tg, ref_sample_id):
+def get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id):
 
     top1_fragment = ''
     top1_i = -1
 
     for fragment in display_data[tg][ref_sample_id]['ms2']['area'].keys():
         this_i = display_data[tg][ref_sample_id]['ms2']['area'][fragment]
-        if this_i > top1_i:
+        this_rt_list = display_data[tg][ref_sample_id]['ms2']['rt_list'][fragment]
+        this_i_list = display_data[tg][ref_sample_id]['ms2']['i_list'][fragment]
+        if_good_shape = check_if_displayed_peak_a_good_one(this_rt_list, this_i_list, 1, 2)
+
+        if this_i > top1_i and if_good_shape == 1:
             top1_fragment = fragment
             top1_i = this_i
 
+    # maybe no peak shape in the reference sample is good, then pick the top fragment
+    if top1_i == -1:
+        for fragment in display_data[tg][ref_sample_id]['ms2']['area'].keys():
+            this_i = display_data[tg][ref_sample_id]['ms2']['area'][fragment]
+
+            if this_i > top1_i:
+                top1_fragment = fragment
+                top1_i = this_i
+
     return top1_fragment, top1_i
-
-
 
 def write_title_for_fragment_quant_file(sample_id):
 
@@ -168,7 +179,7 @@ def compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_d
     return display_data
 
 
-def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak):
+def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_change_threshold):
 
     # check if the peak is a good one
     if_good = 0
@@ -191,8 +202,8 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak):
     # the left_i and right_i should be both < apex_i, and they are similar
     fold_change_left = point_left_i / (point_apex_i + 0.1)
     fold_change_right = point_right_i / (point_apex_i + 0.1)
-    if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, 2)
-    if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, 2)
+    if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, fold_change_threshold)
+    if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, fold_change_threshold)
 
     if if_good_apex_i == 1 and if_good_fold_change_left == 1 and if_good_fold_change_right == 1 and if_found_peak == 1:
         if_good = 1

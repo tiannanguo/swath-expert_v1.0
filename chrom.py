@@ -79,7 +79,7 @@ def further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg,
     for fragment in display_data[tg][reference_sample]['ms2']['rt_list'].keys():
         this_rt_list = display_data[tg][reference_sample]['ms2']['rt_list'][fragment]
         this_i_list = display_data[tg][reference_sample]['ms2']['i_list'][fragment]
-        if_good_fragment = swath_quant.check_if_displayed_peak_a_good_one(this_rt_list, this_i_list, 1)
+        if_good_fragment = swath_quant.check_if_displayed_peak_a_good_one(this_rt_list, this_i_list, 1, 2)
 
         if if_good_fragment == 0:
 

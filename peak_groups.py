@@ -603,7 +603,6 @@ def find_best_match_pg_rule_b(pg, ref_pg, pg_filtered_rt, sample):
     # for debugging
     if sample == 'gold4':
         pass
-    print sample #####################haha
     # filter out peak groups without top 2 fragment as a peak
     pg_filtered_rt2 = filter_peak_group_top_fragment(2, pg, ref_pg, pg_filtered_rt)
 
