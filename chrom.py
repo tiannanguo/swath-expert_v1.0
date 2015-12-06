@@ -51,18 +51,6 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
         ref_sample_rt_left, ref_sample_rt_right = get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_found)
 
-        # sometimes within the range between rt_left and rt_right, there are two peaks
-        # in this case, perform an inspection to refine the peak boundary
-
-        # num_pg_in_range = get_num_peak_groups_in_range(ref_sample_rt_left, ref_sample_rt_right, chrom_data, tg, reference_sample)
-        #
-        # if num_pg_in_range > 1:
-        #
-        #     print "the function get_num_peak_groups_in_range or get_peak_boundary still has bug. >1 pg found in reference sample"
-        #
-        #     #ref_sample_rt_left, ref_sample_rt_right = \
-        #     #    refine_reference_sample_peak_boundary(ref_sample_rt_left, ref_sample_rt_right, reference_sample, peak_rt_found, chrom_data, tg)
-
         # if the ref sample peak is too narrow, < 30 sec, extend 5 sec at both ends
         if ref_sample_rt_right - ref_sample_rt_left < 30:
             ref_sample_rt_left -= 3
