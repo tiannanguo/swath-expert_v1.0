@@ -804,12 +804,24 @@ def find_peak_group_candidates(chrom_data, sample_id):
     return peak_group_candidates
 
 
+def get_max_num_good_fragments(peak_group_candidates, tg, sample):
+
+    n = []
+    for rt in peak_group_candidates[tg][sample].keys():
+        n1 = len(peak_group_candidates[tg][sample][rt].matched_fragments)
+        n.append(n1)
+    return max(n)
+
+
 def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_candidates, tg, chrom_data):
 
     # find out the peak group with highest number of good fragments
 
     sample = ref_sample_data[tg].sample_name
-    num_good_fragments = 0
+
+    # go through all rt for pg in the peak_group_candidates,
+    # find the peak groups with highest number of fragments.
+    # also get the MS1 status
     good_fragments = []
     if_ms1 = 0
     rt_dif = parameters.MAX_RT_TOLERANCE
@@ -818,26 +830,27 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
     selected_rt_num_fragment = {}
     selected_rt_if_ms1 = {}
 
+    max_num_good_fragments = get_max_num_good_fragments(peak_group_candidates, tg, sample)
+
     for rt in peak_group_candidates[tg][sample].keys():
+
         num_fragments = len(peak_group_candidates[tg][sample][rt].matched_fragments)
-        if num_fragments >= num_good_fragments - 3:
+
+        if num_fragments >= max_num_good_fragments - 3:
+
             good_fragments = peak_group_candidates[tg][sample][rt].matched_fragments
-            num_good_fragments = num_fragments
             rt_dif = abs(rt - ref_sample_data[tg].peak_rt)
             rt_found = rt
-            if_ms1 = peak_group_candidates[tg][sample][rt].if_ms1_peak
 
             selected_rt_num_fragment[rt] = num_fragments
-            selected_rt_if_ms1[rt] = if_ms1
+            selected_rt_if_ms1[rt] = peak_group_candidates[tg][sample][rt].if_ms1_peak
 
-    # soemtimes there are multiple rt with max number of good fragment
+    # sometimes there are multiple rt with max number of good fragment
     # in this case, check ms1, peak shape
     # case: golden data set #96. gold80
 
-    max_good_fragments = max(selected_rt_num_fragment.values())
-
     selected_rt_num_fragment_2, selected_rt_if_ms1_2 = \
-        select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, max_good_fragments)
+        select_peak_with_high_number_of_good_fragment(selected_rt_num_fragment, selected_rt_if_ms1, max_num_good_fragments)
 
     if len(selected_rt_num_fragment_2.keys()) > 1:
 
@@ -872,7 +885,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
 
     elif len(selected_rt_num_fragment_2.keys()) == 1:
         # if only one
-        return float(rt_found), num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+        return float(rt_found), max_num_good_fragments, if_ms1, good_fragments, float(rt_dif)
     else:
         # can not happen
         print "error: can not find a good rt, this should not happen"
