@@ -216,6 +216,9 @@ def find_fragment_rank_in_a_pg(fragment, rt, pg):
 
     rank_num = 1
     fragment_i = pg[rt]['ms2']['peak_apex_i'][fragment]
+    # sometimes fragment_i is empty, assign a low value
+    if isinstance(fragment_i, float) == 0:
+        fragment_i = 0.1
     for this_fragment in pg[rt]['ms2']['peak_apex_i'].keys():
         if this_fragment != fragment:
             if pg[rt]['ms2']['peak_apex_i'][this_fragment] > fragment_i * 1.2: # times 1.2 because sometimes the difference is not big. in that case, rank as high as possible
