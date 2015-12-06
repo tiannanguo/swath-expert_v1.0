@@ -262,24 +262,46 @@ def filter_peak_group_ms1(pg, pg_filtered_rt):
 def filter_peak_group_peak_shape(n, pg, ref_pg, pg_filtered_rt):
 
     pg_filtered_rt2 = []
-    fragment = find_top_n_fragment(n, ref_pg)
+    top_fragment = find_top_n_fragment(n, ref_pg)
 
     for rt in pg_filtered_rt:
 
-        peak_intensity_apex = pg[rt]['ms2']['peak_apex_i'][fragment]
+        if_top_fragment_good = check_peak_group_peak_shape(top_fragment, rt, pg)
 
-        peak_intensity_left = get_intensity_for_closest_rt(
-            pg[rt]['ms2']['rt_left'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
-        peak_intensity_right = get_intensity_for_closest_rt(
-            pg[rt]['ms2']['rt_right'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
-
-        fold_change_left = float(peak_intensity_apex) / (float(peak_intensity_left) + 1)
-        fold_change_right = float(peak_intensity_apex) / (float(peak_intensity_right) + 1)
-
-        if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION and rt in pg_filtered_rt:
+        if if_top_fragment_good == 1:
             pg_filtered_rt2.append(rt) # good peak boundary
 
+        else:
+
+            next_fragment = find_top_n_fragment(n + 1, ref_pg)
+            if_next_fragment_good = check_peak_group_peak_shape(next_fragment, rt, pg)
+
+            if if_next_fragment_good == 1:
+                pg_filtered_rt2.append(rt)  # good peak boundary
+
     return pg_filtered_rt2
+
+def check_peak_group_peak_shape(fragment, rt, pg):
+
+    if_good = 0
+
+    peak_intensity_apex = pg[rt]['ms2']['peak_apex_i'][fragment]
+
+    peak_intensity_left = get_intensity_for_closest_rt(
+        pg[rt]['ms2']['rt_left'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
+
+    peak_intensity_right = get_intensity_for_closest_rt(
+        pg[rt]['ms2']['rt_right'][fragment], pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
+
+    fold_change_left = float(peak_intensity_apex) / (float(peak_intensity_left) + 1)
+    fold_change_right = float(peak_intensity_apex) / (float(peak_intensity_right) + 1)
+
+    if fold_change_left > parameters.PEAK_SHAPE_FOLD_VARIATION and fold_change_right > parameters.PEAK_SHAPE_FOLD_VARIATION:
+        if_good = 1
+
+    return if_good
+
+
 
 def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt):
 
