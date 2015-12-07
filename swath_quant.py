@@ -214,7 +214,7 @@ def check_peak_i_fold_change(fold_change, threshold):
 
     if_good = 0
 
-    if fold_change <= threshold:
+    if fold_change <= 1.0 / threshold:
         if_good = 1
 
     return if_good
