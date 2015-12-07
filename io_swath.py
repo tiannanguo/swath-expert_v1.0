@@ -80,20 +80,18 @@ def get_best_sample_for_each_tg(chrom_file, tg_list):
         best_score[tg] = 1.0
         best_rt[tg] = -1.0
 
-    with gzip.open(chrom_file, 'rb') as i:
+        with gzip.open(chrom_file, 'rb') as i:
 
-        r = csv.DictReader(i, delimiter="\t")
+            r = csv.DictReader(i, delimiter="\t")
 
-        for row in r:
-            tg = row['transition_group_id']
-            if float(row['best_score']) < float(best_score[tg]):
-                best_sample[tg] = row['best_sample']
-                best_rt[tg] = row['best_rt']
-                best_score[tg] = float(row['best_score'])
+            for row in r:
+                tg2 = row['transition_group_id']
+                if tg2 == tg and float(row['best_score']) < float(best_score[tg]):
+                    best_sample[tg] = row['best_sample']
+                    best_rt[tg] = row['best_rt']
+                    best_score[tg] = float(row['best_score'])
 
     return best_sample, best_score, best_rt
-
-
 
 def use_one_best_sample(chrom_file):
 
