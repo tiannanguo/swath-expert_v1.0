@@ -87,15 +87,14 @@ def further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg,
             del display_data[tg][reference_sample]['ms2']['i_list'][fragment]
             del display_data[tg][reference_sample]['ms2']['rt_list'][fragment]
             peak_group_candidates = delete_fragment_from_peak_group_candidate(peak_group_candidates, fragment)
-            chrom_data = delete_fragment_from_chrom_data(chrom_data, fragment)
+            chrom_data = delete_fragment_from_chrom_data(chrom_data, tg, fragment)
 
     return display_data, peak_group_candidates, chrom_data
 
-def delete_fragment_from_chrom_data(chrom_data, fragment):
+def delete_fragment_from_chrom_data(chrom_data, tg, fragment):
 
-    for tg in chrom_data.keys():
-        for sample in chrom_data[tg].keys():
-            del chrom_data[tg][sample][fragment]
+    for sample in chrom_data[tg].keys():
+        del chrom_data[tg][sample][fragment]
 
     return chrom_data
 
