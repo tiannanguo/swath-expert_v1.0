@@ -15,7 +15,7 @@ import parameters
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
 chrom_file = sys.argv[1]
-# chrom_file = 'debug_png_id_620.txt.gz'
+# chrom_file = 'debug_png_id_28.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
@@ -70,7 +70,8 @@ def main():
     swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
 
     for tg in display_data.keys():
-        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > parameters.MIN_FRAGMENTS:
+        # at least 3 good shaped fragments
+        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > 2:
             # write r code into a file
             r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data[tg].sample_name)
 
