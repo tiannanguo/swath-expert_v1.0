@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold10':
+            if sample == 'gold88':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -885,7 +885,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
                         pass
 
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
-                    if this_peak_group.num_matched_fragments >= parameters.MIN_FRAGMENTS:
+                    if this_peak_group.num_matched_fragments >= 3:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 
                 if len(peak_group_candidates[tg][sample].keys()) == 0:
