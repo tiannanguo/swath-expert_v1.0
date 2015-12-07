@@ -881,7 +881,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
                     #compute the peak boundary for each fragment, not the consensus peak boundary
 
-                    if sample == 'gold10' and abs(rt - 4018) < 1:
+                    if sample == 'gold10' and abs(rt - 3893.9) < 1:
                         pass
 
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)

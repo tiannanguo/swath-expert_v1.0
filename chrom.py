@@ -158,8 +158,8 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_f
     # sort fragments by decreasing intensity
     i2 = sorted(i, reverse=1)
     fragments2 = [x for (y, x) in sorted(zip(i, fragments), reverse=1)]
-    rt_left_list2 = [y for (y, x) in sorted(zip(rt_left_list, fragments), reverse=1)]
-    rt_right_list2 = [y for (y, x) in sorted(zip(rt_right_list, fragments), reverse=1)]
+    rt_left_list2 = [x for (y, x) in sorted(zip(i, rt_left_list), reverse=1)]
+    rt_right_list2 = [x for (y, x) in sorted(zip(i, rt_right_list), reverse=1)]
 
     # check the highest fragment first, if a reasonable peak boundary is found, use it. Otherwise, descending the fragment until find a reasonable boundary
     for fragment, i, rt_left0, rt_right0 in zip(fragments2, i2, rt_left_list2, rt_right_list2):
