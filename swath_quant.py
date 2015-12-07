@@ -184,20 +184,18 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
     # check if the peak is a good one
     if_good = 0
 
-    point_left_rt = rt_list[0]
-    point_apex_rt = rt_list[len(rt_list) / 2]
-    point_right_rt = rt_list[-1]
+    # point_left_rt = rt_list[0]
+    # point_apex_rt = rt_list[len(rt_list) / 2]
+    # point_right_rt = rt_list[-1]
 
     point_left_i = i_list[0]
-    point_apex_i = i_list[len(rt_list) / 2]
+    point_apex_i = max_i = max(i_list) #i_list[len(rt_list) / 2]
     point_right_i = i_list[-1]
 
-    max_i = max(i_list)
-
-    # the apex_i should be close to the max intensity
-    if_good_apex_i = 0
-    if point_apex_i > 0.5 * max_i:
-        if_good_apex_i = 1
+    # # the apex_i should be close to the max intensity
+    # if_good_apex_i = 0
+    # if point_apex_i > 0.5 * max_i:
+    #     if_good_apex_i = 1
 
     # the left_i and right_i should be both < apex_i, and they are similar
     fold_change_left = point_left_i / (point_apex_i + 0.1)
@@ -205,7 +203,7 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
     if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, fold_change_threshold)
     if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, fold_change_threshold)
 
-    if if_good_apex_i == 1 and if_good_fold_change_left == 1 and if_good_fold_change_right == 1 and if_found_peak == 1:
+    if if_good_fold_change_left == 1 and if_good_fold_change_right == 1 and if_found_peak == 1:
         if_good = 1
 
     return if_good
