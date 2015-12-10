@@ -29,7 +29,7 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
                 # print sample
                 if sample != ref_sample_id:
 
-                    if sample == 'gold39':
+                    if sample == 'gold38':
                         pass
 
                     other_sample_top1_fragments_i_ratio = compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id)
@@ -95,7 +95,7 @@ def find_top_n_fragment_based_on_area(option, area):
 
     # sort fragment based on i, and then select the top n fragment
 
-    area2 = sorted(area['ms2']['peak_apex_i'].items(), key=operator.itemgetter(1), reverse=True)
+    area2 = sorted(area.items(), key=operator.itemgetter(1), reverse=True)
 
     if len(area2) >= int(option):
         return area2[int(option) - 1][0]
@@ -150,16 +150,14 @@ def compute_fragment_correlation(area1, area2, top1_fragment):
     x = []
     y = []
 
-    for fragment in area1.keys():
-        x.append(area1[fragment])
-        y.append(area2[fragment])
+    for fragment in area1b.keys():
+        x.append(area1b[fragment])
+        y.append(area2b[fragment])
 
     corr = np.corrcoef(x, y)[0][1]
     corr_spearman = stats.spearmanr(x, y)[0]
 
     return corr, corr_spearman
-
-
 
 def get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id):
 
