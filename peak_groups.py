@@ -527,7 +527,7 @@ def check_peak_group_top_fragment_peak_boundary(n, rt, fragment, pg, ref_sample_
 
     # if the peak intensity is too low (below 100, it will not be a good signal in tripleTOF 5600
 
-    if pg[rt]['ms2']['peak_apex_i'] > 100.0:
+    if pg[rt]['ms2']['peak_apex_i'][fragment] > 100.0:
 
         peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
 
