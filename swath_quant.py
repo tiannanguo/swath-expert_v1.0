@@ -29,7 +29,7 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
                 # print sample
                 if sample != ref_sample_id:
 
-                    if sample == 'gold38':
+                    if sample == 'gold36':
                         pass
 
                     other_sample_top1_fragments_i_ratio = compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id)
@@ -81,10 +81,10 @@ def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data
 
     # if_top1_good_shape = check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak)
 
-    fragment_cor, fragment_cor_spearman = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
+    if_good_pg = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
                                                 display_data[tg][ref_sample_id]['ms2']['area'],
                                                 ref_sample_top1_fragment)
-    if fragment_cor >= 0.35 or fragment_cor_spearman >= 0.35:  # empirical value
+    if if_good_pg == 1:
         # a good peak group
         # if if_top1_good_shape == 1:
         return top1_ratio
@@ -102,62 +102,36 @@ def find_top_n_fragment_based_on_area(option, area):
     else:
         return 'NA'
 
-def remove_outlier_in_sample_based_on_top1_fragment(area1, area2, top1_fragment):
-
-    area1b = {}
-    area2b = {}
-
-    area1_max = area1[top1_fragment]
-
-    for fragment in area1.keys():
-        if area1[fragment] <= area1_max:
-            area1b[fragment] = area1[fragment]
-            area2b[fragment] = area2[fragment]
-
-    # take the top 3 fragments
-    top1 = find_top_n_fragment_based_on_area(1, area1b)
-    top2 = find_top_n_fragment_based_on_area(2, area1b)
-    top3 = find_top_n_fragment_based_on_area(3, area1b)
-    top3_list = []
-    if top1 != 'NA':
-        top3_list.append(top1)
-    if top2 != 'NA':
-        top3_list.append(top2)
-    if top3 != 'NA':
-        top3_list.append(top3)
-
-    area1c = {}
-    area2c = {}
-
-    for top in top3_list:
-        area1c[top] = area1b[top]
-        area2c[top] = area2b[top]
-
-    if len(area2c) > 1:
-
-        return area1c, area2c
-
-    else:
-        return area1b, area2b
-
 def compute_fragment_correlation(area1, area2, top1_fragment):
 
-    # area2 is reference, area1 is the sample
-    #  sometimes there is an interfering signal (strong signal) in the sample, remove it
+    # area1 is the sample, area2 is reference,
+    # it's a good pg if the following two scenarios happen:
+    # 1, the top1 fragment in ref is the top1 in the sample
+    # 2, else, the top2 and top3 in ref sample is top 3 in the sample
 
-    area1b, area2b = remove_outlier_in_sample_based_on_top1_fragment(area1, area2, top1_fragment)
+    top_fragments = {}
+    for i in range(1, 4):
+        top_i = find_top_n_fragment_based_on_area(i, area1)
+        if top_i != 'NA':
+            top_fragments[i] = top_i
 
-    x = []
-    y = []
+    ref_top_fragments = {}
+    for i in range(1, 4):
+        top_i = find_top_n_fragment_based_on_area(i, area2)
+        if top_i != 'NA':
+            ref_top_fragments[i] = top_i
 
-    for fragment in area1b.keys():
-        x.append(area1b[fragment])
-        y.append(area2b[fragment])
+    if_good_pg = 0
 
-    corr = np.corrcoef(x, y)[0][1]
-    corr_spearman = stats.spearmanr(x, y)[0]
+    if len(top_fragments) < 3 or len(ref_top_fragments) < 3:
+        return if_good_pg
+    else:
+        if top_fragments[1] == ref_top_fragments[1]:
+            if_good_pg = 1
+        elif ref_top_fragments[2] in top_fragments.values() and ref_top_fragments[3] in top_fragments.values():
+            if_good_pg = 1
 
-    return corr, corr_spearman
+    return if_good_pg
 
 def get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id):
 
