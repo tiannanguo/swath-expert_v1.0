@@ -178,9 +178,8 @@ def get_peak_group_boundary(fragments, i, rt_left_list, rt_right_list, peak_rt_f
 
         else:
 
-            peak_half_width = min(distance_left, distance_right)
-            pg_rt_left = peak_rt_found - peak_half_width
-            pg_rt_right = peak_rt_found + peak_half_width
+            pg_rt_left = rt_left0
+            pg_rt_right = rt_right0
             break
 
     # if no peak boundary found, use the one from highest peak

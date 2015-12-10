@@ -15,7 +15,7 @@ import parameters
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
 # chrom_file = sys.argv[1]
-chrom_file = 'debug_png_id_212.txt.gz'
+chrom_file = 'debug_png_id_216.txt.gz'
 # chrom_file = 'com_chrom_2.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
@@ -53,7 +53,9 @@ def main():
     #read library file to get annotation for the fragments
 
     # compute the peak boundary for the reference sample, write to display_pg
-    display_data, peak_group_candidates, chrom_data = chrom.compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates)
+    display_data, peak_group_candidates, chrom_data = \
+        chrom.compute_reference_sample_peak_boundary(ref_sample_data, chrom_data,
+                                                     peptide_data, peak_group_candidates)
 
     # based on the display_data for reference sample, get the best matched peak groups from all other samples
     # and then write to display_data

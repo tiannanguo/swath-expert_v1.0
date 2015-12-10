@@ -822,8 +822,10 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold40':
+    if sample == 'gold5':
         pass
+    # print sample  ##hahaha
+
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity
     pg_filtered_rt2 = filter_peak_group_peak_shape(2, pg, ref_pg, pg_filtered_rt)
@@ -1085,7 +1087,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
 
     elif len(selected_rt_num_fragment_2.keys()) == 1:
         # if only one
-        return float(rt_found), max_num_good_fragments, if_ms1, good_fragments, float(rt_dif)
+        return float(rt_found), max_num_good_fragments, selected_rt_if_ms1_2.values()[0], good_fragments, float(rt_dif)
     else:
         # can not happen
         print "error: can not find a good rt, this should not happen"

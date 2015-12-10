@@ -88,21 +88,29 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
         for fragment in display_data[tg][sample]['ms2']['peak_apex_i'].keys():
             if_use_this_fragment = 0
             if_found_peak = display_data[tg][sample]['ms2']['if_found_peak'][fragment]
-            i_left = display_data[tg][sample]['ms2']['i_list'][fragment][0]
-            i_right = display_data[tg][sample]['ms2']['i_list'][fragment][-1]
-            i_max = max(display_data[tg][sample]['ms2']['i_list'][fragment])
-            if i_max == 0:
+
+            # print sample, fragment
+
+            if sample == 'gold4' and fragment == '3256_y10_2_GLPITITESDIR(UniMod:267)_2':
                 pass
 
-            else:
-                i_left_fold_change = i_left / i_max
-                i_right_fold_change = i_right / i_max
-                if i_left_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION and \
-                    i_right_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION:
-                    if_use_this_fragment = 1
+            if len(display_data[tg][sample]['ms2']['i_list'][fragment]) > 0:
 
-            if if_use_this_fragment == 1 and if_found_peak == 1:
-                all_i.append(display_data[tg][sample]['ms2']['peak_apex_i'][fragment])
+                i_left = display_data[tg][sample]['ms2']['i_list'][fragment][0]
+                i_right = display_data[tg][sample]['ms2']['i_list'][fragment][-1]
+                i_max = max(display_data[tg][sample]['ms2']['i_list'][fragment])
+
+                if i_max > 0:
+
+                    i_left_fold_change = i_left / i_max
+                    i_right_fold_change = i_right / i_max
+
+                    if i_left_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION and \
+                        i_right_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION:
+                        if_use_this_fragment = 1
+
+                if if_use_this_fragment == 1 and if_found_peak == 1:
+                    all_i.append(display_data[tg][sample]['ms2']['peak_apex_i'][fragment])
 
         if len(all_i) > 0:
             i0 = max(all_i)
