@@ -71,7 +71,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold60':
+            if sample == 'gold30':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -522,7 +522,7 @@ def get_max_rt_from_pg_sorted(rt_list, pg_corr):
     corr_max = pg_corr[rt_max]
 
     for rt in rt_list[1:]:
-        if pg_corr[rt] >= corr_max * 0.9:  # empirical
+        if pg_corr[rt] >= corr_max - 0.3:  # empirical
             rt_final.append(rt)
 
     return rt_final
