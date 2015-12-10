@@ -71,7 +71,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold30':
+            if sample == 'gold40':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -128,6 +128,45 @@ def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt):
 
     return i, if_found_peak
 
+def get_peak_width_left_and_right(pg, rt):
+
+    width_left = {}
+    width_right = {}
+    ratio_right_to_left = {}
+
+    for fragment in pg[rt]['ms2']['rt_left'].keys():
+        width_left[fragment] = rt - pg[rt]['ms2']['rt_left'][fragment]
+        width_right[fragment] = pg[rt]['ms2']['rt_right'][fragment] - rt
+        ratio_right_to_left[fragment] = (width_right[fragment] + 0.01) / (width_left[fragment] + 0.01)
+
+    return width_left, width_right, ratio_right_to_left
+
+
+def reject_outliers(data, m=2):
+    data_mean = np.mean(data)
+    data_sd = np.std(data)
+    data2 = [x for x in data if abs(x - data_mean) < m * data_sd]
+    return data2
+
+def get_boundary_for_pg_best(pg, rt, ref_pg_width):
+
+    # in most cases, the best pg is symmetric, then it's simple, use the center +/- half peak width
+    # sometimes, the best pg is not symmetric, then proportionally distribute the peak width
+
+    # check the distribution of peak width
+    peak_width_on_the_left, peak_width_on_the_right, peak_width_ratio_right_to_left = \
+        get_peak_width_left_and_right(pg, rt)
+
+    peak_width_ratio_right_to_left2 = reject_outliers(peak_width_ratio_right_to_left.values())
+
+    peak_width_ratio_right_to_left_mean = np.mean(peak_width_ratio_right_to_left2)
+
+    pg_left = rt - ref_pg_width / (1.0 + peak_width_ratio_right_to_left_mean)
+    pg_right = pg_left + ref_pg_width
+
+    return pg_left, pg_right
+
+
 def get_peak_group_values(pg, rt, ref_pg):
 
     pg_best = data_holder.Nested_dict()
@@ -135,8 +174,8 @@ def get_peak_group_values(pg, rt, ref_pg):
     pg_best['peak_rt'] = rt
 
     # use peak width from ref_pg to compute the boundary of this peak group
-    pg_best['rt_left'] = rt - 0.5 * (ref_pg['rt_right'] - ref_pg['rt_left'])
-    pg_best['rt_right'] = rt + 0.5 * (ref_pg['rt_right'] - ref_pg['rt_left'])
+    ref_pg_width = ref_pg['rt_right'] - ref_pg['rt_left']
+    pg_best['rt_left'], pg_best['rt_right'] = get_boundary_for_pg_best(pg, rt, ref_pg_width)
 
     for fragment in pg[rt]['ms2']['rt_list'].keys():
 
@@ -783,7 +822,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold60':
+    if sample == 'gold40':
         pass
 
     # select the peak group with highest correlation to the reference peak group in terms of fragment intensity

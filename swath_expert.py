@@ -15,7 +15,7 @@ import parameters
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
 # chrom_file = sys.argv[1]
-chrom_file = 'debug_png_id_205.txt.gz'
+chrom_file = 'debug_png_id_212.txt.gz'
 # chrom_file = 'com_chrom_2.txt.gz'
 id_mapping_file = 'goldenSets90.txt'
 # id_mapping_file = 'goldenSets90_test.txt'
