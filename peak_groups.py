@@ -71,7 +71,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold40':
+            if sample == 'gold4':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -128,16 +128,21 @@ def get_fragment_intensity_for_peak_group(peaks_rt, peaks_i, rt):
 
     return i, if_found_peak
 
-def get_peak_width_left_and_right(pg, rt):
+def get_peak_width_left_and_right(pg, rt, ref_pg_width):
 
     width_left = {}
     width_right = {}
     ratio_right_to_left = {}
 
     for fragment in pg[rt]['ms2']['rt_left'].keys():
-        width_left[fragment] = rt - pg[rt]['ms2']['rt_left'][fragment]
-        width_right[fragment] = pg[rt]['ms2']['rt_right'][fragment] - rt
-        ratio_right_to_left[fragment] = (width_right[fragment] + 0.01) / (width_left[fragment] + 0.01)
+        if pg[rt]['ms2']['rt_left'][fragment] != -1 and pg[rt]['ms2']['rt_right'][fragment] != -1:
+            width_left[fragment] = rt - pg[rt]['ms2']['rt_left'][fragment]
+            width_right[fragment] = pg[rt]['ms2']['rt_right'][fragment] - rt
+            ratio_right_to_left[fragment] = (width_right[fragment] + 0.01) / (width_left[fragment] + 0.01)
+        else:
+            width_left[fragment] = rt - 0.5 * ref_pg_width
+            width_right[fragment] = rt + 0.5 * ref_pg_width
+            ratio_right_to_left[fragment] = 1.0
 
     return width_left, width_right, ratio_right_to_left
 
@@ -155,7 +160,7 @@ def get_boundary_for_pg_best(pg, rt, ref_pg_width):
 
     # check the distribution of peak width
     peak_width_on_the_left, peak_width_on_the_right, peak_width_ratio_right_to_left = \
-        get_peak_width_left_and_right(pg, rt)
+        get_peak_width_left_and_right(pg, rt, ref_pg_width)
 
     peak_width_ratio_right_to_left2 = reject_outliers(peak_width_ratio_right_to_left.values())
 
@@ -658,7 +663,7 @@ def find_top_fragment_with_peak(pg):
 def find_best_match_pg(pg, ref_pg, sample):
 
     # for debugging
-    if sample == 'gold30':
+    if sample == 'gold4':
         pass
 
     if len(pg) == 0:
@@ -670,14 +675,14 @@ def find_best_match_pg(pg, ref_pg, sample):
 
     else:
         pg_best = find_best_match_pg_rule_a(pg, ref_pg, sample)
-        return pg_best
+    return pg_best
+
 
 def only_one_pg(pg, ref_pg):
     return get_peak_group_values(pg, pg.keys()[0], ref_pg)
 
 
 def find_best_match_pg_rule_a(pg, ref_pg, sample):
-
     # for debugging
     if sample == 'gold40':
         pass
@@ -686,6 +691,7 @@ def find_best_match_pg_rule_a(pg, ref_pg, sample):
     pg_filtered_rt = filter_peak_group_top_fragment(1, pg, ref_pg, pg.keys())
 
     if len(pg_filtered_rt) == 1:
+
         pg_best = get_peak_group_values(pg, pg_filtered_rt[0], ref_pg)
 
     elif len(pg_filtered_rt) == 0:
@@ -762,7 +768,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold8':
+    if sample == 'gold4':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary
@@ -822,7 +828,7 @@ def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold5':
+    if sample == 'gold4':
         pass
     # print sample  ##hahaha
 
@@ -849,6 +855,7 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
     pg = data_holder.Nested_dict()
 
     for peak_rt in peak_group_candidates[tg][sample].keys():
+        # if_bad_pg = 0
         pg[peak_rt]['ms1']['rt_list'] = chrom_data[tg][sample][tg].rt_list
         pg[peak_rt]['ms1']['i_list'] = chrom_data[tg][sample][tg].i_list
         pg[peak_rt]['ms1']['peak_apex_i_list'] = chrom_data[tg][sample][tg].peak_apex_i_list
@@ -870,9 +877,13 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
                 pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
                     get_peak_boundary_from_fragment(peak_group_candidates, tg, sample, peak_rt, fragment)
 
+                # if pg[peak_rt]['ms2']['rt_left'][fragment] == -1:
+                #     if_bad_pg = 1
+        # if if_bad_pg == 1:
+        #     del pg[peak_rt]
+
     if len(pg) == 0:
         print 'no peak group'
-        pass
 
     return pg
 
@@ -881,17 +892,19 @@ def get_peak_boundary_from_fragment(peak_group_candidates, tg, sample, peak_rt, 
     rt_left0 = -1.0
     rt_right0 = -1.0
 
-    fragments = peak_group_candidates[tg][sample][peak_rt].matched_fragments
-    fragments_rt_left = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
-    fragments_rt_right = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
+    if len(peak_group_candidates[tg][sample][peak_rt].matched_fragments) > 1:
 
-    for fragment, rt_left, rt_right in zip(fragments, fragments_rt_left, fragments_rt_right):
+        fragments = peak_group_candidates[tg][sample][peak_rt].matched_fragments
+        fragments_rt_left = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_left
+        fragments_rt_right = peak_group_candidates[tg][sample][peak_rt].matched_fragments_peak_rt_right
 
-        if fragment == fragment0:
+        for fragment, rt_left, rt_right in zip(fragments, fragments_rt_left, fragments_rt_right):
 
-            rt_left0 = rt_left
-            rt_right0 = rt_right
-            break
+            if fragment == fragment0:
+
+                rt_left0 = rt_left
+                rt_right0 = rt_right
+                break
 
     return rt_left0, rt_right0
 
