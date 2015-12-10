@@ -71,7 +71,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold10':
+            if sample == 'gold40':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -348,9 +348,31 @@ def check_peak_group_peak_shape(fragment, rt, pg):
 
     return if_good
 
+def filter_pg_based_on_peak_boundary(pg_filtered_rt, pg):
+
+    pg_filtered_rt2 = {}
+
+    for rt in pg_filtered_rt:
+        num_bad_boundary = 0
+        for fragment in pg[rt]['ms2']['rt_left'].keys():
+            if pg[rt]['ms2']['rt_left'][fragment] == -1:
+                num_bad_boundary += 1
+        pg_filtered_rt2[rt] = num_bad_boundary
+
+    min_num_bad_boundary = min(pg_filtered_rt2.values())
+
+    pg_filtered_rt3= []
+
+    for rt in pg_filtered_rt2.keys():
+        if pg_filtered_rt2[rt] <= min_num_bad_boundary + 1:
+            pg_filtered_rt3.append(rt)
+
+    return pg_filtered_rt3
 
 
 def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt):
+
+    pg_filtered_rt = filter_pg_based_on_peak_boundary(pg_filtered_rt, pg)
 
     if len(pg_filtered_rt) > 0:
 
@@ -634,7 +656,7 @@ def check_peak_group_top_fragment_peak_boundary(n, rt, fragment, pg, ref_sample_
 
         peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
 
-        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION <= round(peak_width / ref_sample_peak_width, 2) <= parameters.PEAK_WIDTH_FOLD_VARIATION:
+        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION <= round(peak_width / ref_sample_peak_width, 1) <= parameters.PEAK_WIDTH_FOLD_VARIATION:
             if_good = 1
 
     return if_good
