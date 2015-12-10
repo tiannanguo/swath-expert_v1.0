@@ -70,7 +70,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold50':
+            if sample == 'gold8':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -525,10 +525,14 @@ def check_peak_group_top_fragment_peak_boundary(n, rt, fragment, pg, ref_sample_
 
     if_good = 0
 
-    peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
+    # if the peak intensity is too low (below 100, it will not be a good signal in tripleTOF 5600
 
-    if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
-        if_good = 1
+    if pg[rt]['ms2']['peak_apex_i'] > 100.0:
+
+        peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
+
+        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
+            if_good = 1
 
     return if_good
 
@@ -643,7 +647,7 @@ def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'gold8':
         pass
 
     # filter out peak groups without top 1 fragment showing good peak boundary
@@ -663,7 +667,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold90':
+    if sample == 'gold8':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary
