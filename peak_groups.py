@@ -71,7 +71,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
         for sample in sample_id:
 
-            if sample == 'gold13':
+            if sample == 'gold10':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -634,7 +634,7 @@ def check_peak_group_top_fragment_peak_boundary(n, rt, fragment, pg, ref_sample_
 
         peak_width = float(pg[rt]['ms2']['rt_right'][fragment] - pg[rt]['ms2']['rt_left'][fragment])
 
-        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION < peak_width / ref_sample_peak_width < parameters.PEAK_WIDTH_FOLD_VARIATION:
+        if 1.0 / parameters.PEAK_WIDTH_FOLD_VARIATION <= round(peak_width / ref_sample_peak_width, 2) <= parameters.PEAK_WIDTH_FOLD_VARIATION:
             if_good = 1
 
     return if_good
@@ -771,7 +771,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold13':
+    if sample == 'gold10':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary
@@ -811,7 +811,7 @@ def find_best_match_pg_rule_d(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_e(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold68':
+    if sample == 'gold10':
         pass
 
     # filter out peak groups without top 2 fragment showing good peak shape
