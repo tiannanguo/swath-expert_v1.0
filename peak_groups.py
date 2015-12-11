@@ -720,17 +720,20 @@ def get_intensity_for_closest_rt(rt0, rt_list, i_list):
 
     i = i_list[0]
     rt = rt_list[0]
-    rt_dif = abs(rt - rt0)
 
-    for rt_, i_ in zip(rt_list, i_list):
-        rt_dif_ = abs(rt_ - rt0)
+    if type(rt) == float and type(rt) == float:
+        rt_dif = abs(rt - rt0)
 
-        if rt_dif_ < rt_dif:
-            i = i_
-            rt = rt_
-            rt_dif = rt_dif_
+        for rt_, i_ in zip(rt_list, i_list):
+            rt_dif_ = abs(rt_ - rt0)
 
-    return i + 0.1 # sometimes i is 0
+            if rt_dif_ < rt_dif:
+                i = i_
+                rt = rt_
+                rt_dif = rt_dif_
+        return i + 0.1  # sometimes i is 0
+    else:
+        return 0.1
 
 def filter_peak_group_top_fragment_peak_boundary(n, pg, ref_pg, pg_filtered_rt):
 
