@@ -18,6 +18,9 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
 
     for tg in display_data.keys():
 
+        if tg.startswith('555_'):
+            pass
+
         num_transition = len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
         max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(display_data, tg)
         max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(display_data, tg)

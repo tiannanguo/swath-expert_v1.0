@@ -3,12 +3,12 @@ import gzip
 import csv
 
 
-png_id = 18
+png_id = 609
 
 def get_file_num(png_id):
     target_file = ''
     if_found = 0
-    for n in range(1,33):
+    for n in range(1, 33):
         chrom_file = 'com_chrom_%s.txt.gz' % str(n)
         with gzip.open(chrom_file, 'rb') as i:
             r = csv.DictReader(i, delimiter='\t')
