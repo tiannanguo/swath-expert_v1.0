@@ -92,10 +92,10 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
             if_use_this_fragment = 0
             if_found_peak = display_data[tg][sample]['ms2']['if_found_peak'][fragment]
 
+            # for debugging
             # print sample, fragment
-
-            if sample == 'gold4' and fragment == '3256_y10_2_GLPITITESDIR(UniMod:267)_2':
-                pass
+            # if sample == 'gold80' and fragment.startswith('9634_'):
+            #     pass
 
             if len(display_data[tg][sample]['ms2']['i_list'][fragment]) > 0:
 
@@ -108,8 +108,8 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
                     i_left_fold_change = i_left / i_max
                     i_right_fold_change = i_right / i_max
 
-                    if i_left_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION and \
-                        i_right_fold_change <= parameters.PEAK_SHAPE_FOLD_VARIATION:
+                    if i_left_fold_change <= 1.0 / parameters.PEAK_SHAPE_FOLD_VARIATION and \
+                        i_right_fold_change <= 1.0 / parameters.PEAK_SHAPE_FOLD_VARIATION:
                         if_use_this_fragment = 1
 
                 if if_use_this_fragment == 1 and if_found_peak == 1:
