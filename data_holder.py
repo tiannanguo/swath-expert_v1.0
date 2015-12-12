@@ -60,17 +60,6 @@ class Chromatogram(object):
                 self.peak_apex_rt_list = [np.median(np.array(rt_list))]
                 self.peak_apex_i_list = [np.median(np.array(i_list))]
 
-        # peak_rt_left, peak_rt_right = peaks.get_all_peak_boundary(rt_list, i_list, max_peaks)
-
-        # self.peak_apex_rt = peak_rt_left
-        # self.peak_apex_right = peak_rt_right
-
-
-
-    # def size(self):
-    #     return len(self.rt_list)
-
-
 def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):
 
     max_peaks_all = []
