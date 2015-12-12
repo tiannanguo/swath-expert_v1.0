@@ -7,7 +7,7 @@ import peaks
 from collections import defaultdict
 import parameters
 
-def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_name):
+def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample):
 
     all_r_code_samples = []
 
@@ -18,43 +18,52 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
 
     for tg in display_data.keys():
 
-        if tg.startswith('555_'):
-            pass
+        # at least 3 good shaped fragments
+        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > 2:
 
-        num_transition = len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
-        max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(display_data, tg)
-        max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(display_data, tg)
+            if tg.startswith('555_'):
+                pass
 
-        r_code_create_png_file = create_png_file(tg, parameters.PNG_FILE_WIDTH, parameters.PNG_FILE_HEIGHT, num_transition)
-        all_r_code_samples.append(r_code_create_png_file)
+            ref_sample_name = ref_sample[tg].sample_name
 
-        fragment_color_code_mapping = generate_fragment_color_codes(display_data, tg)
+            num_transition = len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys())
+            max_intensity_ms1 = get_max_ms1_intensity_in_all_samples(display_data, tg)
+            max_intensity_ms2 = get_max_ms2_intensity_in_all_samples(display_data, tg)
 
-        for sample in sample_id:
+            r_code_create_png_file = create_png_file(tg, parameters.PNG_FILE_WIDTH, parameters.PNG_FILE_HEIGHT, num_transition)
+            all_r_code_samples.append(r_code_create_png_file)
 
-            if_reference_sample = 0
-            if sample == ref_sample_name:
-                if_reference_sample = 1
+            fragment_color_code_mapping = generate_fragment_color_codes(display_data, tg)
 
-            r_code_samples_par = write_sample_par(sample, if_reference_sample)
+            for sample in sample_id:
 
-            r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)
+                if_reference_sample = 0
+                if sample == ref_sample_name:
+                    if_reference_sample = 1
 
-            r_code_sample_ms2 = write_sample_ms2(display_data, sample, tg, max_intensity_ms2, fragment_color_code_mapping)
+                print tg, sample, ref_sample_name, if_reference_sample
 
-            r_code_this_sample = r_code_samples_par + r_code_sample_ms1 + r_code_sample_ms2
+                r_code_samples_par = write_sample_par(sample, if_reference_sample)
 
-            # next step: write out quant table.
-            # another expert rules to check the quality of the displayed peak group for quantifiation
-            # debug the codes in peak_groups.py, chrom.py, peaks.py, io_swath.py, etc.
-            all_r_code_samples.append(r_code_this_sample)
+                r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)
 
-        r_code_close_png_file = write_r_code_close_png_file(
-            tg, num_transition, max_intensity_ms1, max_intensity_ms2,
-            fragment_color_code_mapping) #contains legend
+                r_code_sample_ms2 = write_sample_ms2(display_data, sample, tg, max_intensity_ms2, fragment_color_code_mapping)
 
-        all_r_code_samples.append(r_code_close_png_file)
+                r_code_this_sample = r_code_samples_par + r_code_sample_ms1 + r_code_sample_ms2
 
+                # next step: write out quant table.
+                # another expert rules to check the quality of the displayed peak group for quantifiation
+                # debug the codes in peak_groups.py, chrom.py, peaks.py, io_swath.py, etc.
+                all_r_code_samples.append(r_code_this_sample)
+
+            r_code_close_png_file = write_r_code_close_png_file(
+                tg, num_transition, max_intensity_ms1, max_intensity_ms2,
+                fragment_color_code_mapping) #contains legend
+
+            all_r_code_samples.append(r_code_close_png_file)
+
+        else:
+            print 'not enough fragments for ' + tg
 
     #TODO write R codes into the file out_R_file
     with open(out_R_file, 'wb') as out_file:
