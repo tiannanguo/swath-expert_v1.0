@@ -2,6 +2,7 @@ import gzip
 import csv
 import sys
 from collections import defaultdict
+
 class Nested_dict(defaultdict):
     def __init__(self):
         super(Nested_dict, self).__init__(Nested_dict)
@@ -12,12 +13,13 @@ class Nested_dict(defaultdict):
 in_file = sys.argv[1]
 # in_file = 'com_chrom_31.txt.gz'
 
+num_tg_per_file = 30
 
 def get_num_fractions(n):
 
     print 'totally ' + str(n) + " tg IDs"
-    m = n / 30
-    res = n - m * 30
+    m = n / num_tg_per_file
+    res = n - m * num_tg_per_file
     k = 0
     if res == 0:
         k = m
@@ -55,8 +57,8 @@ def get_tg_dict(tg_list, num_fractions):
     last_index = -1
 
     for i in range(num_fractions - 1):
-        start_idx = 30 * i
-        end_idx = start_idx + 19
+        start_idx = num_tg_per_file * i
+        end_idx = start_idx + num_tg_per_file - 1
         last_index = end_idx
         for j in range(start_idx, end_idx + 1):
             tg_dict[i].append(tg_list[j])

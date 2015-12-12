@@ -41,8 +41,6 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
                 if sample == ref_sample_name:
                     if_reference_sample = 1
 
-                print tg, sample, ref_sample_name, if_reference_sample
-
                 r_code_samples_par = write_sample_par(sample, if_reference_sample)
 
                 r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)

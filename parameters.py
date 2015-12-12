@@ -29,9 +29,15 @@ PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
 # PNG_FILE_WIDTH = figure_num_per_row * 15
 # PNG_FILE_HEIGHT = figures_num_rows * 600
 
-# for golden 90 samples
-figure_num_per_row = 60
-figures_num_rows = 2
+# # for golden 90 samples
+# figure_num_per_row = 30
+# figures_num_rows = 3
+# PNG_FILE_WIDTH = figure_num_per_row * 150
+# PNG_FILE_HEIGHT = figures_num_rows * 600
+
+# for NCI60 120 samples
+figure_num_per_row = 30
+figures_num_rows = 4
 PNG_FILE_WIDTH = figure_num_per_row * 150
 PNG_FILE_HEIGHT = figures_num_rows * 600
 

@@ -14,8 +14,9 @@ import parameters
 # name of files
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
-# chrom_file = sys.argv[1]
-chrom_file = 'com_chrom_31_0.txt.gz'
+chrom_file = sys.argv[1]
+platform = 'linux'  # windows
+# chrom_file = 'com_chrom_31_0.txt.gz'
 # chrom_file = 'debug_png_id_620.txt.gz'
 # chrom_file = 'com_chrom_5.txt.gz'
 # id_mapping_file = 'goldenSets90.txt'
@@ -27,13 +28,22 @@ quant_file_fragments = chrom_file.replace('.txt.gz', '.quant.fragments.txt')
 quant_file_peptides = chrom_file.replace('.txt.gz', '.quant.peptides.txt')
 quant_file_proteins = chrom_file.replace('.txt.gz', '.quant.proteins.txt')
 
-# for test in windows
-dos_bat_file = chrom_file.replace('.txt.gz', '.bat')
-# dos_bat_file = 'tmp_run.bat'
-def write_tmp_bat_file(out_R_file):
-    with open(dos_bat_file, 'w') as o:
-        cmd = '''C:\\R\\R-2.15.1\\bin\\x64\\Rcmd.exe BATCH %s\n''' % out_R_file
-        o.write(cmd)
+batch_file = ''
+if platform == 'windows':
+    # for test in windows
+    batch_file = chrom_file.replace('.txt.gz', '.bat')
+    # dos_bat_file = 'tmp_run.bat'
+elif platform == 'linux':
+    batch_file = chrom_file.replace('.txt.gz', '.sh')
+
+def write_bat_file(out_R_file, batch_file, platform):
+    with open(batch_file, 'w') as o:
+        if platform == 'windows':
+            cmd = '''C:\\R\\R-2.15.1\\bin\\x64\\Rcmd.exe BATCH %s\n''' % out_R_file
+            o.write(cmd)
+        elif platform == 'linux':
+            cmd = '''Rscript %s\n''' % out_R_file
+            o.write(cmd)
 
 def main():
 
@@ -76,5 +86,5 @@ def main():
 
 start_time = time.time()
 main()
-write_tmp_bat_file(out_R_file)  #########3tmp
+write_bat_file(out_R_file, batch_file, platform)
 print "--- %s seconds ---" % (time.time() - start_time)
