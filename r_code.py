@@ -32,11 +32,11 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
 
         for sample in sample_id:
 
-            r_code_samples_par = write_sample_par(sample)
-
             if_reference_sample = 0
             if sample == ref_sample_name:
                 if_reference_sample = 1
+
+            r_code_samples_par = write_sample_par(sample, if_reference_sample)
 
             r_code_sample_ms1 = write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_sample)
 
@@ -201,8 +201,11 @@ def create_png_file(tg_id, width, height, num_colors):
     return code
 
 
-def write_sample_par(sample):
-    code = '''#sample %s\n''' % sample
+def write_sample_par(sample, if_reference_sample):
+    if if_reference_sample == 1:
+        code = '''#REF sample %s\n''' % sample
+    else:
+        code = '''#sample %s\n''' % sample
     code += '''par(mar=c(%s,%s,%s,%s))\n''' % (parameters.subplot_out_margin_area_south,
                                                parameters.subplot_out_margin_area_west,
                                                parameters.subplot_out_margin_area_north,

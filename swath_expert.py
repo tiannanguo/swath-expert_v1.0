@@ -73,6 +73,7 @@ def main():
 
     for tg in display_data.keys():
         # at least 3 good shaped fragments
+        # print 'write r code %s' % tg
         if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > 2:
             # write r code into a file
             r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data[tg].sample_name)
