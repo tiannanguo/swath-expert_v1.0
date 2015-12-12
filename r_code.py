@@ -163,14 +163,19 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
             this_transition_short = ts[0] + '_' + ts[1]
             transition_list_quoted_csv_string += (this_transition_short + '", "')
         else:
-            transition_list_quoted_csv_string += (ts + '", "')
+            print 'WARNING: transition legend has no _. tg %s, transition %s' % (this_tg, this_transition)
+            transition_list_quoted_csv_string += (this_transition + '", "')
 
     # print transition_list
 
     last_transition = fragment_color_code_mapping.keys()[-1]
     ts_last = last_transition.split('_')
-    last_transition_short = ts_last[0] + '_' + ts_last[1]
-    transition_list_quoted_csv_string += (last_transition_short + '"')
+    if len(ts_last) > 1:
+        last_transition_short = ts_last[0] + '_' + ts_last[1]
+        transition_list_quoted_csv_string += (last_transition_short + '"')
+    else:
+        print 'WARNING: transition legend has no _. tg %s, transition %s' % (this_tg, last_transition)
+        transition_list_quoted_csv_string += (last_transition + '"')
 
     color_code_csv_string = ''
     for fragment in fragment_color_code_mapping.keys()[:-1]:
