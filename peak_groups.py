@@ -431,9 +431,12 @@ def compute_corr_using_fragments(pg, ref_pg, pg_filtered_rt, fragments_list, if_
             y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
             y.append(y0)
 
-        pg_corr[rt] = np.corrcoef(x, y)[0][1]  # note: this is R, not R2
+        if len(x) > 2 and len(y) == len(x):
+            pg_corr[rt] = np.corrcoef(x, y)[0][1]  # note: this is R, not R2
 
-        if math.isnan(pg_corr[rt]) == 1:
+            if math.isnan(pg_corr[rt]) == 1:
+                pg_corr[rt] = -1
+        else:
             pg_corr[rt] = -1
 
     return pg_corr
@@ -487,82 +490,6 @@ def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filter
     else:
         print 'WARNING: no peak group found when computing fragment intensity correlation'
         return ref_pg['peak_rt']
-
-#BACK UP 151211.9:46AM.
-# def most_correlated_peak_group_based_on_fragment_intensity(pg, ref_pg, pg_filtered_rt):
-#
-#     pg_filtered_rt = filter_pg_based_on_peak_boundary(pg_filtered_rt, pg)
-#
-#     if len(pg_filtered_rt) > 0:
-#
-#         pg_corr = {}
-#         pg_corr_without_top1 = {}
-#         # also compute spearman correlation
-#         pg_corr_spearman = {}
-#         pg_corr_spearman_without_top1 = {}
-#
-#         for rt in pg_filtered_rt:
-#
-#             x = []
-#             y = []
-#             x_without_top1 = []
-#             y_without_top1 = []
-#
-#             top_fragments_list = ref_pg['ms2']['i_list'].keys()
-#             # sometimes top1 fragment is a contaminant and generates noises
-#             top_fragments_list_without_top1 = remove_top1_fragment(ref_pg)
-#
-#             for fragment in top_fragments_list:
-#                 x.append(ref_pg['ms2']['peak_apex_i'][fragment])
-#                 y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment], pg[rt]['ms2']['i_list'][fragment])
-#                 y.append(y0)
-#
-#             for fragment in top_fragments_list_without_top1:
-#                 x_without_top1.append(ref_pg['ms2']['peak_apex_i'][fragment])
-#                 y0 = get_intensity_for_closest_rt(rt, pg[rt]['ms2']['rt_list'][fragment],
-#                                                   pg[rt]['ms2']['i_list'][fragment])
-#                 y_without_top1.append(y0)
-#
-#             pg_corr[rt] = np.corrcoef(x, y)[0][1]   #note: this is R, not R2
-#             pg_corr_spearman[rt] = stats.spearmanr(x, y)[0]
-#             pg_corr_without_top1[rt] = np.corrcoef(x_without_top1, y_without_top1)[0][1]  # note: this is R, not R2
-#             pg_corr_spearman_without_top1[rt] = stats.spearmanr(x_without_top1, y_without_top1)[0]
-#
-#         # select the peak group with highest corr value
-#         pg_sorted = [rt for cor, rt in sorted(zip(pg_corr.values(), pg_corr.keys()), reverse=True)]
-#         pg_sorted_spearman = [rt for cor, rt in sorted(zip(pg_corr_spearman.values(), pg_corr_spearman.keys()), reverse=True)]
-#
-#         # list after removing top1 fragment
-#         pg_sorted_without_top1 = [rt for cor, rt in sorted(zip(pg_corr_without_top1.values(), pg_corr_without_top1.keys()), reverse=True)]
-#         pg_sorted_spearman2_without_top1 = [rt for cor, rt in
-#                               sorted(zip(pg_corr_spearman_without_top1.values(), pg_corr_spearman_without_top1.keys()), reverse=True)]
-#
-#         # sometimes, the top peak is same
-#         pg_sorted_max = get_max_rt_from_pg_sorted(pg_sorted, pg_corr)
-#         pg_sorted_max_spearman = get_max_rt_from_pg_sorted(pg_sorted_spearman, pg_corr_spearman)
-#         pg_sorted_max_without_top1 = get_max_rt_from_pg_sorted(pg_sorted_without_top1, pg_corr_without_top1)
-#         pg_sorted_max_spearman_without_top1 = get_max_rt_from_pg_sorted(pg_sorted_spearman2_without_top1, pg_corr_spearman_without_top1)
-#
-#         pg_sorted_max = combine_pg_sorted_max_rt(pg_sorted_max, pg_sorted_max_spearman)
-#         pg_sorted_max = combine_pg_sorted_max_rt(pg_sorted_max, pg_sorted_max_without_top1)
-#         pg_sorted_max = combine_pg_sorted_max_rt(pg_sorted_max, pg_sorted_max_spearman_without_top1)
-#
-#         if len(pg_sorted_max) == 1:
-#             return pg_sorted_max[0]
-#
-#         else:
-#             # if there are multiple pg with similar R2 value (in the same peak), select the one with highest intensity (apex)
-#             top1_fragment = find_top_n_fragment(1, ref_pg)
-#             top2_fragment = find_top_n_fragment(2, ref_pg)
-#             top3_fragment = find_top_n_fragment(3, ref_pg)
-#
-#             rt0 = find_best_rt_based_on_top3_fragment(pg_sorted_max, pg, top1_fragment, top2_fragment, top3_fragment)
-#
-#             return rt0
-#
-#     else:
-#         print 'WARNING: no peak group found when computing fragment intensity correlation'
-#         return ref_pg['peak_rt']
 
 def combine_pg_sorted_max_rt(pg_sorted_max, pg_sorted_max_spearman):
 
