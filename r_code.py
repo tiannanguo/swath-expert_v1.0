@@ -159,8 +159,11 @@ def write_r_code_close_png_file(this_tg, num_transitions, max_intensity_ms1, max
     for this_transition in fragment_color_code_mapping.keys()[:-1]:
         # example: 7404_a4_1_SWATGSPDSSNR(UniMod:267)_2
         ts = this_transition.split('_')
-        this_transition_short = ts[0] + '_' + ts[1]
-        transition_list_quoted_csv_string += (this_transition_short + '", "')
+        if len(ts) > 1:
+            this_transition_short = ts[0] + '_' + ts[1]
+            transition_list_quoted_csv_string += (this_transition_short + '", "')
+        else:
+            transition_list_quoted_csv_string += (ts + '", "')
 
     # print transition_list
 
