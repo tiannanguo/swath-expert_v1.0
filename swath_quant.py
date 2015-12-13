@@ -57,20 +57,22 @@ def fill_in_background_value(data_list):
         if type(i) == float:
             i_list.append(i)
 
+    if len(i_list) > 1:
+        min_i = min(i_list) * 0.1 # arbitrary, can be changed
 
-    min_i = min(i_list) * 0.1 # arbitrary, can be changed
+        data_list2 = []
 
-    data_list2 = []
+        data_list2.append(data_list[0])
 
-    data_list2.append(data_list[0])
+        for i in data_list[1:]:
+            if type(i) == float:
+                data_list2.append(i)
+            else:
+                data_list2.append(min_i)
 
-    for i in data_list[1:]:
-        if type(i) == float:
-            data_list2.append(i)
-        else:
-            data_list2.append(min_i)
-
-    return data_list2
+        return data_list2
+    else:
+        return data_list
 
 def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id):
 
