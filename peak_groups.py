@@ -939,21 +939,17 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
 
         for fragment in ref_pg['ms2']['rt_list'].keys():
             if fragment != tg:
-                pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment].rt_list
-                pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
-                pg[peak_rt]['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i_list
-                pg[peak_rt]['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_rt_list
-                pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
-                    find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
-                                               chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
+                if hasattr(chrom_data[tg][sample][fragment], 'rt_list') == 1:
+                    pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[tg][sample][fragment].rt_list
+                    pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
+                    pg[peak_rt]['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_i_list
+                    pg[peak_rt]['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][sample][fragment].peak_apex_rt_list
+                    pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
+                        find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
+                                                   chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
 
-                pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
-                    get_peak_boundary_from_fragment(peak_group_candidates, tg, sample, peak_rt, fragment)
-
-                # if pg[peak_rt]['ms2']['rt_left'][fragment] == -1:
-                #     if_bad_pg = 1
-        # if if_bad_pg == 1:
-        #     del pg[peak_rt]
+                    pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
+                        get_peak_boundary_from_fragment(peak_group_candidates, tg, sample, peak_rt, fragment)
 
     if len(pg) == 0:
         print 'no peak group'
