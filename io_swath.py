@@ -67,8 +67,9 @@ def apply_normalization_based_on_tic(i_list_csv, normalization_factors, k):
     norm_factor = compute_norm_factor(k, normalization_factors)
 
     if len(i_list) > 1:
-        i_list2 = [x * norm_factor for x in i_list]
-        i_list_csv2 = ','.join(i_list2)
+        i_list2 = [round(x * norm_factor, 1) for x in i_list]
+        i_list2_str = map(str, i_list2)
+        i_list_csv2 = ','.join(i_list2_str)
         return i_list_csv2
     else:
         return i_list_csv
