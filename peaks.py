@@ -218,14 +218,3 @@ def find_peaks(d, sample_id):
                         d[tg]['fragments'][fragment]['peaks_rt'][sample] = 'NA'
                         d[tg]['fragments'][fragment]['peaks_i'][sample] = 'NA'
     return d
-
-# def get_all_peak_boundary(rt_list, i_list, max_peaks):
-#
-#     peak_rt_left = []
-#     peak_rt_right =[]
-#     for rt in max_peaks:
-#         rt_left, rt_right = chrom.get_peak_group(rt_list, i_list, rt)
-#         peak_rt_left.append(rt_left)
-#         peak_rt_right.append(rt_right)
-#
-#     return peak_rt_left, peak_rt_right

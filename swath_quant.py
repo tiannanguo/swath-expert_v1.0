@@ -76,19 +76,13 @@ def fill_in_background_value(data_list):
 
 def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id):
 
-    # if_found_peak = display_data[tg][sample]['ms2']['if_found_peak'][ref_sample_top1_fragment]
-    # rt_list = display_data[tg][sample]['ms2']['rt_list'][ref_sample_top1_fragment]
-    # i_list = display_data[tg][sample]['ms2']['i_list'][ref_sample_top1_fragment]
     top1_ratio = display_data[tg][sample]['ms2']['ratio_to_ref'][ref_sample_top1_fragment]
-
-    # if_top1_good_shape = check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak)
 
     if_good_pg = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
                                                 display_data[tg][ref_sample_id]['ms2']['area'],
                                                 ref_sample_top1_fragment)
     if if_good_pg == 1:
-        # a good peak group
-        # if if_top1_good_shape == 1:
+
         return top1_ratio
     else:
         return 'NA'
@@ -216,10 +210,6 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
     # check if the peak is a good one
     if_good = 0
 
-    # point_left_rt = rt_list[0]
-    # point_apex_rt = rt_list[len(rt_list) / 2]
-    # point_right_rt = rt_list[-1]
-
     if len(i_list) > 5:
         point_left_i = i_list[0]
         point_apex_i = max(i_list) #i_list[len(rt_list) / 2]
@@ -257,32 +247,13 @@ def compute_quant_data_list_for_a_fragment(fragment, tg, sample_id, ref_sample, 
         # other samples
         if sample != ref_sample:
 
-            if sample == 'gold4':
-                pass
-
-            # num_good_fragments = 0.0
-
-            # if found a good peak
-            # if_found_peak = display_data[tg][sample]['ms2']['if_found_peak'][fragment]
-            # rt_list = display_data[tg][sample]['ms2']['rt_list'][fragment]
-            # i_list = display_data[tg][sample]['ms2']['i_list'][fragment]
-            # if_it_is_a_good_peak_shape = check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak)
-            #
-            # # if found a good peak then use it for quantification
-            # if if_it_is_a_good_peak_shape == 1:
-            #
-            #     num_good_fragments += 1.0
+            # if sample == 'gold4':
+            #     pass
 
             this_area = float(display_data[tg][sample]['ms2']['area'][fragment])
             ref_area = float(display_data[tg][ref_sample]['ms2']['area'][fragment])
 
             this_ratio = this_area / (ref_area + 0.1)
-            #
-            # else:
-            #
-            # # otherwise, write NA value
-            #     this_area = 'NA'
-            #     this_ratio = 'NA'
 
             display_data[tg][sample]['ms2']['area_refined'][fragment] = this_area
             display_data[tg][sample]['ms2']['ratio_to_ref'][fragment] = this_ratio
