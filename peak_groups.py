@@ -1050,8 +1050,8 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
         for sample in sample_id:
 
-            if sample == 'gold10':
-                pass
+            # if sample == 'gold10':
+            #     pass
 
             all_rt = find_all_rt_values(chrom_data, tg, sample)
 
@@ -1064,8 +1064,8 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
                     #compute the peak boundary for each fragment, not the consensus peak boundary
 
-                    if sample == 'gold10' and abs(rt - 3893.9) < 1:
-                        pass
+                    # if sample == 'gold10' and abs(rt - 3893.9) < 1:
+                    #     pass
 
                     this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
                     if this_peak_group.num_matched_fragments >= 3:
@@ -1155,7 +1155,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
                 num_good_shape_peak_ms2_dict[rt] = get_good_shape_peak_ms2(
                     rt, sample, tg, chrom_data, peak_group_candidates)
 
-            selected_rt_num_fragment_4 = rank_good_shape_paks_ms2(num_good_shape_peak_ms2_dict)
+            selected_rt_num_fragment_4 = rank_good_shape_peaks_ms2(num_good_shape_peak_ms2_dict)
 
             # this may be further improved in the future
             # consider intensity ranking, et al.
@@ -1174,7 +1174,7 @@ def check_best_peak_group_from_reference_sample(ref_sample_data, peak_group_cand
         # can not happen
         print "error: can not find a good rt, this should not happen"
 
-def rank_good_shape_paks_ms2(good_shape_fragment):
+def rank_good_shape_peaks_ms2(good_shape_fragment):
     good_shape_fragment2 = {}
     max_num_fragments = max(good_shape_fragment.values())
     for rt in good_shape_fragment.keys():
