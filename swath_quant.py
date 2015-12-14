@@ -29,8 +29,8 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
                 # print sample
                 if sample != ref_sample_id:
 
-                    if sample == 'gold36':
-                        pass
+                    # if sample == 'gold36':
+                    #     pass
 
                     other_sample_top1_fragments_i_ratio = compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id)
                     other_sample_i = 'NA'

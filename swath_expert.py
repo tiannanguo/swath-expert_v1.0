@@ -22,6 +22,7 @@ platform = 'linux'
 # chrom_file = 'com_chrom_5.txt.gz'
 # id_mapping_file = 'goldenSets90.txt'
 id_mapping_file = 'nci60sw.txt'
+tic_normalization_file = 'nci60.tic'
 # id_mapping_file = 'goldenSets90_test.txt'
 out_R_file = chrom_file.replace('.txt.gz', '.R')
 out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
@@ -51,9 +52,11 @@ def main():
     # read input file of sample information
     sample_id, id_mapping = io_swath.read_id_file(id_mapping_file)
 
+    normalization_factors = io_swath.read_tic_normalization_file(tic_normalization_file)
+
     # read input chrom file,
     # build chrom_data, find peaks when the class is initialized
-    ref_sample_data, chrom_data, peptide_data = io_swath.read_com_chrom_file(chrom_file, sample_id)
+    ref_sample_data, chrom_data, peptide_data = io_swath.read_com_chrom_file(chrom_file, sample_id, normalization_factors)
 
     # based on peaks of fragments, keep peak groups with at least MIN_FRAGMENT fragment, find out peak boundary of each fragment
     peak_group_candidates = peak_groups.find_peak_group_candidates(chrom_data, sample_id)

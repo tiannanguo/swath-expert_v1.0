@@ -21,7 +21,8 @@ def read_id_file(id_mapping_file):
             id_mapping[row[0].lower()] = row[1]
     return sample_id, id_mapping
 
-def read_com_chrom_file(chrom_file, sample_id):
+def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
+
     ref_sample_data = {}
     chrom_data = data_holder.Nested_dict()
     peptide_data = data_holder.Nested_dict()
@@ -51,6 +52,7 @@ def read_com_chrom_file(chrom_file, sample_id):
             for k in sample_id:
                 rt_list_three_values_csv = row[k + '_rt']
                 i_list_csv = row[k + '_i']
+                i_list_csv = apply_normalization_based_on_tic(i_list_csv, normalization_factors, k)
 
                 ###########
                 # if k == 'gold80' and fragment.startswith('1191_'):
@@ -59,6 +61,24 @@ def read_com_chrom_file(chrom_file, sample_id):
 
     return ref_sample_data, chrom_data, peptide_data
 
+def apply_normalization_based_on_tic(i_list_csv, normalization_factors, k):
+
+    i_list = map(float, i_list_csv.split(','))
+    norm_factor = compute_norm_factor(k, normalization_factors)
+
+    if len(i_list) > 1:
+        i_list2 = [x * norm_factor for x in i_list]
+        i_list_csv2 = ','.join(i_list2)
+        return i_list_csv2
+    else:
+        return i_list_csv
+
+def compute_norm_factor(k, normalization_factors):
+    max_i = max(normalization_factors.values())
+    if normalization_factors[k] <= 0:
+        print 'error: sample %s has wrong tic value' % k
+    norm_factor = float(max_i) / float(normalization_factors[k])
+    return norm_factor
 
 def get_tg_list(chrom_file):
     tg_list = {}
@@ -118,7 +138,16 @@ def use_one_best_sample(chrom_file):
     return chrom_file2
 
 
+def read_tic_normalization_file(tic_normalization_file):
 
+    norm_factor = {}
+
+    with open(tic_normalization_file, 'rb') as i:
+        r = csv.DictReader(i, delimiter="\t")
+        for row in r:
+            norm_factor[row['sample']] = row['tic']
+
+    return norm_factor
 
 
 
