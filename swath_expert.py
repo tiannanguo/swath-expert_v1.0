@@ -17,7 +17,7 @@ import parameters
 # chrom_file = sys.argv[1]
 # platform = 'linux'
 platform = 'windows'
-chrom_file = 'debug_nci60_png_id_49173.txt.gz'
+chrom_file = 'debug_nci60_png_id_29310.txt.gz'
 # chrom_file = 'debug_png_id_620.txt.gz'
 # chrom_file = 'com_chrom_5.txt.gz'
 # id_mapping_file = 'goldenSets90.txt'
@@ -89,7 +89,7 @@ def main():
     display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
 
     # compute peptide area
-    swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
+    # swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
     swath_quant.compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data)
     # write r code into a file
     r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data)

@@ -8,8 +8,10 @@ import operator
 def median(lst):
     return np.median(np.array(lst))
 
-def computer_other_sample_area_ratio_median(r, tg, sample):
+def computer_other_sample_area_ratio_median(i, tg, sample):
     ratio_list = []
+    i.seek(0)
+    r = csv.DictReader(i, delimiter="\t")
     for row in r:
         if row['transition_group_id'] == tg:
             this_ratio = row[sample + '_ratio_to_ref']
@@ -22,7 +24,7 @@ def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_pept
     # use information from quant_file_fragments to write out the quant table
     with open(quant_file_peptides, 'wb') as o, open(quant_file_fragments, 'rb') as i:
 
-        r = csv.reader(i, delimiter="\t")
+
         w = csv.writer(o, delimiter="\t")
 
         title = write_title_for_peptide_quant_file(sample_id)
@@ -33,8 +35,7 @@ def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_pept
             ref_sample_id = ref_sample_data[tg].sample_name
             ref_sample_all_fragments_area = get_ref_sample_all_fragments_area(display_data, tg, ref_sample_id)
 
-            data_list = []
-            data_list.append(tg)
+            data_list = [tg]
 
             for sample in sample_id:
 
@@ -44,7 +45,7 @@ def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_pept
                     # if sample == 'gold36':
                     #     pass
 
-                    this_sample_i_ratio_median = computer_other_sample_area_ratio_median(r, tg, sample)
+                    this_sample_i_ratio_median = computer_other_sample_area_ratio_median(i, tg, sample)
 
                     this_sample_i = this_sample_i_ratio_median * ref_sample_all_fragments_area
 
@@ -153,7 +154,6 @@ def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data
     # else:
     #     return 'NA'
 
-    print top1_ratio
     return top1_ratio
 
 def find_top_n_fragment_based_on_area(option, area):
