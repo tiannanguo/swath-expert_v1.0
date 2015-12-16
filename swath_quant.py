@@ -98,6 +98,16 @@ def find_top_n_fragment_based_on_area(option, area):
     else:
         return 'NA'
 
+def find_top_3_fragments_based_on_area(area):
+
+    top_fragments = {}
+    for i in range(1, 4):
+        top_i = find_top_n_fragment_based_on_area(i, area)
+        if top_i != 'NA':
+            top_fragments[i] = top_i
+
+    return top_fragments
+
 def compute_fragment_correlation(area1, area2, top1_fragment):
 
     # area1 is the sample, area2 is reference,
@@ -105,17 +115,9 @@ def compute_fragment_correlation(area1, area2, top1_fragment):
     # 1, the top1 fragment in ref is the top1 in the sample
     # 2, else, the top2 and top3 in ref sample is top 3 in the sample
 
-    top_fragments = {}
-    for i in range(1, 4):
-        top_i = find_top_n_fragment_based_on_area(i, area1)
-        if top_i != 'NA':
-            top_fragments[i] = top_i
+    top_fragments = find_top_3_fragments_based_on_area(area1)
 
-    ref_top_fragments = {}
-    for i in range(1, 4):
-        top_i = find_top_n_fragment_based_on_area(i, area2)
-        if top_i != 'NA':
-            ref_top_fragments[i] = top_i
+    ref_top_fragments = find_top_3_fragments_based_on_area(area2)
 
     if_good_pg = 0
 
@@ -124,7 +126,7 @@ def compute_fragment_correlation(area1, area2, top1_fragment):
     else:
         if top_fragments[1] == ref_top_fragments[1]:
             if_good_pg = 1
-        elif ref_top_fragments[2] in top_fragments.values() and ref_top_fragments[3] in top_fragments.values():
+        elif ref_top_fragments[2] in top_fragments.values() or ref_top_fragments[3] in top_fragments.values():
             if_good_pg = 1
 
     return if_good_pg
