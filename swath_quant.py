@@ -5,6 +5,70 @@ import numpy as np
 from scipy import stats
 import operator
 
+def median(lst):
+    return np.median(np.array(lst))
+
+def computer_other_sample_area_ratio_median(r, tg, sample):
+    ratio_list = []
+    for row in r:
+        if row['transition_group_id'] == tg:
+            this_ratio = row[sample + '_ratio_to_ref']
+            if this_ratio != 'NA':
+                ratio_list.append(float(this_ratio))
+    return median(ratio_list)
+
+def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data):
+
+    # use information from quant_file_fragments to write out the quant table
+    with open(quant_file_peptides, 'wb') as o, open(quant_file_fragments, 'rb') as i:
+
+        r = csv.reader(i, delimiter="\t")
+        w = csv.writer(o, delimiter="\t")
+
+        title = write_title_for_peptide_quant_file(sample_id)
+        w.writerow(title)
+
+        for tg in display_data.keys():
+
+            ref_sample_id = ref_sample_data[tg].sample_name
+            ref_sample_all_fragments_area = get_ref_sample_all_fragments_area(display_data, tg, ref_sample_id)
+
+            data_list = []
+            data_list.append(tg)
+
+            for sample in sample_id:
+
+                # print sample
+                if sample != ref_sample_id:
+
+                    # if sample == 'gold36':
+                    #     pass
+
+                    this_sample_i_ratio_median = computer_other_sample_area_ratio_median(r, tg, sample)
+
+                    this_sample_i = this_sample_i_ratio_median * ref_sample_all_fragments_area
+
+                    data_list.append(this_sample_i)
+
+                else:
+                    data_list.append(ref_sample_all_fragments_area)
+
+            # data_list2 = fill_in_background_value(data_list)
+            # w.writerow(data_list2)
+            w.writerow(data_list)
+
+    return display_data
+
+
+def get_ref_sample_all_fragments_area(display_data, tg, ref_sample_id):
+
+    i_sum = 0
+
+    for fragment in display_data[tg][ref_sample_id]['ms2']['area'].keys():
+        this_i = display_data[tg][ref_sample_id]['ms2']['area'][fragment]
+        i_sum += this_i
+
+    return i_sum
 
 def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides):
 
@@ -81,14 +145,15 @@ def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data
     # 2015.12.16. revise. not to check if_good_pg
 
     # if_good_pg = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
-                                                display_data[tg][ref_sample_id]['ms2']['area'],
-                                                ref_sample_top1_fragment)
+    #                                             display_data[tg][ref_sample_id]['ms2']['area'],
+    #                                             ref_sample_top1_fragment)
     # if if_good_pg == 1:
 
         # return top1_ratio
     # else:
     #     return 'NA'
 
+    print top1_ratio
     return top1_ratio
 
 def find_top_n_fragment_based_on_area(option, area):
