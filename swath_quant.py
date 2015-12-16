@@ -78,14 +78,18 @@ def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data
 
     top1_ratio = display_data[tg][sample]['ms2']['ratio_to_ref'][ref_sample_top1_fragment]
 
-    if_good_pg = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
+    # 2015.12.16. revise. not to check if_good_pg
+
+    # if_good_pg = compute_fragment_correlation(display_data[tg][sample]['ms2']['area'],
                                                 display_data[tg][ref_sample_id]['ms2']['area'],
                                                 ref_sample_top1_fragment)
-    if if_good_pg == 1:
+    # if if_good_pg == 1:
 
-        return top1_ratio
-    else:
-        return 'NA'
+        # return top1_ratio
+    # else:
+    #     return 'NA'
+
+    return top1_ratio
 
 def find_top_n_fragment_based_on_area(option, area):
 

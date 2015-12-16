@@ -9,7 +9,19 @@ import parameters
 import peaks
 import data_holder
 
+def read_sample_replicate_info(sample_replicates_info_file):
 
+    unqiue_sample = defaultdict(list)
+
+    f = open(sample_replicates_info_file, 'r')
+    line_num = 1
+    for line in f.readlines():
+        unqiue_sample[line_num] = line.split("\t")
+        line_num += 1
+
+    f.close()
+
+    return unqiue_sample
 
 def read_id_file(id_mapping_file):
     sample_id = []

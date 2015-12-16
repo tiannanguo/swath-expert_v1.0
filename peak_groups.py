@@ -11,13 +11,76 @@ import operator
 from scipy import stats
 import swath_quant
 import math
+import io_swath
 
 
-def refine_peak_group_selection_based_on_replicates(display_data, sample_replicates_info_file):
-
-
-
-    return display_data
+# def refine_peak_group_selection_based_on_replicates(display_data, sample_replicates_info_file,
+#                                                     ref_sample_data, chrom_data, peptide_data,
+#                                                     peak_group_candidates, sample_id):
+#
+#     replicate_info = io_swath.read_sample_replicate_info(sample_replicates_info_file)
+#
+#     for tg in chrom_data.keys():
+#
+#         for this_unqiue_sample in replicate_info.keys():
+#
+#             this_unique_sample_list = replicate_info[this_unqiue_sample]
+#             # if a unique sample has at least two replicates, then perform the refinement
+#             if len(this_unique_sample_list) > 1:
+#
+#                 # build a reference pg based on replicates for a unique sample
+#
+#                 replicate_ref_pg = build_reference_peak_group_based_on_replicates(display_data, this_unique_sample_list, chrom_data, tg)
+#
+#
+#         # build a Nested_dict object for the peak group from reference sample
+#         display_data, ref_pg = build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg)
+#
+#         for sample in sample_id:
+#
+#             # print 'sample is ', sample
+#
+#             if sample == 'gold10':
+#                 pass
+#
+#             if sample != ref_sample_data[tg].sample_name:
+#                 # for each peak group, create a data structure containing all the information above
+#
+#                 pg = build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates, sample)
+#
+#                 if len(pg) == 0:
+#                     print 'error, no pg found'
+#
+#                 pg_best = find_best_match_pg(pg, ref_pg, sample)
+#
+#                 # BUG:when there is no pg, fill with the best "peak group"!!!!! -? 151202
+#
+#                 if pg_best == 0:
+#                     # TODO no peak found. cannot be!!!
+#                     # use looser criteria to find peak groups and then select the best one
+#                     ##  debug debug debug......
+#                     print 'WARNING:no best peak group!!'
+#
+#                 else:
+#
+#                     # write into display_pg
+#                     display_data[tg][sample]['rt_left'] = pg_best['rt_left']
+#                     display_data[tg][sample]['rt_right'] = pg_best['rt_right']
+#
+#                     for fragment in pg_best['ms2']['rt_list'].keys():
+#                         display_data[tg][sample]['ms2']['rt_list'][fragment] = pg_best['ms2']['rt_list'][fragment]
+#                         display_data[tg][sample]['ms2']['i_list'][fragment] = pg_best['ms2']['i_list'][fragment]
+#                         display_data[tg][sample]['ms2']['peak_apex_i'][fragment] = pg_best['ms2']['peak_apex_i'][
+#                             fragment]
+#                         display_data[tg][sample]['ms2']['if_found_peak'][fragment] = pg_best['ms2']['if_found_peak'][
+#                             fragment]
+#
+#                     display_data[tg][sample]['ms1']['rt_list'] = pg_best['ms1']['rt_list']
+#                     display_data[tg][sample]['ms1']['i_list'] = pg_best['ms1']['i_list']
+#                     display_data[tg][sample]['ms1']['peak_apex_i'] = pg_best['ms1']['peak_apex_i']
+#                     display_data[tg][sample]['ms1']['if_found_peak'] = pg_best['ms1']['if_found_peak']
+#
+#     return display_data
 
 def check_if_ms1_peak(chrom_data, tg, sample, rt):
 
@@ -981,6 +1044,43 @@ def get_peak_boundary_from_fragment(peak_group_candidates, tg, sample, peak_rt, 
                 break
 
     return rt_left0, rt_right0
+
+def build_reference_peak_group_based_on_replicates(display_data, this_unique_sample_list, chrom_data, tg):
+
+
+    # select the best pg from the replicates####
+    # #TODO
+    #NOT TO DO NOW
+
+    ref_pg = data_holder.Nested_dict()
+
+    ref_sample = ref_sample_data[tg].sample_name
+    ref_pg['peak_rt'] = ref_sample_data[tg].peak_rt_found
+    ref_pg['rt_left'] = ref_sample_data[tg].peak_rt_left
+    ref_pg['rt_right'] = ref_sample_data[tg].peak_rt_right
+
+    ref_pg['ms1']['rt_list'] = chrom_data[tg][ref_sample][tg].rt_list
+    ref_pg['ms1']['i_list'] = chrom_data[tg][ref_sample][tg].i_list
+    ref_pg['ms1']['peak_apex_i_list'] = chrom_data[tg][ref_sample][tg].peak_apex_i_list
+    ref_pg['ms1']['peak_apex_rt_list'] = chrom_data[tg][ref_sample][tg].peak_apex_rt_list
+    ref_pg['ms1']['peak_apex_i'] = \
+        find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i_list,
+                                   chrom_data[tg][ref_sample][tg].peak_apex_rt_list, ref_pg['peak_rt'])
+
+    display_data[tg][ref_sample]['ms1']['peak_apex_i'] = ref_pg['ms1']['peak_apex_i']
+
+    for fragment in chrom_data[tg][ref_sample].keys():
+        if fragment != tg:
+            ref_pg['ms2']['rt_list'][fragment] = chrom_data[tg][ref_sample][fragment].rt_list
+            ref_pg['ms2']['i_list'][fragment] = chrom_data[tg][ref_sample][fragment].i_list
+            ref_pg['ms2']['peak_apex_i_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_i_list
+            ref_pg['ms2']['peak_apex_rt_list'][fragment] = chrom_data[tg][ref_sample][fragment].peak_apex_rt_list
+            ref_pg['ms2']['peak_apex_i'][fragment] = find_peak_apex_i_from_list(chrom_data[tg][ref_sample][fragment].peak_apex_i_list,
+                                           chrom_data[tg][ref_sample][fragment].peak_apex_rt_list, ref_pg['peak_rt'])
+
+            display_data[tg][ref_sample]['ms2']['peak_apex_i'][fragment] = ref_pg['ms2']['peak_apex_i'][fragment]
+
+    return display_data, ref_pg
 
 def build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg):
 

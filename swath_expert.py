@@ -78,13 +78,14 @@ def main():
         display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id)
 
     # making use of replicate data, further refine the peak group selection
-    display_data = peak_groups.refine_peak_group_selection_based_on_replicates(display_data, sample_replicates_info_file)
+    display_data = peak_groups.refine_peak_group_selection_based_on_replicates(
+                    display_data, sample_replicates_info_file, peak_group_candidates)
 
     # compute peak area for display_pg
     display_data = chrom.compute_peak_area_for_all(display_data)
 
     # compute peak area for only the peak-forming fragments
-    display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
+    # display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
 
     # compute peptide area
     swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
