@@ -10,31 +10,6 @@ import peak_groups
 import chrom
 import swath_quant
 
-
-# def peak_group_boundary_all_samples (peak_group_info, reference_sample_id):
-#
-#     reference_sample_peak_width = peak_group_info[reference_sample_id]['peak_group_rt_right'] - \
-#         peak_group_info[reference_sample_id]['peak_group_rt_left']
-#
-#     rt_boundary = defaultdict(dict)
-#
-#     for sample_id in peak_group_info.keys():
-#
-#         if 'peak_group_rt_left' in peak_group_info[sample_id].keys():
-#
-#             rt_boundary['left'][sample_id] = peak_group_info[sample_id]['peak_group_rt_apex'] - \
-#                 0.5 * reference_sample_peak_width
-#
-#             rt_boundary['right'][sample_id] = rt_boundary['left'][sample_id] + \
-#                 reference_sample_peak_width
-#
-#         else:
-#             rt_boundary['left'][sample_id] = peak_group_info[reference_sample_id]['peak_group_rt_left']
-#             rt_boundary['right'][sample_id] = peak_group_info[reference_sample_id]['peak_group_rt_right']
-#
-#     return rt_boundary
-
-
 def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 
     display_data = data_holder.Nested_dict()
@@ -68,7 +43,24 @@ def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_
 
         display_data, peak_group_candidates, chrom_data = further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg, reference_sample, chrom_data)
 
+        # further check if_ms1_peak
+        peak_group_candidates = further_refine_if_ms1_peak_for_reference_sample(peak_group_candidates, tg, reference_sample, chrom_data, display_data)
+
     return display_data, peak_group_candidates, chrom_data
+
+def further_refine_if_ms1_peak_for_reference_sample(peak_group_candidates, tg, reference_sample, chrom_data, display_data):
+
+    for rt in peak_group_candidates[tg][reference_sample].keys():
+        if peak_group_candidates[tg][reference_sample][rt].if_ms1_peak == 1:
+            ms1_rt_list = chrom_data[tg][reference_sample][tg]['rt_list']
+            ms1_i_list = chrom_data[tg][reference_sample][tg]['i_list']
+            rt_left = display_data[tg][reference_sample]['rt_left']
+            rt_right = display_data[tg][reference_sample]['rt_right']
+            ms1_rt_list_in_range, ms1_i_list_in_range = get_chrom_range(rt_left, rt_right, ms1_rt_list, ms1_i_list)
+
+            peak_group_candidates[tg][reference_sample][rt].if_ms1_peak = swath_quant.check_if_displayed_peak_a_good_one(ms1_rt_list, ms1_i_list, 1, 3)
+
+    return peak_group_candidates
 
 def further_refine_ref_sample_fragments(display_data, peak_group_candidates, tg, reference_sample, chrom_data):
 
