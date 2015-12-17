@@ -19,7 +19,7 @@ def write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample
     for tg in display_data.keys():
 
         # at least 3 good shaped fragments
-        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) > 2:
+        if len(display_data[tg][sample_id[0]]['ms2']['rt_list'].keys()) >= 4:
 
             if tg.startswith('555_'):
                 pass
