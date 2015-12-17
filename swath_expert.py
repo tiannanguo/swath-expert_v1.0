@@ -18,7 +18,7 @@ import parameters
 # platform = 'linux'
 platform = 'windows'
 # chrom_file = 'com_chrom_3_46.txt.gz'
-chrom_file = 'debug_nci60_png_id_15944.txt.gz'
+chrom_file = 'debug_nci60_png_id_29113.txt.gz'
 # chrom_file = 'debug_png_id_15944.txt.gz'
 # chrom_file = 'com_chrom_5.txt.gz'
 # id_mapping_file = 'goldenSets90.txt'

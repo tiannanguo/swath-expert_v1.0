@@ -132,8 +132,8 @@ def fill_in_background_value(data_list):
     i_list = []
 
     for i in data_list[1:]:
-        if type(i) == float:
-            i_list.append(i)
+        if i != 'NA':
+            i_list.append(float(i))
 
     if len(i_list) > 1:
         min_i = min(i_list) * 0.1 # arbitrary, can be changed
@@ -143,10 +143,10 @@ def fill_in_background_value(data_list):
         data_list2.append(data_list[0])
 
         for i in data_list[1:]:
-            if type(i) == float:
-                data_list2.append(i)
-            else:
+            if i == 'NA':
                 data_list2.append(min_i)
+            else:
+                data_list2.append(i)
 
         return data_list2
     else:
@@ -326,6 +326,35 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
 
     return if_good
 
+def check_if_displayed_peak_a_good_one_ms1(rt_list, i_list, if_found_peak, fold_change_threshold):
+
+    # ms1 is more strict than ms2
+    # check if the peak is a good one
+    if_good = 0
+
+    if len(i_list) > 5:
+        point_left_i = i_list[0]
+        point_apex_i = max(i_list) #i_list[len(rt_list) / 2]
+        point_right_i = i_list[-1]
+
+        # only check the left and right, do not check the apex because for many weak fragments, the apex is not obvious
+        # the left_i and right_i should be both < apex_i, and they are similar
+        fold_change_left = point_left_i / (point_apex_i + 0.1)
+        fold_change_right = point_right_i / (point_apex_i + 0.1)
+        if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, fold_change_threshold)
+        if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, fold_change_threshold)
+
+        fold_change_left_to_right = (point_left_i + 0.1) / (point_right_i + 0.1)
+
+        # if left intensity and right intensity are comparable, then it is a good shape (note: some weak fragment may be flat)
+        if_good1 = check_left_and_right_only(fold_change_left_to_right, if_found_peak, fold_change_threshold)
+
+        # some strong fragment may be cut at one end or both. If the apex is higher than the boundaries, still considered as good shape
+        if_good2 = check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right, if_found_peak)
+
+        if_good = if_good1 * if_good2
+
+    return if_good
 
 def check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right, if_found_peak):
 

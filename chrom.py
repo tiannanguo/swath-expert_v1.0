@@ -52,13 +52,13 @@ def further_refine_if_ms1_peak_for_reference_sample(peak_group_candidates, tg, r
 
     for rt in peak_group_candidates[tg][reference_sample].keys():
         if peak_group_candidates[tg][reference_sample][rt].if_ms1_peak == 1:
-            ms1_rt_list = chrom_data[tg][reference_sample][tg]['rt_list']
-            ms1_i_list = chrom_data[tg][reference_sample][tg]['i_list']
+            ms1_rt_list = chrom_data[tg][reference_sample][tg].rt_list
+            ms1_i_list = chrom_data[tg][reference_sample][tg].i_list
             rt_left = display_data[tg][reference_sample]['rt_left']
             rt_right = display_data[tg][reference_sample]['rt_right']
             ms1_rt_list_in_range, ms1_i_list_in_range = get_chrom_range(rt_left, rt_right, ms1_rt_list, ms1_i_list)
 
-            peak_group_candidates[tg][reference_sample][rt].if_ms1_peak = swath_quant.check_if_displayed_peak_a_good_one(ms1_rt_list, ms1_i_list, 1, 3)
+            peak_group_candidates[tg][reference_sample][rt].if_ms1_peak = swath_quant.check_if_displayed_peak_a_good_one_ms1(ms1_rt_list, ms1_i_list, 1, 3)
 
     return peak_group_candidates
 
