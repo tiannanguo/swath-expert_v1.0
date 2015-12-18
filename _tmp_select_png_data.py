@@ -3,7 +3,7 @@ import gzip
 import csv
 
 
-png_id = 620
+png_id = 72286
 
 def get_file_num(png_id):
     target_file = ''
@@ -46,5 +46,6 @@ with gzip.open(in_file, 'rb') as i, gzip.open(out_file, 'wb') as o:
             w.writerow(row)
 
 
+print 'write to file %s' % out_file
 
 

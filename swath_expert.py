@@ -14,11 +14,11 @@ import parameters
 # name of files
 # chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
 # chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
-# chrom_file = sys.argv[1]
-# platform = 'linux'
-platform = 'windows'
+chrom_file = sys.argv[1]
+platform = 'linux'
+# platform = 'windows'
 # chrom_file = 'com_chrom_3_46.txt.gz'
-chrom_file = 'debug_nci60_png_id_29113.txt.gz'
+# chrom_file = 'debug_nci60_png_id_84371.txt.gz'
 # chrom_file = 'debug_png_id_15944.txt.gz'
 # chrom_file = 'com_chrom_5.txt.gz'
 # id_mapping_file = 'goldenSets90.txt'
