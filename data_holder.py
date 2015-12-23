@@ -8,12 +8,14 @@ import parameters
 
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
+
 class Nested_dict(defaultdict):
     def __init__(self):
         super(Nested_dict, self).__init__(Nested_dict)
 
     def __deepcopy__(self):
         return self
+
 
 class Chromatogram(object):
 
@@ -60,6 +62,7 @@ class Chromatogram(object):
                 self.peak_apex_rt_list = [np.median(np.array(rt_list))]
                 self.peak_apex_i_list = [np.median(np.array(i_list))]
 
+
 def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):
 
     max_peaks_all = []
@@ -71,6 +74,7 @@ def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):
         max_peaks_all = filter_peaks_based_on_peak_shape_worker2(max_peaks, i_list, rt_list, max_peaks_all)
 
     return max_peaks_all
+
 
 def filter_peaks_based_on_peak_shape_worker2(max_peaks, i_list, rt_list, max_peaks_all):
 
@@ -115,6 +119,7 @@ def filter_peaks_based_on_peak_shape_worker(max_peaks, i_list, rt_list, max_peak
 
     return max_peaks_all
 
+
 def filter_smoothed_peaks_based_on_raw_peaks(peaks, peaks_smoothed):
 
     peaks_smoothed2 = []
@@ -126,6 +131,7 @@ def filter_smoothed_peaks_based_on_raw_peaks(peaks, peaks_smoothed):
 
     return peaks_smoothed2
 
+
 def decide_whether_choose_a_smoothed_rt(rt0, rt_list):
 
     if_select = 0
@@ -136,6 +142,7 @@ def decide_whether_choose_a_smoothed_rt(rt0, rt_list):
     if abs(rt_closest_left - rt0) > 10 and abs(rt_closest_right - rt0) > 10:
         if_select = 1
     return if_select
+
 
 def find_closest_rt_left(rt0, rt_list):
 
@@ -150,6 +157,7 @@ def find_closest_rt_left(rt0, rt_list):
                 rt1 = rt
                 rt_dif = rt_dif2
     return rt1
+
 
 def find_closest_rt_right(rt0, rt_list):
     rt1 = rt_list[0]
@@ -167,6 +175,7 @@ def smooth_chromatogram_using_Savitzky_Golay(i_list):
 
     i_list2 = sg.savitzky_golay(np.array(i_list), 7, 3)  # window size 11, polynomial order 3. Optimized for chrom
     return i_list2.tolist()
+
 
 class Reference_sample(object):
 
@@ -187,13 +196,13 @@ class Reference_sample(object):
 
 
 class Peak_group(object):
+
     def __init__(self, chrom_data, tg, sample, rt):
         self.rt = rt
-        self.matched_fragments, self.matched_fragments_rt, self.matched_fragments_i,\
-            self.matched_fragments_peak_rt_left, self.matched_fragments_peak_rt_right = \
-                peak_groups.find_matched_fragments(chrom_data, tg, sample, rt)
+        (self.matched_fragments, self.matched_fragments_rt,
+         self.matched_fragments_i,
+         self.matched_fragments_peak_rt_left,
+         self.matched_fragments_peak_rt_right) = peak_groups.find_matched_fragments(chrom_data, tg, sample, rt)
 
         self.num_matched_fragments = len(self.matched_fragments)
         self.if_ms1_peak = peak_groups.check_if_ms1_peak(chrom_data, tg, sample, rt)
-
-

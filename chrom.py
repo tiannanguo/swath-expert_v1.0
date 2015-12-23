@@ -1,14 +1,10 @@
 __author__ = 'guot'
 
 
-import numpy as np
-from collections import defaultdict
-import peaks
 import parameters
 import data_holder
-import peak_groups
-import chrom
 import swath_quant
+
 
 def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 

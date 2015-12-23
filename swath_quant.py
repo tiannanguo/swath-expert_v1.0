@@ -2,11 +2,12 @@ __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
 import csv
 import numpy as np
-from scipy import stats
 import operator
+
 
 def median(lst):
     return np.median(np.array(lst))
+
 
 def computer_other_sample_area_ratio_median_after_removing_bad_shaped_fragment(i, tg, sample, display_data):
     ratio_list = {}
@@ -27,6 +28,7 @@ def computer_other_sample_area_ratio_median_after_removing_bad_shaped_fragment(i
     else:
         return 'NA'
 
+
 def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data):
 
     # use information from quant_file_fragments to write out the quant table
@@ -42,7 +44,8 @@ def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_pept
 
             ref_sample_id = ref_sample_data[tg].sample_name
 
-            ref_sample_all_fragments_area = get_ref_sample_all_fragments_area(display_data, tg, ref_sample_id)
+            ref_sample_all_fragments_area = get_ref_sample_all_fragments_area(
+                display_data, tg, ref_sample_id)
 
             data_list = [tg]
 
@@ -54,7 +57,8 @@ def compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_pept
                     if sample == 'nci1':
                         pass
 
-                    this_sample_i_ratio_median = computer_other_sample_area_ratio_median_after_removing_bad_shaped_fragment(i, tg, sample, display_data)
+                    this_sample_i_ratio_median = computer_other_sample_area_ratio_median_after_removing_bad_shaped_fragment(
+                        i, tg, sample, display_data)
 
                     this_sample_i = 'NA'
 
@@ -84,6 +88,7 @@ def get_ref_sample_all_fragments_area(display_data, tg, ref_sample_id):
 
     return i_sum
 
+
 def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides):
 
     # use information from quant_file_fragments to write out the quant table
@@ -97,7 +102,8 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
         for tg in display_data.keys():
 
             ref_sample_id = ref_sample_data[tg].sample_name
-            ref_sample_top1_fragment, ref_sample_top1_fragment_i = get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id)
+            ref_sample_top1_fragment, ref_sample_top1_fragment_i = get_ref_sample_top1_good_shape_fragment_i(
+                display_data, tg, ref_sample_id)
 
             data_list = []
             data_list.append(tg)
@@ -110,12 +116,14 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
                     # if sample == 'gold36':
                     #     pass
 
-                    other_sample_top1_fragments_i_ratio = compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id)
+                    other_sample_top1_fragments_i_ratio = compute_other_sample_top1_fragments_i(
+                        ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id)
                     other_sample_i = 'NA'
 
                     if other_sample_top1_fragments_i_ratio != 'NA':
 
-                        other_sample_i = other_sample_top1_fragments_i_ratio * ref_sample_top1_fragment_i
+                        other_sample_i = other_sample_top1_fragments_i_ratio * \
+                            ref_sample_top1_fragment_i
 
                     data_list.append(other_sample_i)
 
@@ -127,6 +135,7 @@ def compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_fi
 
     return display_data
 
+
 def fill_in_background_value(data_list):
 
     i_list = []
@@ -136,7 +145,7 @@ def fill_in_background_value(data_list):
             i_list.append(float(i))
 
     if len(i_list) > 1:
-        min_i = min(i_list) * 0.1 # arbitrary, can be changed
+        min_i = min(i_list) * 0.1  # arbitrary, can be changed
 
         data_list2 = []
 
@@ -152,6 +161,7 @@ def fill_in_background_value(data_list):
     else:
         return data_list
 
+
 def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data, tg, sample, ref_sample_id):
 
     top1_ratio = display_data[tg][sample]['ms2']['ratio_to_ref'][ref_sample_top1_fragment]
@@ -163,11 +173,12 @@ def compute_other_sample_top1_fragments_i(ref_sample_top1_fragment, display_data
     #                                             ref_sample_top1_fragment)
     # if if_good_pg == 1:
 
-        # return top1_ratio
+    # return top1_ratio
     # else:
     #     return 'NA'
 
     return top1_ratio
+
 
 def find_top_n_fragment_based_on_area(option, area):
 
@@ -180,6 +191,7 @@ def find_top_n_fragment_based_on_area(option, area):
     else:
         return 'NA'
 
+
 def find_top_3_fragments_based_on_area(area):
 
     top_fragments = {}
@@ -189,6 +201,7 @@ def find_top_3_fragments_based_on_area(area):
             top_fragments[i] = top_i
 
     return top_fragments
+
 
 def compute_fragment_correlation(area1, area2, top1_fragment):
 
@@ -212,6 +225,7 @@ def compute_fragment_correlation(area1, area2, top1_fragment):
             if_good_pg = 1
 
     return if_good_pg
+
 
 def get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id):
 
@@ -239,6 +253,7 @@ def get_ref_sample_top1_good_shape_fragment_i(display_data, tg, ref_sample_id):
 
     return top1_fragment, top1_i
 
+
 def write_title_for_fragment_quant_file(sample_id):
 
     title = ['transition_group_id', 'fragment_id']
@@ -248,6 +263,7 @@ def write_title_for_fragment_quant_file(sample_id):
         title.append(sample + '_ratio_to_ref')
 
     return title
+
 
 def write_title_for_peptide_quant_file(sample_id):
 
@@ -275,14 +291,14 @@ def compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_d
             fragment_list = display_data[tg][ref_sample]['ms2']['area'].keys()
 
             # compute peak group area of reference sample
-            ref_sample_peptide_i = compute_peak_group_area_for_reference_sample(fragment_list, display_data, tg, ref_sample)
+            ref_sample_peptide_i = compute_peak_group_area_for_reference_sample(
+                fragment_list, display_data, tg, ref_sample)
 
             # check each of the fragment
             for fragment in fragment_list:
 
-
-
-                data_list, display_data = compute_quant_data_list_for_a_fragment(fragment, tg, sample_id, ref_sample, display_data, ref_sample_peptide_i)
+                data_list, display_data = compute_quant_data_list_for_a_fragment(
+                    fragment, tg, sample_id, ref_sample, display_data, ref_sample_peptide_i)
 
                 w.writerow(data_list)
 
@@ -298,6 +314,7 @@ def compute_peak_group_area_for_reference_sample(fragment_list, display_data, tg
 
     return ref_sample_peptide_i
 
+
 def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_change_threshold):
 
     # check if the peak is a good one
@@ -305,7 +322,7 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
 
     if len(i_list) > 5:
         point_left_i = i_list[0]
-        point_apex_i = max(i_list) #i_list[len(rt_list) / 2]
+        point_apex_i = max(i_list)  # i_list[len(rt_list) / 2]
         point_right_i = i_list[-1]
 
         # only check the left and right, do not check the apex because for many weak fragments, the apex is not obvious
@@ -313,18 +330,24 @@ def check_if_displayed_peak_a_good_one(rt_list, i_list, if_found_peak, fold_chan
         fold_change_left = point_left_i / (point_apex_i + 0.1)
         fold_change_right = point_right_i / (point_apex_i + 0.1)
         if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, fold_change_threshold)
-        if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, fold_change_threshold)
+        if_good_fold_change_right = check_peak_i_fold_change(
+            fold_change_right, fold_change_threshold)
 
         fold_change_left_to_right = (point_left_i + 0.1) / (point_right_i + 0.1)
 
-        # if left intensity and right intensity are comparable, then it is a good shape (note: some weak fragment may be flat)
-        if_good = check_left_and_right_only(fold_change_left_to_right, if_found_peak, fold_change_threshold)
+        # if left intensity and right intensity are comparable, then it is a good
+        # shape (note: some weak fragment may be flat)
+        if_good = check_left_and_right_only(
+            fold_change_left_to_right, if_found_peak, fold_change_threshold)
 
-        # some strong fragment may be cut at one end or both. If the apex is higher than the boundaries, still considered as good shape
+        # some strong fragment may be cut at one end or both. If the apex is
+        # higher than the boundaries, still considered as good shape
         if if_good == 0:
-            if_good = check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right, if_found_peak)
+            if_good = check_apex_and_boundary(
+                if_good_fold_change_left, if_good_fold_change_right, if_found_peak)
 
     return if_good
+
 
 def check_if_displayed_peak_a_good_one_ms1(rt_list, i_list, if_found_peak, fold_change_threshold):
 
@@ -334,7 +357,7 @@ def check_if_displayed_peak_a_good_one_ms1(rt_list, i_list, if_found_peak, fold_
 
     if len(i_list) > 5:
         point_left_i = i_list[0]
-        point_apex_i = max(i_list) #i_list[len(rt_list) / 2]
+        point_apex_i = max(i_list)  # i_list[len(rt_list) / 2]
         point_right_i = i_list[-1]
 
         # only check the left and right, do not check the apex because for many weak fragments, the apex is not obvious
@@ -342,19 +365,25 @@ def check_if_displayed_peak_a_good_one_ms1(rt_list, i_list, if_found_peak, fold_
         fold_change_left = point_left_i / (point_apex_i + 0.1)
         fold_change_right = point_right_i / (point_apex_i + 0.1)
         if_good_fold_change_left = check_peak_i_fold_change(fold_change_left, fold_change_threshold)
-        if_good_fold_change_right = check_peak_i_fold_change(fold_change_right, fold_change_threshold)
+        if_good_fold_change_right = check_peak_i_fold_change(
+            fold_change_right, fold_change_threshold)
 
         fold_change_left_to_right = (point_left_i + 0.1) / (point_right_i + 0.1)
 
-        # if left intensity and right intensity are comparable, then it is a good shape (note: some weak fragment may be flat)
-        if_good1 = check_left_and_right_only(fold_change_left_to_right, if_found_peak, fold_change_threshold)
+        # if left intensity and right intensity are comparable, then it is a good
+        # shape (note: some weak fragment may be flat)
+        if_good1 = check_left_and_right_only(
+            fold_change_left_to_right, if_found_peak, fold_change_threshold)
 
-        # some strong fragment may be cut at one end or both. If the apex is higher than the boundaries, still considered as good shape
-        if_good2 = check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right, if_found_peak)
+        # some strong fragment may be cut at one end or both. If the apex is
+        # higher than the boundaries, still considered as good shape
+        if_good2 = check_apex_and_boundary(
+            if_good_fold_change_left, if_good_fold_change_right, if_found_peak)
 
         if_good = if_good1 * if_good2
 
     return if_good
+
 
 def check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right, if_found_peak):
 
@@ -362,6 +391,7 @@ def check_apex_and_boundary(if_good_fold_change_left, if_good_fold_change_right,
         return 1
     else:
         return 0
+
 
 def check_left_and_right_only(fold_change_left_to_right, if_found_peak, fold_change_threshold):
 
@@ -379,6 +409,7 @@ def check_peak_i_fold_change(fold_change, threshold):
         if_good = 1
 
     return if_good
+
 
 def compute_quant_data_list_for_a_fragment(fragment, tg, sample_id, ref_sample, display_data, ref_sample_peptide_i):
 

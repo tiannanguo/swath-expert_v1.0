@@ -1,27 +1,22 @@
 __author__ = 'guot'
 
-import numpy as np
-from collections import defaultdict
 import csv
 import gzip
-import chrom
-import parameters
-import peaks
 import data_holder
+
 
 def read_sample_replicate_info(sample_replicates_info_file):
 
-    unqiue_sample = defaultdict(list)
+    unqiue_sample = {}
 
-    f = open(sample_replicates_info_file, 'r')
-    line_num = 1
-    for line in f.readlines():
-        unqiue_sample[line_num] = line.split("\t")
-        line_num += 1
-
-    f.close()
+    with open(sample_replicates_info_file, 'r') as f:
+        line_num = 1
+        for line in f:
+            unqiue_sample[line_num] = line.split("\t")
+            line_num += 1
 
     return unqiue_sample
+
 
 def read_id_file(id_mapping_file):
     sample_id = []
@@ -32,6 +27,7 @@ def read_id_file(id_mapping_file):
             sample_id.append(row[1])
             id_mapping[row[0].lower()] = row[1]
     return sample_id, id_mapping
+
 
 def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
 
@@ -53,7 +49,8 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
             ref_sample_name = row['best_sample']
             ref_sample_score = float(row['best_score'])
 
-            ref_sample_data[tg] = data_holder.Reference_sample(ref_sample_name, ref_sample_score, peak_rt)
+            ref_sample_data[tg] = data_holder.Reference_sample(
+                ref_sample_name, ref_sample_score, peak_rt)
 
             peptide_data[tg]['ms1']['preMz'] = float(row['precursor_mz'])
             peptide_data[tg]['ms1']['protein'] = row['protein']
@@ -69,9 +66,11 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
                 ###########
                 # if k == 'gold80' and fragment.startswith('1191_'):
                 #     pass
-                chrom_data[tg][k][fragment] = data_holder.Chromatogram(rt_list_three_values_csv, i_list_csv)
+                chrom_data[tg][k][fragment] = data_holder.Chromatogram(
+                    rt_list_three_values_csv, i_list_csv)
 
     return ref_sample_data, chrom_data, peptide_data
+
 
 def apply_normalization_based_on_tic(i_list_csv, normalization_factors, k):
 
@@ -86,12 +85,14 @@ def apply_normalization_based_on_tic(i_list_csv, normalization_factors, k):
     else:
         return i_list_csv
 
+
 def compute_norm_factor(k, normalization_factors):
     max_i = max(normalization_factors.values())
     if normalization_factors[k] <= 0:
         print 'error: sample %s has wrong tic value' % k
     norm_factor = float(max_i) / float(normalization_factors[k])
     return norm_factor
+
 
 def get_tg_list(chrom_file):
     tg_list = {}
@@ -100,6 +101,7 @@ def get_tg_list(chrom_file):
         for row in r:
             tg_list[row['transition_group_id']] = 1
     return tg_list.keys()
+
 
 def get_best_sample_for_each_tg(chrom_file, tg_list):
 
@@ -124,6 +126,7 @@ def get_best_sample_for_each_tg(chrom_file, tg_list):
                     best_score[tg] = float(row['best_score'])
 
     return best_sample, best_score, best_rt
+
 
 def use_one_best_sample(chrom_file):
 
@@ -161,7 +164,3 @@ def read_tic_normalization_file(tic_normalization_file):
             norm_factor[row['sample']] = row['tic']
 
     return norm_factor
-
-
-
-

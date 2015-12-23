@@ -4,6 +4,7 @@ import gzip
 import csv
 import time
 import sys
+
 from collections import defaultdict
 class ngram(defaultdict):
     def __init__(self):

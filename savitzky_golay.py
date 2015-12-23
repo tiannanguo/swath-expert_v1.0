@@ -1,7 +1,7 @@
 import numpy as np
-import scipy, scipy.signal
+import scipy
 
-def savitzky_golay( y, window_size, order, deriv = 0 ):
+def savitzky_golay(y, window_size, order, deriv = 0):
     r"""Smooth (and optionally differentiate) data with a Savitzky-Golay filter.
     The Savitzky-Golay filter removes high frequency noise from data.
     It has the advantage of preserving the original shape and
