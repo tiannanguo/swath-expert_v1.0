@@ -1,53 +1,85 @@
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
+import os
 import sys
 import time
+
+
+def print_help():
+    print
+    print "python %s accepts the following command line arguments:" % sys.argv[0]
+    print
+    print "   <chromatogram_file>:  path to chromatogram_file to process (mandatory)"
+    print "   <path_to_rcmd_exe> :  path to Rcmd.exe or RScript on your computer (optional)"
+    print
+
+if len(sys.argv) < 2:
+    print_help()
+    sys.exit(1)
+
 import swath_quant
-# from collections import defaultdict
 import io_swath
-# import peaks
 import peak_groups
 import r_code
 import chrom
-import parameters
 
-# name of files
-# chrom_file = 'com_chrom_10_test.txt.gz'    #sys.argv[1]
-# chrom_file = 'com_chrom_8.txt.gz'    #sys.argv[1]
+from whichcraft import which
+
 chrom_file = sys.argv[1]
-platform = 'linux'
-# platform = 'windows'
-# chrom_file = 'com_chrom_3_46.txt.gz'
-# chrom_file = 'debug_nci60_png_id_84371.txt.gz'
-# chrom_file = 'debug_png_id_15944.txt.gz'
-# chrom_file = 'com_chrom_5.txt.gz'
-# id_mapping_file = 'goldenSets90.txt'
+
+
 id_mapping_file = 'nci60sw.txt'
 tic_normalization_file = 'nci60.tic'
-# sample_replicates_info_file = 'nci60_replicates_info.txt'
-# id_mapping_file = 'goldenSets90_test.txt'
-out_R_file = chrom_file.replace('.txt.gz', '.R')
-out_file_poor_tg = chrom_file.replace('.txt.gz', '.poor.txt')
-quant_file_fragments = chrom_file.replace('.txt.gz', '.quant.fragments.txt')
-quant_file_peptides = chrom_file.replace('.txt.gz', '.quant.peptides.txt')
-quant_file_proteins = chrom_file.replace('.txt.gz', '.quant.proteins.txt')
 
-batch_file = ''
-if platform == 'windows':
-    # for test in windows
-    batch_file = chrom_file.replace('.txt.gz', '.bat')
-    # dos_bat_file = 'tmp_run.bat'
-elif platform == 'linux':
-    batch_file = chrom_file.replace('.txt.gz', '.sh')
 
-def write_bat_file(out_R_file, batch_file, platform):
+def remove_all_file_extensions(path):
+    path = os.path.splitext(path)[0]
+    while True:
+        path, ext = os.path.splitext(path)
+        if ext == "":
+            return path
+
+name_stem = remove_all_file_extensions(chrom_file)
+
+out_R_file = name_stem + '.R'
+out_file_poor_tg = name_stem + '.poor.txt'
+quant_file_fragments = name_stem + '.quant.fragments.txt'
+quant_file_peptides = name_stem + '.quant.peptides.txt'
+quant_file_proteins = name_stem + '.quant.proteins.txt'
+
+if sys.platform == "win32":
+    batch_file = name_stem + ".bat"
+else:
+    batch_file = name_stem + ".sh"
+
+
+def check_r():
+    if len(sys.argv) == 3:
+        r_path = sys.argv[2]
+    elif sys.platform == 'win32':
+        r_path = r'C:\R\R-2.15.1\bin\x64\Rcmd.exe'
+    elif sys.platform in ('linux', 'darwin'):
+        r_path = which('RScript')  # might return None
+    else:
+        raise Exception("platform %r not supported (yet)" % sys.platform)
+
+    if r_path is None or not os.path.exists(r_path):
+        print
+        print "could not find R interpreter at %r" % r_path
+        print_help()
+        sys.exit(1)
+    return r_path
+
+
+def write_bat_file(out_R_file, path_to_r, batch_file):
     with open(batch_file, 'w') as o:
-        if platform == 'windows':
-            cmd = '''C:\\R\\R-2.15.1\\bin\\x64\\Rcmd.exe BATCH %s\n''' % out_R_file
-            o.write(cmd)
-        elif platform == 'linux':
-            cmd = '''Rscript %s\n''' % out_R_file
-            o.write(cmd)
+        if sys.platform == 'win32':
+            cmd = '%s BATCH %s\n' % (path_to_r, out_R_file)
+        elif sys.platform in ('linux', 'darwin'):
+            cmd = 'Rscript %s\n' % out_R_file
+        o.write(cmd)
+        o.write('\n')
+
 
 def main():
 
@@ -58,14 +90,18 @@ def main():
 
     # read input chrom file,
     # build chrom_data, find peaks when the class is initialized
-    ref_sample_data, chrom_data, peptide_data = io_swath.read_com_chrom_file(chrom_file, sample_id, normalization_factors)
+    ref_sample_data, chrom_data, peptide_data = io_swath.read_com_chrom_file(
+        chrom_file, sample_id, normalization_factors)
 
-    # based on peaks of fragments, keep peak groups with at least MIN_FRAGMENT fragment, find out peak boundary of each fragment
+    # based on peaks of fragments, keep peak groups with at least MIN_FRAGMENT
+    # fragment, find out peak boundary of each fragment
     peak_group_candidates = peak_groups.find_peak_group_candidates(chrom_data, sample_id)
 
-    # based on peak groups found in the reference sample, find out fragments that form good peaks, remove the rest fragments
+    # based on peak groups found in the reference sample, find out fragments
+    # that form good peaks, remove the rest fragments
     ref_sample_data, chrom_data, peptide_data, peak_group_candidates = \
-        peak_groups.refine_peak_forming_fragments_based_on_reference_sample(ref_sample_data, chrom_data, peptide_data, peak_group_candidates)
+        peak_groups.refine_peak_forming_fragments_based_on_reference_sample(
+            ref_sample_data, chrom_data, peptide_data, peak_group_candidates)
 
     # compute the peak boundary for the reference sample, write to display_pg
     display_data, peak_group_candidates, chrom_data = \
@@ -87,16 +123,20 @@ def main():
     display_data = chrom.compute_peak_area_for_all(display_data)
 
     # compute peak area for only the peak-forming fragments
-    display_data = swath_quant.compute_peak_area_for_refined_fragment(display_data, sample_id, ref_sample_data, quant_file_fragments)
+    display_data = swath_quant.compute_peak_area_for_refined_fragment(
+        display_data, sample_id, ref_sample_data, quant_file_fragments)
 
     # compute peptide area
     # swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
-    swath_quant.compute_peptide_intensity_based_on_median_ratio_of_fragments(quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data)
+    swath_quant.compute_peptide_intensity_based_on_median_ratio_of_fragments(
+        quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data)
 
     # write r code into a file
     r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data)
 
+path_to_r = check_r()
 start_time = time.time()
+print "--- start conversion ---"
 main()
-write_bat_file(out_R_file, batch_file, platform)
+write_bat_file(out_R_file, path_to_r, batch_file)
 print "--- %s seconds ---" % (time.time() - start_time)
