@@ -1,0 +1,9 @@
+*.pyc
+debug_nci60_png_id_29113_2.txt.gz
+debug_nci60_png_id_29113.sh
+debug_nci60_png_id_29113.quant.peptides.txt
+debug_nci60_png_id_29113.quant.fragments.txt
+debug_nci60_png_id_29113.R
+.*.swp
+*.png
+
