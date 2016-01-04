@@ -864,7 +864,7 @@ def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
         pass
 
     # filter out peak groups without top 1 fragment showing good peak boundary
-    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg, pg_filtered_rt)
+    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg, pg_filtered_rt)
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
@@ -885,7 +885,7 @@ def find_best_match_pg_rule_g(pg, ref_pg, pg_filtered_rt, sample):
         pass
 
     # filter out peak groups without top 2 fragment showing good peak boundary
-    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(2, pg, ref_pg, pg_filtered_rt)
+    pg_filtered_rt2 = filter_peak_group_top_fragment_peak_boundary(1, pg, ref_pg, pg_filtered_rt)
 
     if len(pg_filtered_rt2) == 1:
         pg_best = get_peak_group_values(pg, pg_filtered_rt2[0], ref_pg)
