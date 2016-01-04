@@ -64,7 +64,7 @@ def find_matched_fragments(chrom_data, tg, sample, rt):
 def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id):
 
     for tg in chrom_data.keys():
-        # build a Nested_dict object for the peak group from reference sample
+        # build a NestedDict object for the peak group from reference sample
         display_data, ref_pg = build_reference_peak_group(
             display_data, ref_sample_data, chrom_data, tg)
 
@@ -188,7 +188,7 @@ def get_boundary_for_pg_best(pg, rt, ref_pg_width):
 
 def get_peak_group_values(pg, rt, ref_pg):
 
-    pg_best = data_holder.Nested_dict()
+    pg_best = data_holder.NestedDict()
 
     pg_best['peak_rt'] = rt
 
@@ -970,7 +970,7 @@ def find_best_match_pg_rule_h(pg, ref_pg, pg_filtered_rt, sample):
 
 def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates, sample):
 
-    pg = data_holder.Nested_dict()
+    pg = data_holder.NestedDict()
 
     for peak_rt in peak_group_candidates[tg][sample].keys():
         # if_bad_pg = 0
@@ -1036,7 +1036,7 @@ def build_reference_peak_group_based_on_replicates(display_data, this_unique_sam
     # TODO
     # NOT TO DO NOW
 
-    ref_pg = data_holder.Nested_dict()
+    ref_pg = data_holder.NestedDict()
 
     ref_sample = ref_sample_data[tg].sample_name
     ref_pg['peak_rt'] = ref_sample_data[tg].peak_rt_found
@@ -1072,7 +1072,7 @@ def build_reference_peak_group_based_on_replicates(display_data, this_unique_sam
 
 def build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg):
 
-    ref_pg = data_holder.Nested_dict()
+    ref_pg = data_holder.NestedDict()
 
     ref_sample = ref_sample_data[tg].sample_name
     ref_pg['peak_rt'] = ref_sample_data[tg].peak_rt_found
@@ -1142,7 +1142,7 @@ def find_all_rt_values(chrom_data, tg, sample):
 
 def find_peak_group_candidates(chrom_data, sample_id):
 
-    peak_group_candidates = data_holder.Nested_dict()
+    peak_group_candidates = data_holder.NestedDict()
 
     for tg in chrom_data.keys():
 
@@ -1165,7 +1165,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
                     # if sample == 'gold10' and abs(rt - 3893.9) < 1:
                     #     pass
 
-                    this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                    this_peak_group = data_holder.PeakGroup(chrom_data, tg, sample, rt)
                     if this_peak_group.num_matched_fragments >= 3:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 
@@ -1175,14 +1175,14 @@ def find_peak_group_candidates(chrom_data, sample_id):
 
                         # compute the peak boundary for each fragment, not the consensus peak
                         # boundary
-                        this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                        this_peak_group = data_holder.PeakGroup(chrom_data, tg, sample, rt)
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 
                     if len(peak_group_candidates[tg][sample].keys()) == 0:
                         # if still no peak group is found. Most likely in case of empty chrom. Use
                         # all rt as peak group
                         for rt in all_rt:
-                            this_peak_group = data_holder.Peak_group(chrom_data, tg, sample, rt)
+                            this_peak_group = data_holder.PeakGroup(chrom_data, tg, sample, rt)
                             peak_group_candidates[tg][sample][rt] = this_peak_group
 
     return peak_group_candidates

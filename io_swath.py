@@ -32,8 +32,8 @@ def read_id_file(id_mapping_file):
 def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
 
     ref_sample_data = {}
-    chrom_data = data_holder.Nested_dict()
-    peptide_data = data_holder.Nested_dict()
+    chrom_data = data_holder.NestedDict()
+    peptide_data = data_holder.NestedDict()
 
     # sometimes, in the golden standard data set, multiple "best_sample"s are found. The best in water may not be the best in human
     # in this case, check the input file and write to a new file
@@ -49,7 +49,7 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
             ref_sample_name = row['best_sample']
             ref_sample_score = float(row['best_score'])
 
-            ref_sample_data[tg] = data_holder.Reference_sample(
+            ref_sample_data[tg] = data_holder.ReferenceSample(
                 ref_sample_name, ref_sample_score, peak_rt)
 
             peptide_data[tg]['ms1']['preMz'] = float(row['precursor_mz'])

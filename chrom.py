@@ -8,7 +8,7 @@ import swath_quant
 
 def compute_reference_sample_peak_boundary(ref_sample_data, chrom_data, peptide_data, peak_group_candidates):
 
-    display_data = data_holder.Nested_dict()
+    display_data = data_holder.NestedDict()
 
     for tg in chrom_data.keys():
 

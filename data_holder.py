@@ -9,9 +9,9 @@ import parameters
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
 
-class Nested_dict(defaultdict):
+class NestedDict(defaultdict):
     def __init__(self):
-        super(Nested_dict, self).__init__(Nested_dict)
+        super(NestedDict, self).__init__(NestedDict)
 
     def __deepcopy__(self):
         return self
@@ -177,7 +177,7 @@ def smooth_chromatogram_using_Savitzky_Golay(i_list):
     return i_list2.tolist()
 
 
-class Reference_sample(object):
+class ReferenceSample(object):
 
     def __init__(self, sample_name, score, peak_rt):
         self.sample_name = sample_name
@@ -195,7 +195,7 @@ class Reference_sample(object):
         self.peak_rt_found = rt_found
 
 
-class Peak_group(object):
+class PeakGroup(object):
 
     def __init__(self, chrom_data, tg, sample, rt):
         self.rt = rt
