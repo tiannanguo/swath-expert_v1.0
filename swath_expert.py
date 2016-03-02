@@ -1,9 +1,17 @@
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
+# this software reads in chromatographic text files, and openSWATH identification results,
+# and refine fragments, perform quantification of fragments and peptides.
+
 import os
 import sys
 import time
-
+import swath_quant
+import io_swath
+import peak_groups
+import r_code
+import chrom
+from whichcraft import which
 
 def print_help():
     print
@@ -17,19 +25,9 @@ if len(sys.argv) < 2:
     print_help()
     sys.exit(1)
 
-import swath_quant
-import io_swath
-import peak_groups
-import r_code
-import chrom
-
-from whichcraft import which
-
-chrom_file = sys.argv[1]
-
-
-id_mapping_file = 'nci60sw.txt'
-tic_normalization_file = 'nci60.tic'
+chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
+id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'
+tic_normalization_file = sys.argv[3]  #eg, 'gold90.tic'
 
 
 def remove_all_file_extensions(path):
@@ -110,14 +108,8 @@ def main():
 
     # based on the display_data for reference sample, get the best matched peak groups from all other samples
     # and then write to display_data
-    #### need fine tuning when a peak group is incorrectly selected###
     display_data = peak_groups.find_best_peak_group_based_on_reference_sample(
         display_data, ref_sample_data, chrom_data, peptide_data, peak_group_candidates, sample_id)
-
-    # TODO
-    # making use of replicate data, further refine the peak group selection
-    # display_data = peak_groups.refine_peak_group_selection_based_on_replicates(
-    #                 display_data, sample_replicates_info_file, peak_group_candidates)
 
     # compute peak area for display_pg
     display_data = chrom.compute_peak_area_for_all(display_data)
@@ -127,7 +119,6 @@ def main():
         display_data, sample_id, ref_sample_data, quant_file_fragments)
 
     # compute peptide area
-    # swath_quant.compute_peptide_intensity(display_data, sample_id, ref_sample_data, quant_file_peptides)
     swath_quant.compute_peptide_intensity_based_on_median_ratio_of_fragments(
         quant_file_peptides, quant_file_fragments, sample_id, ref_sample_data, display_data)
 
