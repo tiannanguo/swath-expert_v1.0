@@ -11,6 +11,7 @@ import io_swath
 import peak_groups
 import r_code
 import chrom
+import parameters as param
 from whichcraft import which
 
 def print_help():
@@ -69,12 +70,12 @@ def check_r():
     return r_path
 
 
-def write_bat_file(out_R_file, path_to_r, batch_file):
+def write_bat_file(out_R_file, batch_file):
     with open(batch_file, 'w') as o:
-        if sys.platform == 'win32':
-            cmd = '%s BATCH %s\n' % (path_to_r, out_R_file)
-        elif sys.platform in ('linux', 'darwin'):
-            cmd = 'Rscript %s\n' % out_R_file
+        if param.platform == 'linux':
+            cmd = 'R CMD BATCH ' % (out_R_file)
+        elif param.platform == 'tiannan_windows':
+            cmd = 'C:\R\R-2.15.1\bin\x64\Rcmd.exe %s\n' % out_R_file
         o.write(cmd)
         o.write('\n')
 
@@ -125,9 +126,7 @@ def main():
     # write r code into a file
     r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data)
 
-path_to_r = check_r()
 start_time = time.time()
 print "--- start conversion ---"
 main()
-write_bat_file(out_R_file, path_to_r, batch_file)
 print "--- %s seconds ---" % (time.time() - start_time)
