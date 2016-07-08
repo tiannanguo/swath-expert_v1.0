@@ -1,5 +1,11 @@
 __author__ = 'Tiannan Guo, ETH Zurich 2015'
 
+
+platform = "brutus"
+
+# platform = 'tiannan_windows'
+
+
 # parameters
 PEAK_TOLERANCE = 6  # seconds, use to find if the peak is found
 title = ['transition_name','transition_group_id', 'best_rt', 'best_sample', 'best_score',
@@ -41,7 +47,7 @@ PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
 # 210 samples
 # 60 samples !?
 # 90 samples
-figure_num_per_row = 30
+figure_num_per_row = 76
 
 figures_num_rows = 4
 PNG_FILE_WIDTH = figure_num_per_row * 150

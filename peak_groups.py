@@ -1093,13 +1093,19 @@ def build_reference_peak_group(display_data, ref_sample_data, chrom_data, tg):
     ref_pg['rt_left'] = ref_sample_data[tg].peak_rt_left
     ref_pg['rt_right'] = ref_sample_data[tg].peak_rt_right
 
+    # sometimes MS1 of the reference sample is NA
+
     ref_pg['ms1']['rt_list'] = chrom_data[tg][ref_sample][tg].rt_list
     ref_pg['ms1']['i_list'] = chrom_data[tg][ref_sample][tg].i_list
     ref_pg['ms1']['peak_apex_i_list'] = chrom_data[tg][ref_sample][tg].peak_apex_i_list
     ref_pg['ms1']['peak_apex_rt_list'] = chrom_data[tg][ref_sample][tg].peak_apex_rt_list
-    ref_pg['ms1']['peak_apex_i'] = \
-        find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i_list,
-                                   chrom_data[tg][ref_sample][tg].peak_apex_rt_list, ref_pg['peak_rt'])
+
+    if chrom_data[tg][ref_sample][tg].rt_list == "NA":
+        ref_pg['ms1']['peak_apex_i'] = "NA"
+    else:
+        ref_pg['ms1']['peak_apex_i'] = \
+            find_peak_apex_i_from_list(chrom_data[tg][ref_sample][tg].peak_apex_i_list,
+                                           chrom_data[tg][ref_sample][tg].peak_apex_rt_list, ref_pg['peak_rt'])
 
     display_data[tg][ref_sample]['ms1']['peak_apex_i'] = ref_pg['ms1']['peak_apex_i']
 
@@ -1169,8 +1175,8 @@ def find_peak_group_candidates(chrom_data, sample_id):
             all_rt = find_all_rt_values(chrom_data, tg, sample)
 
             if len(all_rt) == 0:
-                # no peak found
-                break
+                # no peak found, this sample has no rt. Most likely this sample has no chrom.
+                continue
             else:
 
                 for rt in all_rt:
@@ -1181,6 +1187,7 @@ def find_peak_group_candidates(chrom_data, sample_id):
                     #     pass
 
                     this_peak_group = data_holder.PeakGroup(chrom_data, tg, sample, rt)
+
                     if this_peak_group.num_matched_fragments >= 3:
                         peak_group_candidates[tg][sample][rt] = this_peak_group
 

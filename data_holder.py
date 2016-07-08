@@ -21,46 +21,55 @@ class Chromatogram(object):
 
     def __init__(self, rt_list_three_values_csv, i_list_csv):
 
-        rt_list = map(float, peaks.rt_three_values_to_full_list_string(rt_list_three_values_csv).split(','))
-        i_list = map(float, i_list_csv.split(','))
+        if rt_list_three_values_csv != 'NA':
 
-        # i_list_smoothed = smooth_chromatogram_using_Savitzky_Golay(i_list)
+            rt_list = map(float, peaks.rt_three_values_to_full_list_string(rt_list_three_values_csv).split(','))
+            i_list = map(float, i_list_csv.split(','))
 
-        self.rt_list = rt_list
-        self.i_list = i_list
-        # self.i_list_smoothed = i_list_smoothed
+            # i_list_smoothed = smooth_chromatogram_using_Savitzky_Golay(i_list)
 
-        max_peaks, __ = peaks.peakdetect(i_list, rt_list, 2.0, 0.3)
-        # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 6.0, 0.3)
+            self.rt_list = rt_list
+            self.i_list = i_list
+            # self.i_list_smoothed = i_list_smoothed
 
-        if len(max_peaks) > 0:
-
-            # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
-
-            max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
-
-            self.peak_apex_rt_list = [rt for (rt, i) in max_peaks_all]
-            self.peak_apex_i_list = [i for (rt, i) in max_peaks_all]
-
-        else:
-            # if no peak found. Most likely there is no signal. Use looser criteria to detect peaks
-
-            max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
-            # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
-
-            # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
-
-            max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
+            max_peaks, __ = peaks.peakdetect(i_list, rt_list, 2.0, 0.3)
+            # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 6.0, 0.3)
 
             if len(max_peaks) > 0:
+
+                # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+
+                max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
+
                 self.peak_apex_rt_list = [rt for (rt, i) in max_peaks_all]
                 self.peak_apex_i_list = [i for (rt, i) in max_peaks_all]
 
             else:
-                # if still no peak found, most likely it is an empty chrom.
-                # use the point in the median value as peak
-                self.peak_apex_rt_list = [np.median(np.array(rt_list))]
-                self.peak_apex_i_list = [np.median(np.array(i_list))]
+                # if no peak found. Most likely there is no signal. Use looser criteria to detect peaks
+
+                max_peaks, __ = peaks.peakdetect(i_list, rt_list, 1.0, 0.3)
+                # max_peaks_smoothed, __ = peaks.peakdetect(i_list_smoothed, rt_list, 1.0, 0.3)
+
+                # max_peaks_smoothed = filter_smoothed_peaks_based_on_raw_peaks(max_peaks, max_peaks_smoothed)
+
+                max_peaks_all = filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list)
+
+                if len(max_peaks) > 0:
+                    self.peak_apex_rt_list = [rt for (rt, i) in max_peaks_all]
+                    self.peak_apex_i_list = [i for (rt, i) in max_peaks_all]
+
+                else:
+                    # if still no peak found, most likely it is an empty chrom.
+                    # use the point in the median value as peak
+                    self.peak_apex_rt_list = [np.median(np.array(rt_list))]
+                    self.peak_apex_i_list = [np.median(np.array(i_list))]
+        else:
+            self.rt_list = 'NA'
+            self.i_list = 'NA'
+            self.peak_apex_rt_list = 'NA'
+            self.peak_apex_i_list = 'NA'
+
+
 
 
 def filter_peaks_based_on_peak_shape(max_peaks, i_list, rt_list):

@@ -38,7 +38,6 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
     # sometimes, in the golden standard data set, multiple "best_sample"s are found. The best in water may not be the best in human
     # in this case, check the input file and write to a new file
     # select the best sample with lowest m_score
-    # sometimes, too many NA values. remove tg with >50% missing values.
     chrom_file2 = use_one_best_sample(chrom_file)
 
     with gzip.open(chrom_file2, 'rb') as i:
@@ -46,7 +45,6 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
         for row in r:
             fragment = row['transition_name']
             tg = row['transition_group_id']
-            # print tg
             peak_rt = float(row['best_rt'])
             ref_sample_name = row['best_sample']
             ref_sample_score = float(row['best_score'])
@@ -70,8 +68,6 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
                 #     pass
                 chrom_data[tg][k][fragment] = data_holder.Chromatogram(
                     rt_list_three_values_csv, i_list_csv)
-
-    # print chrom_data
 
     return ref_sample_data, chrom_data, peptide_data
 
@@ -101,30 +97,12 @@ def compute_norm_factor(k, normalization_factors):
     return norm_factor
 
 
-def get_percentage_of_non_NA_values(row):
-
-    num_total = len(row)
-    num_total *= 1.0
-    num_others = 10.0
-    num_NA = 0
-    for key_string, value in row.iteritems():
-        if value == 'NA':
-            num_NA += 1
-    num_NA *= 1.0
-    perc = num_NA / (num_total - num_others)
-
-    # print row['transition_group_id'], num_NA, num_total, num_others, perc
-    return perc
-
 def get_tg_list(chrom_file):
     tg_list = {}
     with gzip.open(chrom_file, 'rb') as i:
         r = csv.DictReader(i, delimiter="\t")
         for row in r:
-            perc_nonNA = get_percentage_of_non_NA_values(row)
-            # print perc_nonNA
-            if perc_nonNA < 0.5:
-                tg_list[row['transition_group_id']] = 1
+            tg_list[row['transition_group_id']] = 1
     return tg_list.keys()
 
 
@@ -158,11 +136,7 @@ def use_one_best_sample(chrom_file):
     chrom_file2 = chrom_file.replace('.txt.gz', '_2.txt.gz')
 
     # get all tg
-    # check if the tg has lots of NA values
-
     tg_list = get_tg_list(chrom_file)
-
-    # print tg_list
 
     # get the best sample for each tg
     best_sample, best_score, best_rt = get_best_sample_for_each_tg(chrom_file, tg_list)
@@ -175,14 +149,10 @@ def use_one_best_sample(chrom_file):
         # write data
         for row in r:
             tg = row['transition_group_id']
-            # print tg
-            if tg in tg_list:
-                row['best_sample'] = best_sample[tg]
-                row['best_rt'] = best_rt[tg]
-                row['best_score'] = best_score[tg]
-
-                w.writerow(row)
-                # print "good", tg
+            row['best_sample'] = best_sample[tg]
+            row['best_rt'] = best_rt[tg]
+            row['best_score'] = best_score[tg]
+            w.writerow(row)
 
     return chrom_file2
 

@@ -11,7 +11,6 @@ import io_swath
 import peak_groups
 import r_code
 import chrom
-import parameters as param
 from whichcraft import which
 
 def print_help():
@@ -21,18 +20,15 @@ def print_help():
     print "   <chromatogram_file>:  path to chromatogram_file to process (mandatory)"
     print "   <path_to_rcmd_exe> :  path to Rcmd.exe or RScript on your computer (optional)"
     print
-#
-# if len(sys.argv) < 2:
-#     print_help()
-#     sys.exit(1)
-#
-chrom_file = "test1.txt.gz"
-id_mapping_file = "br304sw_b.txt"
-tic_normalization_file = "1R_ticAll.txt"
 
-# chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
-# id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'
-# tic_normalization_file = sys.argv[3]  #eg, 'gold90.tic'
+if len(sys.argv) < 2:
+    print_help()
+    sys.exit(1)
+
+chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
+id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'
+tic_normalization_file = sys.argv[3]  #eg, 'gold90.tic'
+
 
 def remove_all_file_extensions(path):
     path = os.path.splitext(path)[0]
@@ -73,12 +69,12 @@ def check_r():
     return r_path
 
 
-def write_bat_file(out_R_file, batch_file):
+def write_bat_file(out_R_file, path_to_r, batch_file):
     with open(batch_file, 'w') as o:
-        if param.platform == 'linux':
-            cmd = 'R CMD BATCH ' % (out_R_file)
-        elif param.platform == 'tiannan_windows':
-            cmd = 'C:\R\R-2.15.1\bin\x64\Rcmd.exe %s\n' % out_R_file
+        if sys.platform == 'win32':
+            cmd = '%s BATCH %s\n' % (path_to_r, out_R_file)
+        elif sys.platform in ('linux', 'darwin'):
+            cmd = 'Rscript %s\n' % out_R_file
         o.write(cmd)
         o.write('\n')
 
@@ -129,7 +125,9 @@ def main():
     # write r code into a file
     r_code.write_r_code_for_all_samples(display_data, sample_id, out_R_file, ref_sample_data)
 
+path_to_r = check_r()
 start_time = time.time()
-print "--- start processing ---"
+print "--- start conversion ---"
 main()
+write_bat_file(out_R_file, path_to_r, batch_file)
 print "--- %s seconds ---" % (time.time() - start_time)
