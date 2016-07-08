@@ -25,14 +25,14 @@ from whichcraft import which
 # if len(sys.argv) < 2:
 #     print_help()
 #     sys.exit(1)
+#
+# chrom_file = "com_chrom_10_0_2.txt.gz"
+# id_mapping_file = "br304sw_b.txt"
+# tic_normalization_file = "1R_ticAll.txt"
 
-chrom_file = "com_chrom_10_0_2.txt.gz"
-id_mapping_file = "br304sw_b.txt"
-tic_normalization_file = "1R_ticAll.txt"
-
-# chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
-# id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'
-# tic_normalization_file = sys.argv[3]  #eg, 'gold90.tic'
+chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
+id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'
+tic_normalization_file = sys.argv[3]  #eg, 'gold90.tic'
 
 def remove_all_file_extensions(path):
     path = os.path.splitext(path)[0]
