@@ -205,8 +205,12 @@ def compute_peak_area_for_all(display_data):
         for sample in display_data[tg].keys():
             # ms1
             # the displayed rt_list is already cut at the peak boundary used for display
-            area_ms1 = compute_peak_area2(display_data[tg][sample]['ms1']['rt_list'], display_data[tg][sample]['ms1']['i_list'])
-            display_data[tg][sample]['ms1']['area'] = area_ms1
+            # sometimes ms1 is NA
+            if display_data[tg][sample]['ms1']['rt_list'] == "NA" or display_data[tg][sample]['ms1']['i_list'] == "NA":
+                area_ms1 = 0
+            else:
+                area_ms1 = compute_peak_area2(display_data[tg][sample]['ms1']['rt_list'], display_data[tg][sample]['ms1']['i_list'])
+                display_data[tg][sample]['ms1']['area'] = area_ms1
 
             # ms2
             for fragment in display_data[tg][sample]['ms2']['rt_list'].keys():

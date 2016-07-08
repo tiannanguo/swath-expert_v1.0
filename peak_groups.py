@@ -74,7 +74,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
 
             # print 'sample is ', sample
 
-            if sample == 'gold10':
+            if sample == 'BR63':
                 pass
 
             if sample != ref_sample_data[tg].sample_name:
@@ -84,7 +84,7 @@ def find_best_peak_group_based_on_reference_sample(display_data, ref_sample_data
                     chrom_data, tg, ref_pg, peak_group_candidates, sample)
 
                 if len(pg) == 0:
-                    print 'error, no pg found'
+                    print 'tg is ', tg, ', sample is ', sample, 'no pg found'
 
                 pg_best = find_best_match_pg(pg, ref_pg, sample)
 
@@ -209,12 +209,21 @@ def get_peak_group_values(pg, rt, ref_pg):
             pg[rt]['ms2']['peak_apex_rt_list'][fragment], pg[rt]['ms2']['peak_apex_i_list'][fragment], rt)
 
     # get the rt and i list only for the peak group
-    pg_best['ms1']['rt_list'], pg_best['ms1']['i_list'] = \
-        chrom.get_chrom_range(
-            pg_best['rt_left'], pg_best['rt_right'], pg[rt]['ms1']['rt_list'], pg[rt]['ms1']['i_list'])
+    #sometimes for MS1, the peak_apex_i_list=NA, peak_apex_rt_list=NA, i_list=NA, rt_list=NA
+    if pg[rt]['ms1']['rt_list'] == "NA" or pg[rt]['ms1']['i_list'] == "NA":
 
-    pg_best['ms1']['peak_apex_i'], pg_best['ms1']['if_found_peak'] = get_fragment_intensity_for_peak_group(
-        pg[rt]['ms1']['peak_apex_rt_list'], pg[rt]['ms1']['peak_apex_i_list'], rt)
+        pg_best['ms1']['rt_list'] = "NA"
+        pg_best['ms1']['i_list'] = "NA"
+        pg_best['ms1']['peak_apex_i'] = "NA"
+        pg_best['ms1']['if_found_peak'] = "NA"
+
+    else:
+        pg_best['ms1']['rt_list'], pg_best['ms1']['i_list'] = \
+            chrom.get_chrom_range(
+                pg_best['rt_left'], pg_best['rt_right'], pg[rt]['ms1']['rt_list'], pg[rt]['ms1']['i_list'])
+
+        pg_best['ms1']['peak_apex_i'], pg_best['ms1']['if_found_peak'] = get_fragment_intensity_for_peak_group(
+            pg[rt]['ms1']['peak_apex_rt_list'], pg[rt]['ms1']['peak_apex_i_list'], rt)
 
     return pg_best
 
@@ -862,7 +871,7 @@ def find_best_match_pg_rule_c(pg, ref_pg, pg_filtered_rt, sample):
 def find_best_match_pg_rule_f(pg, ref_pg, pg_filtered_rt, sample):
 
     # for debugging
-    if sample == 'gold10':
+    if sample == 'BR63':
         pass
 
     # filter out peak groups without top 1 fragment showing good peak boundary
@@ -980,30 +989,33 @@ def build_other_sample_peak_group(chrom_data, tg, ref_pg, peak_group_candidates,
         pg[peak_rt]['ms1']['i_list'] = chrom_data[tg][sample][tg].i_list
         pg[peak_rt]['ms1']['peak_apex_i_list'] = chrom_data[tg][sample][tg].peak_apex_i_list
         pg[peak_rt]['ms1']['peak_apex_rt_list'] = chrom_data[tg][sample][tg].peak_apex_rt_list
-        pg[peak_rt]['ms1']['peak_apex_i'] = \
-            find_peak_apex_i_from_list(chrom_data[tg][sample][tg].peak_apex_i_list,
-                                       chrom_data[tg][sample][tg].peak_apex_rt_list, peak_rt)
+
+        if pg[peak_rt]['ms1']['peak_apex_rt_list'] != "NA" and pg[peak_rt]['ms1']['peak_apex_rt_list'] != "NA":
+            pg[peak_rt]['ms1']['peak_apex_i'] = \
+                find_peak_apex_i_from_list(chrom_data[tg][sample][tg].peak_apex_i_list, \
+                                            chrom_data[tg][sample][tg].peak_apex_rt_list, peak_rt)
 
         for fragment in ref_pg['ms2']['rt_list'].keys():
             if fragment != tg:
                 if hasattr(chrom_data[tg][sample][fragment], 'rt_list') == 1:
-                    pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[
-                        tg][sample][fragment].rt_list
-                    pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
-                    pg[peak_rt]['ms2']['peak_apex_i_list'][fragment] = chrom_data[
-                        tg][sample][fragment].peak_apex_i_list
-                    pg[peak_rt]['ms2']['peak_apex_rt_list'][fragment] = chrom_data[
-                        tg][sample][fragment].peak_apex_rt_list
-                    pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
-                        find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
-                                                   chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
+                    if not chrom_data[tg][sample][fragment].rt_list == "NA":
+                        pg[peak_rt]['ms2']['rt_list'][fragment] = chrom_data[
+                            tg][sample][fragment].rt_list
+                        pg[peak_rt]['ms2']['i_list'][fragment] = chrom_data[tg][sample][fragment].i_list
+                        pg[peak_rt]['ms2']['peak_apex_i_list'][fragment] = chrom_data[
+                            tg][sample][fragment].peak_apex_i_list
+                        pg[peak_rt]['ms2']['peak_apex_rt_list'][fragment] = chrom_data[
+                            tg][sample][fragment].peak_apex_rt_list
+                        pg[peak_rt]['ms2']['peak_apex_i'][fragment] = \
+                            find_peak_apex_i_from_list(chrom_data[tg][sample][fragment].peak_apex_i_list,
+                                                       chrom_data[tg][sample][fragment].peak_apex_rt_list, peak_rt)
 
-                    pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
-                        get_peak_boundary_from_fragment(
-                            peak_group_candidates, tg, sample, peak_rt, fragment)
+                        pg[peak_rt]['ms2']['rt_left'][fragment], pg[peak_rt]['ms2']['rt_right'][fragment] = \
+                            get_peak_boundary_from_fragment(
+                                peak_group_candidates, tg, sample, peak_rt, fragment)
 
     if len(pg) == 0:
-        print 'no peak group'
+        print 'no peak group. likely NA values'
 
     return pg
 

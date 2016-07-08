@@ -138,7 +138,8 @@ def get_max_ms1_intensity_in_all_samples(display_data, tg):
 
     i = []
     for sample in display_data[tg].keys():
-        i.append(display_data[tg][sample]['ms1']['peak_apex_i'])
+        if display_data[tg][sample]['ms1']['peak_apex_i'] != "NA":
+            i.append(display_data[tg][sample]['ms1']['peak_apex_i'])
 
     max_i = float(max(i))
 
@@ -238,14 +239,18 @@ def write_sample_ms1(display_data, sample, tg, max_intensity_ms1, if_reference_s
     r_code = '''#MS1 chrom\n'''
     r_code += '''#MS1 id is %s\n''' % tg
 
-    rt_list = ','.join(map(str, display_data[tg][sample]['ms1']['rt_list']))
+    if display_data[tg][sample]['ms1']['rt_list'] == "NA":
 
-    r_code += '''rt = c(%s)\n''' % rt_list
+        r_code += "rt = c()\n"
+        r_code += "int = c()\n"
 
-    i_list = ','.join(map(str, [round(x * (-100) / max_intensity_ms1, 1)
+    else:
+
+        rt_list = ','.join(map(str, display_data[tg][sample]['ms1']['rt_list']))
+        r_code += '''rt = c(%s)\n''' % rt_list
+        i_list = ','.join(map(str, [round(x * (-100) / max_intensity_ms1, 1)
                                 for x in display_data[tg][sample]['ms1']['i_list']]))
-
-    r_code += '''int = c(%s)\n''' % i_list
+        r_code += '''int = c(%s)\n''' % i_list
 
     r_code += '''plot(rt, int, type = "l", xlim = c (%.1f, %.1f), ylim = c(-110, 110), ''' \
         '''lwd = %.1f, xlab = "retention time (s)", ylab = "intensity (''' % (
