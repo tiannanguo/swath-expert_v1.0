@@ -59,15 +59,29 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
             peptide_data[tg]['ms2'][fragment] = float(row['transition_mz'])
 
             for k in sample_id:
+
                 rt_list_three_values_csv = row[k + '_rt']
                 i_list_csv = row[k + '_i']
-                i_list_csv = apply_normalization_based_on_tic(i_list_csv, normalization_factors, k)
 
-                ###########
-                # if k == 'gold80' and fragment.startswith('1191_'):
-                #     pass
-                chrom_data[tg][k][fragment] = data_holder.Chromatogram(
-                    rt_list_three_values_csv, i_list_csv)
+                if rt_list_three_values_csv == "NA" or rt_list_three_values_csv == "0,0,0" or i_list_csv == "NA" or i_list_csv == 0:
+                    i_list_csv = "NA"
+                    chrom_data[tg][k][fragment] = "NA"
+
+                else:
+
+                    i_list_csv = apply_normalization_based_on_tic(i_list_csv, normalization_factors, k)
+
+                    ###########
+                    # if k == 'BR94': # and fragment.startswith('1191_'):
+                    #     pass
+
+                    # print k, fragment
+
+                    chrom_data[tg][k][fragment] = data_holder.Chromatogram(
+                        rt_list_three_values_csv, i_list_csv)
+
+    # check if reference sample is good
+
 
     return ref_sample_data, chrom_data, peptide_data
 

@@ -126,12 +126,17 @@ def get_max_ms2_intensity_in_all_samples(display_data, tg):
             i0 = max(all_i)
             i.append(i0)
 
-    max_i = float(max(i))
+    if len(i) > 0:
 
-    if max_i == 0:
-        max_i = 0.1
+        max_i = float(max(i))
 
-    return max_i
+        if max_i == 0:
+            max_i = 0.1
+
+        return max_i
+    else:
+
+        return 0.1
 
 
 def get_max_ms1_intensity_in_all_samples(display_data, tg):
