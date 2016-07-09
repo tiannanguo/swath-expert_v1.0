@@ -60,6 +60,11 @@ def read_com_chrom_file(chrom_file, sample_id, normalization_factors):
 
             for k in sample_id:
 
+                # print k
+
+                if k == "pcf112":
+                    pass
+
                 rt_list_three_values_csv = row[k + '_rt']
                 i_list_csv = row[k + '_i']
 
@@ -166,6 +171,11 @@ def use_one_best_sample(chrom_file):
             row['best_sample'] = best_sample[tg]
             row['best_rt'] = best_rt[tg]
             row['best_score'] = best_score[tg]
+
+            # sometimes the rt or i of a sample can be empty, fill with NA
+            for col_name in fieldnames1:
+                if not row[col_name]:
+                    row[col_name] = "NA"
             w.writerow(row)
 
     return chrom_file2

@@ -27,9 +27,9 @@ def print_help():
 #     sys.exit(1)
 #
 # chrom_file = "test1.txt.gz"
-# chrom_file = "com_chrom_29_17.txt.gz"
-# id_mapping_file = "br304sw_b.txt"
-# tic_normalization_file = "1R_ticAll.txt"
+# # chrom_file = "com_chrom_9_9.txt.gz"
+# id_mapping_file = "pcf224sw_b.txt"
+# tic_normalization_file = "pcf224sw_TIC_ms1.txt"
 
 chrom_file = sys.argv[1]  # eg, com_chrom_1.txt.gz
 id_mapping_file = sys.argv[2]  #eg, 'goldenSets90.txt'

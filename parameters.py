@@ -47,7 +47,7 @@ PLOT_LINE_WIDTH = 2.0  # the thickness of chrom curve
 # 210 samples
 # 60 samples !?
 # 90 samples
-figure_num_per_row = 76
+figure_num_per_row = 56
 
 figures_num_rows = 4
 PNG_FILE_WIDTH = figure_num_per_row * 150
