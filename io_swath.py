@@ -174,8 +174,10 @@ def use_one_best_sample(chrom_file):
 
             # sometimes the rt or i of a sample can be empty, fill with NA
             for col_name in fieldnames1:
-                if not row[col_name]:
-                    row[col_name] = "NA"
+                if col_name.endswith("_i") or col_name.endswith("_rt"):
+                    # print col_name
+                    if not row[col_name]:
+                        row[col_name] = "NA"
             w.writerow(row)
 
     return chrom_file2
